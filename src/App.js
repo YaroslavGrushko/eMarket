@@ -40,17 +40,30 @@ PLACES["Африка"]=[
 ];
 
 PLACES["Зошити"]=[
-  {city:"Зошит1", src:"images/copybooks/cb1.jpg"},
-  {city:"Зошит2", src:"images/copybooks/cb2.jpg"},
-  {city:"Зошит3", src:"images/copybooks/cb3.jpg"},
-  {city:"Зошит4", src:"images/copybooks/cb4.jpg"}
+  {name:"Зошит1", src:"images/copybooks/cb1.jpg"},
+  {name:"Зошит2", src:"images/copybooks/cb2.jpg"},
+  {name:"Зошит3", src:"images/copybooks/cb3.jpg"},
+  {name:"Зошит4", src:"images/copybooks/cb4.jpg"}
 ];
+
 //component of single video:
-class AwebCam extends Component{
+class Product extends Component{
   render(){
     return(
       <div>
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0"></img>
+      {this.props.product}
+      </div>
+    );
+  }
+}
+
+
+//component of single video:
+class AProduct extends Component{
+  render(){
+    return(
+      <div>
+      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={this.props.onClick}></img>
       </div>
     );
   }
@@ -58,21 +71,21 @@ class AwebCam extends Component{
 
 
 //component of several AwebCam components:
-class WebCames extends Component{
+class Section extends Component{
   render(){
-  const country=this.props.country;
-  const curCOUNTRY=PLACES[country];
-  const Placeslength=curCOUNTRY.length;
+  const section=this.props.section;
+  const curSECTION=PLACES[section];
+  const Placeslength=curSECTION.length;
     return(
       <Container>
       <Row md={6} sm={6}>
-      {curCOUNTRY.map((place, index) => (
+      {curSECTION.map((product, index) => (
       <Col key={index} md={6} sm={6}>
         <table>
           <tr>
             <td>
-              <AwebCam className="Wrapper" src={place.src} />
-              <span className="CenturyGothicCommon">{place.city}</span>
+              <AProduct className="Wrapper" src={product.src} onClick={() => this.props.onClick(product.name)} />
+              <span className="CenturyGothicCommon">{product.name}</span>
             </td>   
           </tr>
         </table>
@@ -85,48 +98,63 @@ class WebCames extends Component{
   }
 }
 
+//components of back button on WebCams "page":
+class BackButton extends Component{
+  render(){
+    return(
+      <div>
+        <button className="BackButton button_back" onClick={()=>this.props.onClick()}>
+          <span className="CenturyGothicCommon">go <b>back</b> to the countries</span>
+        </button>
+      </div>
+    );
+  }
+}
+
 //main component of whole app:
 class App extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     showWebCames:false,
-  //     country:ALL_COUNTRIES[0].name,
-  //   };
-  // }
-// //Country button handler function:
-// handleClick(countryName) {
-//     this.setState({
-//       country:countryName,
-//       showWebCames:true,
-//     });
-//   }
-// //"to back" button handler function:
-// handleBackClick(){
-//   this.setState({
-//     showWebCames:!this.state.showWebCames,
-//   });
-// }
-// //function that returns <Countries/> tag(component):
-// renderCountries(){
-//     let countries=[];
-//   countries.push(<Countries key={0} onClick={(i) => this.handleClick(i)} />);
-//   return countries;
-// }
-// //function that returns <BackButton/> and <WebCames/> tag(component):
-// renderWebCames(){
-// let webCames=[];
-//   webCames.push(<BackButton key={1} onClick={() => this.handleBackClick()} />);
-//   webCames.push(<WebCames key={2} country={this.state.country} />);
-//   return webCames;
-// }
+  constructor(props) {
+    super(props);
+    this.state = {
+      showProduct:false,
+      section:"Зошити",
+      product:"none"
+    };
+  }
+//Country button handler function:
+handleClick(productName) {
+    this.setState({
+      product:productName,
+      showProduct:true,
+    });
+  }
+//"to back" button handler function:
+handleBackClick(){
+  this.setState({
+    showProduct:!this.state.showProduct,
+  });
+}
+//function that returns <Countries/> tag(component):
+renderProducts(){
+  return(
+    <Section key={0} section={this.state.section} onClick={(i) => this.handleClick(i)} />
+    );
+}
+//function that returns <BackButton/> and <WebCames/> tag(component):
+renderProduct(){
+let products=[];
+  products.push(<BackButton key={1} onClick={() => this.handleBackClick()} />);
+  products.push(<Product key={2} product={this.state.product} />);
+  return products;
+}
 
   //////////
   render() {
     return (
       <div className="App">
         
-      <WebCames key={2} country="Зошити" />
+      {this.state.showProduct ? this.renderProduct() : this.renderProducts()}
+
       </div>
     );
   }
