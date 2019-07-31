@@ -80,6 +80,54 @@
       <h1 style="font-family: cursive" class='center'><b># Тільки Якісні Канцтовари</b></h1>
   </div>
 
+<!---category section-->
+<ul>
+    <li>
+        <i class="fa fa-bars fa-2x" toggle="tooltip" data-placement="bottom" title="category1"></i>
+    </li>
+    <li >
+        <i class="fa fa-search fa-2x" toggle="tooltip" data-placement="bottom" title="category2"></i>
+    </li>
+</ul>
+
+<script>
+    $(document).ready(function() {
+  $('li i').on('click', function() {
+    $('li i').removeClass('active');
+    $(this).addClass('active');
+  });
+});
+</script>
+
+<style>
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  
+}
+
+li {
+  float: left;
+}
+
+li i {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+}
+
+li i:hover {
+  color: blue;
+}
+
+li i:active  {
+  color: red;
+}
+</style>
 
 <div class="w3-main">
 
