@@ -1,5 +1,5 @@
 
-i {
+.main_photo_container  i {
   display: block;
   color: white;
   text-align: center;
@@ -8,12 +8,12 @@ i {
   font-size: 40px;
 }
 
-i:hover {
+.main_photo_container  i:hover {
   color: blue;
   cursor: pointer;
 }
 
-i:active  {
+.main_photo_container  i:active  {
   color: red;
   cursor: pointer;
 }
@@ -35,9 +35,7 @@ i:active  {
     padding: 10px;
 }
 
-.main_photo_container > div {
-  /* background-color: rgba(255, 255, 255, 0.8); */
-  text-align: center;
+.main_photo_container i {
   font-size: 80px;
 }
 
@@ -45,7 +43,7 @@ i:active  {
   .main_photo_container {
     height: 150px;
 }
-.main_photo_container > div {
+.main_photo_container i {
   font-size: 40px;
 }
 }
