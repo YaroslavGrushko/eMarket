@@ -16,10 +16,10 @@ import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 const PLACES={};
 
 PLACES["Зошити"]=[
-  {name:"Зошит1", src:"images/copybooks/cb1.jpg", price:"₴30", about:"опис1"},
-  {name:"Зошит2", src:"images/copybooks/cb2.jpg", price:"₴30", about:"опис2"},
-  {name:"Зошит3", src:"images/copybooks/cb3.jpg", price:"₴30", about:"опис3"},
-  {name:"Зошит4", src:"images/copybooks/cb4.jpg", price:"₴40", about:"опис4"}
+  {name:"Зошит1", src:"images/copybooks/cb1.png", price:"₴30", about:"опис1"},
+  {name:"Зошит2", src:"images/copybooks/cb2.png", price:"₴30", about:"опис2"},
+  {name:"Зошит3", src:"images/copybooks/cb3.png", price:"₴30", about:"опис3"},
+  {name:"Зошит4", src:"images/copybooks/cb4.png", price:"₴40", about:"опис4"}
 ];
 
 //component of single video:
