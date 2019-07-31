@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+    
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!-- css -->
     <!-- w3 styles -->
@@ -19,16 +16,9 @@
     <link rel="stylesheet" href="css/animation.css">
     <!-- awesome icones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+    <!-- main_photo_container -->
+    <link rel="stylesheet" href="css/main_photo_container.css">
+    
     <title>eMarket</title>
   </head>
   <body class="w3-light-grey">
@@ -66,11 +56,7 @@
 
       <div class="popup">
           <div class="popup-content">
-              <div class="popup-text">
-               
-              </div>
-              <img src="images/logo2.png" title="магазин якісних товарів">
-
+            <img src="images/logo2.png" title="магазин якісних товарів">
           </div>
       </div>
   </div>
@@ -82,83 +68,15 @@
 
 <!---category section-->
 <div class = "main_photo_container">
-    <div><i class="fa fa-book fa-2x" toggle="tooltip" data-placement="bottom" title="Блокноти"></i></div>
-    <div><i class="fa fa-book fa-2x" toggle="tooltip" data-placement="bottom" title="Блокноти"></i></div>
-    <div><i class="fa fa-book fa-2x" toggle="tooltip" data-placement="bottom" title="Блокноти"></i></div>
-    <div><i class="fa fa-book fa-2x" toggle="tooltip" data-placement="bottom" title="Блокноти"></i></div>
-    <div><i class="fa fa-book fa-2x" toggle="tooltip" data-placement="bottom" title="Блокноти"></i></div>
-    <div><i class="fa fa-book fa-2x" toggle="tooltip" data-placement="bottom" title="Блокноти"></i></div>
+    <div><i class="fa fa-book" toggle="tooltip" data-placement="bottom" title="Блокноти, зошити, альбоми"></i></div>
+    <div><i class="fa fa-calculator" toggle="tooltip" data-placement="bottom" title="Калькулятори, диктофони"></i></div>
+    <div><i class="fa fa-clone" toggle="tooltip" data-placement="bottom" title="Папір та копіювальне приладдя"></i></div>
+    <div><i class="fa fa-edit" toggle="tooltip" data-placement="bottom" title="Олівці, ручки стрижні"></i></div>
+    <div><i class="fa fa-eraser" toggle="tooltip" data-placement="bottom" title="Канцелярські дрібниці"></i></div>
+    <div><i class="fa fa-graduation-cap" toggle="tooltip" data-placement="bottom" title="Навчальне приладдя"></i></div>
 </div>
 
-
-<script>
-    
-</script>
-
-<style>
-
-
-i {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 16px;
-  text-decoration: none;
-}
-
-i:hover {
-  color: blue;
-  cursor: pointer;
-}
-
-i:active  {
-  color: red;
-  cursor: pointer;
-}
-
-
-/*grid in the main_photo_container*/
-
-.main_photo_container {
-    width: 100%;
-    height: 280px;
-    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2) ), url(images/main_photo1.jpg);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-
-    display: grid;
-    align-content: center;
-    grid-template-columns: auto auto auto;
-    grid-gap: 10px;
-    padding: 10px;
-}
-
-.main_photo_container > div {
-  /* background-color: rgba(255, 255, 255, 0.8); */
-  text-align: center;
-  padding: 20px 0;
-  font-size: 30px;
-}
-
-
-@media (max-width:768px) {
-  .main_photo_container {
-    height: 150px;
-}
-.main_photo_container > div {
-  /* background-color: rgba(255, 255, 255, 0.8); */
-  text-align: center;
-  padding: 10px 0;
-  font-size: 20px;
-}
-}
-
-
-</style>
-
 <div class="w3-main">
-
-
 
    <div class="w3-container w3-padding-large" id="products">
         <h4><b>Зошити</b></h4>
@@ -166,8 +84,6 @@ i:active  {
         <hr>
    </div>
    
-
-
     <!-- about -->
     <div class="w3-container w3-padding-large" style="margin-bottom:32px" id="about">
         <h4><b>Про нас</b></h4>
@@ -212,9 +128,11 @@ i:active  {
           <div class="w3-third">
               <h3>ПОПУЛЯРНІ ТЕГИ</h3>
               <p>
-                  <span class="w3-tag w3-black w3-margin-bottom">#Канцтовари</span> <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Київ</span> <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Хрещатик</span>
-                  <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Stationery</span> <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Kyiv</span><span class="w3-tag w3-grey w3-small w3-margin-bottom">#Зошити</span>
-                  <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Ручки</span> <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Стержні</span>
+                  <span class="w3-tag w3-black w3-margin-bottom">#Канцтовари</span> 
+                  <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Kyiv</span>
+                  <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Зошити</span>
+                  <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Ручки</span> 
+                  <span class="w3-tag w3-grey w3-small w3-margin-bottom">#Стержні</span>
               </p>
           </div>
 
