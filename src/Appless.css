@@ -1,34 +1,4 @@
-.App {
-  text-align: center;
-}
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-.App-header {
-  /*background-color: #222;*/
-  background-color: #8C4E17;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-.App-title {
-  /*  font-size: 1.5em;*/
-  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-  font-size: 30px;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: 500;
-  /* line-height: 26.4px; */
-}
-.App-intro {
-  font-size: large;
-}
-/* .video-img-box {
-  width: 35vw;
-  height: 19.6875vw;
-  margin: 6px;
-} */
+
 
 .WebCamVideo,
 .City {
@@ -41,6 +11,18 @@
   height: 13vh;
   margin: 6px;
   border-radius: 30px;
+}
+.aProduct{
+  font-size:1.3rem;
+}
+.productName{
+  font-weight: bold;
+}
+
+/* aProduct div from e-market grid */
+.aProduct:hover{
+  background-color:rgba(46, 46, 46, 0.1);
+  cursor:pointer;
 }
 /*  .City{
   width:30vw;
@@ -57,8 +39,9 @@
 /* button that returns visitor on the start page (viewing of countries): */
 .BackButton {
   margin-top: 0;
-  width: 90vw;
-  height: 12vw;
+  width: 50vw;
+  height: auto;
+  font-size:1.3rem;
 }
 .button_back {
   display: inline-block;
@@ -96,27 +79,7 @@
   opacity: 1;
   right: 0;
 }
-/* images for button of countries:
-.EuropeImg {
-  background: url("../images/countries/Germany.jpg");
-  background-size: cover;
-  cursor: pointer;
-}
-.AsiaImg {
-  background: url("../images/countries/Pecin.jpg");
-  background-size: cover;
-  cursor: pointer;
-}
-.AmericaImg {
-  background: url("../images/countries/NewYork.jpg");
-  background-size: cover;
-  cursor: pointer;
-}
-.AfricaImg {
-  background: url("../images/countries/Kilimanjaro.jpg");
-  background-size: cover;
-  cursor: pointer;
-} */
+
 /*hover effect#1 of Country button*/
 /* .grow {
   transition: all 0.2s ease-in-out;
@@ -124,23 +87,7 @@
 .grow:hover {
   transform: scale(1.1);
 } */
-.Country {
-  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-  font-size: 5vw;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: 500;
-  /* line-height: 26.4px; */
-  /* line-height: 26.4px; */
-}
-.CenturyGothicCommon {
-  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-  font-size: 1em;
-  font-style: bold;
-  font-variant: normal;
-  font-weight: 500;
-  /* line-height: 26.4px; */
-}
+
 /* images for button of countries: */
 .light {
   color: #FFCB9C;
@@ -148,14 +95,8 @@
 .dark {
   color: #8C4E17;
 }
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+
+
 @media screen and (min-width: 468px) {
 
   .WebCamVideo,
@@ -164,27 +105,33 @@
     height: 30vh;
     margin: 6px;
   }
-  .CountryButton {
+  /* .CountryButton {
     width: 30vw;
     height: 19.6875vw;
     margin: 6px;
     border-radius: 30px;
-  }
+  } */
   .BackButton {
     margin-top: 0.3vw;
-    width: 98vw;
-    height: 5vw;
-    font-size: 30px;
+    width: 50vw;
+    height: auto;
+    font-size: 1.3rem;
   }
-  .App-header {
-    /* display: none; */
+}
+
+@media screen and (max-width:990px){
+  .aProduct img{
+    width:100%;
   }
-  .CenturyGothicCommon {
-    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-    font-size: 30px;
-    font-style: bold;
-    font-variant: normal;
-    font-weight: 500;
-    /* line-height: 26.4px; */
+}
+@media screen and (max-width:765px){
+  .aProduct img{
+    width:100%;
+  }
+}
+@media screen and (max-width:570px){
+  .aProduct img{
+    width: 53vh;
+    height:auto;
   }
 }

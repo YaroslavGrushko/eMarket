@@ -7,6 +7,7 @@ import './App.css';
 /*-->*/
 import './Appless.css';
 /*<--*/
+import './product.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
@@ -15,18 +16,38 @@ import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 const PLACES={};
 
 PLACES["Зошити"]=[
-  {name:"Зошит1", src:"images/copybooks/cb1.jpg"},
-  {name:"Зошит2", src:"images/copybooks/cb2.jpg"},
-  {name:"Зошит3", src:"images/copybooks/cb3.jpg"},
-  {name:"Зошит4", src:"images/copybooks/cb4.jpg"}
+  {name:"Зошит1", src:"images/copybooks/cb1.png", price:"₴30", about:"опис1"},
+  {name:"Зошит2", src:"images/copybooks/cb2.png", price:"₴30", about:"опис2"},
+  {name:"Зошит3", src:"images/copybooks/cb3.png", price:"₴30", about:"опис3"},
+  {name:"Зошит4", src:"images/copybooks/cb4.png", price:"₴40", about:"опис4"}
 ];
 
 //component of single video:
 class Product extends Component{
   render(){
     return(
-      <div>
-      {this.props.product}
+      <div className="product">
+      <Container>
+      <Row> 
+      <Col key={0} md={8} sm={12}>     
+      <img src={this.props.product.src} frameBorder="0" onClick={this.props.onClick}></img>
+      </Col>
+      <Col key={1} md={4} sm={12}> 
+      <div className="productMain">   
+      <span className="productName">{this.props.product.name}</span>
+      <span>{this.props.product.price.replace("₴","")} грн</span>
+      <button className="button button2">Замовити</button>
+      </div> 
+      </Col>
+      </Row>
+
+      <Row>
+      <div className="aboutProduct">
+      <span><b>Опис</b></span>
+      <span>{this.props.product.about}</span>
+      </div>
+      </Row>
+        </Container>
       </div>
     );
   }
@@ -36,8 +57,11 @@ class Product extends Component{
 class AProduct extends Component{
   render(){
     return(
-      <div>
+      <div className="aProduct">
       <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={this.props.onClick}></img>
+      <span className="productName">{this.props.name}</span>
+      <br/>
+      <span>{this.props.price}</span>  
       </div>
     );
   }
@@ -54,16 +78,9 @@ class Category extends Component{
       <Container>
       <Row md={6} sm={6}>
       {curCATEGORY.map((product, index) => (
-      <Col key={index} md={6} sm={6}>
-        <table>
-          <tr>
-            <td>
-              <AProduct className="Wrapper" src={product.src} onClick={() => this.props.onClick(product.name)} />
-              <span className="CenturyGothicCommon">{product.name}</span>
-            </td>   
-          </tr>
-        </table>
-     </Col>
+      <Col key={index} md={4} sm={6}>     
+              <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={() => this.props.onClick(product)} />
+      </Col>
   ))
 }
         </Row>
@@ -77,8 +94,8 @@ class BackButton extends Component{
   render(){
     return(
       <div>
-        <button className="BackButton button_back" onClick={()=>this.props.onClick()}>
-          <span className="CenturyGothicCommon">go <b>back</b> to the categories</span>
+        <button className="BackButton w3-teal button_back" onClick={()=>this.props.onClick()}>
+          <span>перейти <b>назад</b> до каталогу</span>
         </button>
       </div>
     );
@@ -96,9 +113,9 @@ class App extends Component {
     };
   }
 //Product button handler function:
-handleClick(productName) {
+handleClick(product) {
     this.setState({
-      product:productName,
+      product:product,
       showProduct:true,
     });
   }
@@ -111,7 +128,7 @@ handleBackClick(){
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
-    <Category category={this.state.category} onClick={(productName) => this.handleClick(productName)} />
+    <Category category={this.state.category} onClick={(product) => this.handleClick(product)} />
     );
 }
 //function that returns <BackButton/> and <WebCames/> tag(component):
