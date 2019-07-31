@@ -21,6 +21,12 @@ PLACES["Зошити"]=[
   {name:"Зошит3", src:"images/copybooks/cb3.png", price:"₴30", about:"опис3"},
   {name:"Зошит4", src:"images/copybooks/cb4.png", price:"₴40", about:"опис4"}
 ];
+PLACES["Калькулятори"]=[
+  {name:"Калькулятор1", src:"images/copybooks/cb1.png", price:"₴30", about:"опис1"},
+  {name:"Калькулятор2", src:"images/copybooks/cb2.png", price:"₴30", about:"опис2"},
+  {name:"Калькулятор3", src:"images/copybooks/cb3.png", price:"₴30", about:"опис3"},
+  {name:"Калькулятор4", src:"images/copybooks/cb4.png", price:"₴40", about:"опис4"}
+];
 
 //component of single video:
 class Product extends Component{
@@ -108,7 +114,6 @@ class App extends Component {
     super(props);
     this.state = {
       showProduct:false,
-      category:"Зошити",
       product:"none"
     };
   }
@@ -128,7 +133,7 @@ handleBackClick(){
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
-    <Category category={this.state.category} onClick={(product) => this.handleClick(product)} />
+    <Category category={this.props.category} onClick={(product) => this.handleClick(product)} />
     );
 }
 //function that returns <BackButton/> and <WebCames/> tag(component):
