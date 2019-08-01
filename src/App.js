@@ -12,6 +12,7 @@ import './product.css';
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 
+
 //webcames array with city name and src to youtube live
 const PLACES={};
 
@@ -112,9 +113,10 @@ class BackButton extends Component{
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showProduct:false,
-      product:"none"
+      product:"none",
     };
   }
 //Product button handler function:
@@ -133,7 +135,7 @@ handleBackClick(){
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
-    <Category category={this.props.category} onClick={(product) => this.handleClick(product)} />
+    <Category category={window.category} onClick={(product) => this.handleClick(product)} />
     );
 }
 //function that returns <BackButton/> and <WebCames/> tag(component):
@@ -148,9 +150,8 @@ let products=[];
   render() {
     return (
       <div className="App">
-        
+      {window.test}
       {this.state.showProduct ? this.renderProduct() : this.renderCategory()}
-
       </div>
     );
   }
