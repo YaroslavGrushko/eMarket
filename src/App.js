@@ -58,6 +58,26 @@ PLACES["ДляШколи"]=[
   {name:"ДляШколи 4", src:"images/school/sch4.png", price:"₴30", about:"опис4"},
   {name:"ДляШколи 5", src:"images/school/sch5.png", price:"₴30", about:"опис5"},
 ];
+
+//component of single video:
+class CustomerInfo extends Component{
+  render(){
+    return(
+      <div className="customerInfo">
+      <h6>Контактні дані</h6>
+     
+        <label for="clientName">Ім'я:</label>
+        <input type="text" class="form-control" id="clientName" aria-describedby="helpId" />
+        <small id="helpId" class="form-text text-muted">Help text</small>
+     
+      <h6>Спосіб оплати</h6>
+      <h6>Спосіб/адрес доставки</h6>
+      </div>
+    );
+  }
+}
+
+
 //component of single video:
 class Product extends Component{
   render(){
@@ -72,7 +92,7 @@ class Product extends Component{
       <div className="productMain">   
       <span className="productName">{this.props.product.name}</span>
       <span>{this.props.product.price.replace("₴","")} грн</span>
-      <button className="button button2">Замовити</button>
+      <button className="button button2" onClick={() => this.props.onClick(true)}>Замовити</button>
       </div> 
       </Col>
       </Row>
@@ -131,7 +151,7 @@ class BackButton extends Component{
     return(
       <div>
         <button className="BackButton w3-teal button_back" onClick={()=>this.props.onClick()}>
-          <span>перейти <b>назад</b> до каталогу</span>
+          {this.props.fromProduct ? <span>перейти <b>назад</b> до каталогу</span> : <span>перейти <b>назад</b> до  товару</span>}
         </button>
       </div>
     );
@@ -144,7 +164,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      showProduct:false,
+      showParam:'0',
       product:"none",
     };
   }
@@ -152,14 +172,28 @@ class App extends Component {
 handleClick(product) {
     this.setState({
       product:product,
-      showProduct:true,
+      showParam:'1',
     });
   }
-//"to back" button handler function:
-handleBackClick(){
+//when user click in <Product/>
+handleProductClick(isOrder){
+  if(isOrder){
   this.setState({
-    showProduct:false,
+    showParam:'2',
   });
+}
+} 
+//"to back" button handler function:
+handleBackClick(backParam){
+  if(backParam=="fromProduct"){
+  this.setState({
+    showParam:'0',
+  });
+}else{
+  this.setState({
+    showParam:'1',
+  });
+}
 }
 //function that returns <Countries/> tag(component):
 renderCategory(){
@@ -170,17 +204,34 @@ renderCategory(){
 //function that returns <BackButton/> and <WebCames/> tag(component):
 renderProduct(){
 let products=[];
-  products.push(<BackButton key={1} onClick={() => this.handleBackClick()} />);
-  products.push(<Product key={2} product={this.state.product} />);
+  products.push(<BackButton key={1} fromProduct={true}  onClick={() => this.handleBackClick("fromProduct")} />);
+  products.push(<Product key={2} product={this.state.product} onClick={(isOrder) => this.handleProductClick(isOrder)} />);
   return products;
 }
-
+// function that returns <CustomerInfo/> tag(component):
+renderInfo(){
+  let products=[];
+  products.push(<BackButton key={1} fromProduct={false} onClick={() => this.handleBackClick("fromInfo")} />);
+  products.push(<CustomerInfo product={this.state.product}/>);
+  return products;
+}
+renderSwitch(param){
+  switch(param) {
+    case '0':
+      return this.renderCategory();
+    case '1':
+      return this.renderProduct();
+    case '2':
+      return this.renderInfo();
+    default:
+      return this.renderCategory();
+  }
+}
   //////////
   render() {
     return (
       <div className="App">
-      {window.test}
-      {this.state.showProduct ? this.renderProduct() : this.renderCategory()}
+      {this.renderSwitch(this.state.showParam)}
       </div>
     );
   }
