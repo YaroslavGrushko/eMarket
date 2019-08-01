@@ -17,18 +17,47 @@ import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 const PLACES={};
 
 PLACES["Зошити"]=[
-  {name:"Зошит1", src:"images/copybooks/cb1.png", price:"₴30", about:"Елегантний зошит у лінійку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
-  {name:"Зошит2", src:"images/copybooks/cb2.png", price:"₴30", about:"Елегантний зошит у лінійку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
-  {name:"Зошит3", src:"images/copybooks/cb3.png", price:"₴30", about:"Практичний та приємний на дотик зошит у клітинку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
-  {name:"Зошит4", src:"images/copybooks/cb4.png", price:"₴40", about:"Практичний та приємний на дотик зошит у клітинку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
+  {name:"Зошит 1", src:"images/copybooks/cb1.png", price:"₴30", about:"Елегантний зошит у лінійку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
+  {name:"Зошит 2", src:"images/copybooks/cb2.png", price:"₴30", about:"Елегантний зошит у лінійку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
+  {name:"Зошит 3", src:"images/copybooks/cb3.png", price:"₴30", about:"Практичний та приємний на дотик зошит у клітинку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
+  {name:"Зошит 4", src:"images/copybooks/cb4.png", price:"₴40", about:"Практичний та приємний на дотик зошит у клітинку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
 ];
 PLACES["Калькулятори"]=[
-  {name:"Калькулятор1", src:"images/copybooks/cb1.png", price:"₴30", about:"опис1"},
-  {name:"Калькулятор2", src:"images/copybooks/cb2.png", price:"₴30", about:"опис2"},
-  {name:"Калькулятор3", src:"images/copybooks/cb3.png", price:"₴30", about:"опис3"},
-  {name:"Калькулятор4", src:"images/copybooks/cb4.png", price:"₴40", about:"опис4"}
+  {name:"Калькулятор 1", src:"images/calculators/calc1.png", price:"₴30", about:"опис1"},
+  {name:"Калькулятор 2", src:"images/calculators/calc2.png", price:"₴30", about:"опис2"},
+  {name:"Калькулятор 3", src:"images/calculators/calc3.png", price:"₴30", about:"опис3"},
+  {name:"Калькулятор 4", src:"images/calculators/calc4.png", price:"₴40", about:"опис4"},
+  {name:"Калькулятор 5", src:"images/calculators/calc5.png", price:"₴40", about:"опис4"}
 ];
-
+PLACES["Папір"]=[
+  {name:"Папір 1", src:"images/paper/paper1.png", price:"₴60", about:"опис1"},
+  {name:"Папір 2", src:"images/paper/paper2.png", price:"₴50", about:"опис2"},
+  {name:"Папір 3", src:"images/paper/paper3.png", price:"₴50", about:"опис3"}
+];
+PLACES["Карандаші"]=[
+  {name:"Карандаші 1", src:"images/pencils/penc1.png", price:"₴30", about:"опис1"},
+  {name:"Карандаші 2", src:"images/pencils/penc2.png", price:"₴30", about:"опис2"},
+  {name:"Карандаші 3", src:"images/pencils/penc3.png", price:"₴30", about:"опис3"},
+  {name:"Ручки 1", src:"images/pencils/penc4.png", price:"₴20", about:"опис4"},
+  {name:"Ручки 2", src:"images/pencils/penc5.png", price:"₴20", about:"опис5"},
+  {name:"Ручки 3", src:"images/pencils/penc6.png", price:"₴20", about:"опис6"},
+  {name:"Стержень 1", src:"images/pencils/penc7.png", price:"₴10", about:"опис7"},
+  {name:"Стержень 2", src:"images/pencils/penc8.png", price:"₴5", about:"опис8"},
+];
+PLACES["Дрібниці"]=[
+  {name:"Дрібниці 1", src:"images/nothingness/noth1.png", price:"₴30", about:"опис1"},
+  {name:"Дрібниці 2", src:"images/nothingness/noth2.png", price:"₴20", about:"опис2"},
+  {name:"Дрібниці 3", src:"images/nothingness/noth3.png", price:"₴50", about:"опис3"},
+  {name:"Дрібниці 4", src:"images/nothingness/noth4.png", price:"₴30", about:"опис4"},
+  {name:"Дрібниці 5", src:"images/nothingness/noth5.png", price:"₴30", about:"опис5"},
+];
+PLACES["ДляШколи"]=[
+  {name:"ДляШколи 1", src:"images/school/sch1.png", price:"₴30", about:"опис1"},
+  {name:"ДляШколи 2", src:"images/school/sch2.png", price:"₴20", about:"опис2"},
+  {name:"ДляШколи 3", src:"images/school/sch3.png", price:"₴50", about:"опис3"},
+  {name:"ДляШколи 4", src:"images/school/sch4.png", price:"₴30", about:"опис4"},
+  {name:"ДляШколи 5", src:"images/school/sch5.png", price:"₴30", about:"опис5"},
+];
 //component of single video:
 class Product extends Component{
   render(){
