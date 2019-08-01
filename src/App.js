@@ -12,6 +12,7 @@ import './product.css';
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 
+
 //webcames array with city name and src to youtube live
 const PLACES={};
 
@@ -20,6 +21,12 @@ PLACES["Зошити"]=[
   {name:"Зошит2", src:"images/copybooks/cb2.png", price:"₴30", about:"Елегантний зошит у лінійку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
   {name:"Зошит3", src:"images/copybooks/cb3.png", price:"₴30", about:"Практичний та приємний на дотик зошит у клітинку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
   {name:"Зошит4", src:"images/copybooks/cb4.png", price:"₴40", about:"Практичний та приємний на дотик зошит у клітинку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок."},
+];
+PLACES["Калькулятори"]=[
+  {name:"Калькулятор1", src:"images/copybooks/cb1.png", price:"₴30", about:"опис1"},
+  {name:"Калькулятор2", src:"images/copybooks/cb2.png", price:"₴30", about:"опис2"},
+  {name:"Калькулятор3", src:"images/copybooks/cb3.png", price:"₴30", about:"опис3"},
+  {name:"Калькулятор4", src:"images/copybooks/cb4.png", price:"₴40", about:"опис4"}
 ];
 
 //component of single video:
@@ -106,10 +113,10 @@ class BackButton extends Component{
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showProduct:false,
-      category:"Зошити",
-      product:"none"
+      product:"none",
     };
   }
 //Product button handler function:
@@ -128,7 +135,7 @@ handleBackClick(){
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
-    <Category category={this.state.category} onClick={(product) => this.handleClick(product)} />
+    <Category category={window.category} onClick={(product) => this.handleClick(product)} />
     );
 }
 //function that returns <BackButton/> and <WebCames/> tag(component):
@@ -143,9 +150,8 @@ let products=[];
   render() {
     return (
       <div className="App">
-        
+      {window.test}
       {this.state.showProduct ? this.renderProduct() : this.renderCategory()}
-
       </div>
     );
   }
