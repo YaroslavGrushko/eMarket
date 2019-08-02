@@ -6,10 +6,14 @@ import * as serviceWorker from './serviceWorker';
 
 var main_photo_container= document.getElementsByClassName('main_photo_container')[0]
 
+// set the category switcher outside of react
+window.switch_caregory = true;
+var prev_category = null;
+
 main_photo_container.addEventListener('click', function (event) {
-
-
+  
 window.category = event.target.id;
+prev_category!=window.category ? window.switch_caregory = true : window.switch_caregory = false;
 
 // let's change category title
 var elem = document.getElementById('products');
