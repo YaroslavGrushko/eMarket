@@ -100,6 +100,7 @@
 
   /* info block */
   .infoBlock{
+      margin:auto;
       margin-top:40px;
   }
   /* infoBlock hover */
@@ -109,4 +110,9 @@
   }
   .infoBlock:hover h6{
       color:#009688;
+  }
+  @media screen and (min-width: 468px) {
+    .infoBlock{
+        width:50vw;
+    }  
   }

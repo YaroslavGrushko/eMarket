@@ -128,6 +128,10 @@ class CustomerInfo extends Component{
     <label for="tnumber">Адреса доставки:</label>
     <input type="text" id="tnumber" name="tnumber" placeholder="наприклад: м. Київ, вул. Хрещатик, буд. 15"/>
     </div>
+
+    <button className="BackButton w3-teal button_dynamic button_back">
+    <span><b>ЗАМОВИТИ</b></span>
+  </button>
       </div>     
     );
   }
@@ -206,8 +210,8 @@ class BackButton extends Component{
   render(){
     return(
       <div>
-        <button className="BackButton w3-teal button_back" onClick={()=>this.props.onClick()}>
-          {this.props.fromProduct ? <span>перейти <b>назад</b> до каталогу</span> : <span>перейти <b>назад</b> до  товару</span>}
+        <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.props.onClick()}>
+          {this.props.fromProduct ? <span><b>назад</b> до каталогу</span> : <span><b>назад</b> до  товару</span>}
         </button>
       </div>
     );

@@ -45,7 +45,7 @@
   height: auto;
   font-size:1.3rem;
 }
-.button_back {
+.button_dynamic {
   display: inline-block;
   /* border-radius: 8px; */
   background-color: #DEB887;
@@ -60,12 +60,22 @@
   cursor: pointer;
   margin: 5px;
 }
-.button_back span {
+.button_dynamic span {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
+
+.button_dynamic:hover span {
+  padding-right: 25px;
+}
+.button_dynamic:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+/* back button */
 .button_back span:after {
   content: '\00bb';
   position: absolute;
@@ -74,12 +84,16 @@
   right: -20px;
   transition: 0.5s;
 }
-.button_back:hover span {
-  padding-right: 25px;
-}
-.button_back:hover span:after {
-  opacity: 1;
-  right: 0;
+
+/* back button */
+.button_submit span:after {
+  content: '\00bb';
+  font-size: 2rem;
+  position: absolute;
+  opacity: 0;
+  bottom: 0.000001rem;
+  right: -20px;
+  transition: 0.5s;
 }
 
 /*hover effect#1 of Country button*/
