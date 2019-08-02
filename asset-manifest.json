@@ -1,16 +1,18 @@
 {
   "files": {
-    "main.css": "/eMarket/static/css/main.6df04527.chunk.css",
-    "main.js": "/eMarket/static/js/main.9ab33948.chunk.js",
-    "main.js.map": "/eMarket/static/js/main.9ab33948.chunk.js.map",
+    "main.css": "/eMarket/static/css/main.41f456e9.chunk.css",
+    "main.js": "/eMarket/static/js/main.b6476c09.chunk.js",
+    "main.js.map": "/eMarket/static/js/main.b6476c09.chunk.js.map",
     "runtime~main.js": "/eMarket/static/js/runtime~main.f63e46a8.js",
     "runtime~main.js.map": "/eMarket/static/js/runtime~main.f63e46a8.js.map",
-    "static/js/2.b41502e9.chunk.js": "/eMarket/static/js/2.b41502e9.chunk.js",
-    "static/js/2.b41502e9.chunk.js.map": "/eMarket/static/js/2.b41502e9.chunk.js.map",
+    "static/css/2.22a7d4ef.chunk.css": "/eMarket/static/css/2.22a7d4ef.chunk.css",
+    "static/js/2.b01ade72.chunk.js": "/eMarket/static/js/2.b01ade72.chunk.js",
+    "static/js/2.b01ade72.chunk.js.map": "/eMarket/static/js/2.b01ade72.chunk.js.map",
     "index.html": "/eMarket/index.html",
-    "precache-manifest.00b2c9b5fe65d0ce55df57bf8d878524.js": "/eMarket/precache-manifest.00b2c9b5fe65d0ce55df57bf8d878524.js",
+    "precache-manifest.82b6007661e36056da4884cff14ba27c.js": "/eMarket/precache-manifest.82b6007661e36056da4884cff14ba27c.js",
     "service-worker.js": "/eMarket/service-worker.js",
-    "static/css/main.6df04527.chunk.css.map": "/eMarket/static/css/main.6df04527.chunk.css.map",
+    "static/css/2.22a7d4ef.chunk.css.map": "/eMarket/static/css/2.22a7d4ef.chunk.css.map",
+    "static/css/main.41f456e9.chunk.css.map": "/eMarket/static/css/main.41f456e9.chunk.css.map",
     "static/media/logo.svg": "/eMarket/static/media/logo.ee7cd8ed.svg"
   }
 }
