@@ -234,6 +234,7 @@ handleClick(product) {
       product:product,
       showParam:'1',
     });
+    window.switch_caregory=false;
   }
 //when user click in <Product/>
 handleProductClick(isOrder){
@@ -242,6 +243,7 @@ handleProductClick(isOrder){
     showParam:'2',
   });
 }
+window.switch_caregory=false;
 } 
 //"to back" button handler function:
 handleBackClick(backParam){
@@ -280,9 +282,9 @@ renderSwitch(param){
     case '0':
       return this.renderCategory();
     case '1':
-      return this.renderProduct();
+       return window.switch_caregory? this.renderCategory() : this.renderProduct();
     case '2':
-      return this.renderInfo();
+      return window.switch_caregory? this.renderCategory() : this.renderInfo();
     default:
       return this.renderCategory();
   }
