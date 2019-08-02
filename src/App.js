@@ -7,11 +7,15 @@ import './App.css';
 /*-->*/
 import './Appless.css';
 /*<--*/
-import './product.css';
+// product.css
+import './css/product.css';
+// info.css
+import './css/info.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
-
+// info js
+import './additionalJs/info.js'
 
 //webcames array with city name and src to youtube live
 const PLACES={};
@@ -64,14 +68,27 @@ class CustomerInfo extends Component{
   render(){
     return(
       <div className="customerInfo">
-      <h6>Контактні дані</h6>
+      <div className="infoBlock">
+      <h6><b>Контактні дані</b></h6>
      
-        <label for="clientName">Ім'я:</label>
-        <input type="text" class="form-control" id="clientName" aria-describedby="helpId" />
-        <small id="helpId" class="form-text text-muted">Help text</small>
-     
-      <h6>Спосіб оплати</h6>
+      <label for="fname">Ваше ім'я:</label>
+      <input type="text" id="fname" name="fname" placeholder="Введіть Ваше ім'я..."/>
+      <label for="tnumber">Контактний телефон:</label>
+      <input type="text" id="tnumber" name="tnumber" placeholder="+380 ** *** ** **"/>
+      </div>
+
+      <div className="infoBlock">
+      <h6><b>Спосіб оплати</b></h6>
+        <div className="custom-select">
+          <select>
+            <option value="0">Спосіб оплати</option>
+            <option value="1">Накладений платіж</option>
+            <option value="2">на картку ПриватБанку</option>
+          </select>
+        </div>
+      </div>
       <h6>Спосіб/адрес доставки</h6>
+      
       </div>
     );
   }
