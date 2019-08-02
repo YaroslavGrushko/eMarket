@@ -14,8 +14,7 @@ import './css/info.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
-// info js
-import './additionalJs/info.js'
+import { Script } from 'vm';
 
 //webcames array with city name and src to youtube live
 const PLACES={};
@@ -65,6 +64,32 @@ PLACES["ДляШколи"]=[
 
 //component of single video:
 class CustomerInfo extends Component{
+
+
+
+  constructor(props) {
+    super(props);
+    this.state = {SelectOption: '1'};
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+
+  handleChange(event) {
+    this.setState({SelectOption: event.target.value});
+  }
+
+
+  componentDidMount() {
+    var loadScript = function (src) {
+      var tag = document.createElement('script');
+      tag.async = false;
+      tag.src = src;
+      var body = document.getElementsByTagName('body')[0];
+      body.appendChild(tag);
+    }
+
+    loadScript('js/info.js');
+  }
   render(){
     return(
       <div className="customerInfo">
@@ -79,17 +104,31 @@ class CustomerInfo extends Component{
 
       <div className="infoBlock">
       <h6><b>Спосіб оплати</b></h6>
-        <div className="custom-select">
-          <select>
+
+      <div className="custom-select">
+          <select value={this.state.SelectOption} onChange={this.handleChange}>
             <option value="0">Спосіб оплати</option>
             <option value="1">Накладений платіж</option>
             <option value="2">на картку ПриватБанку</option>
           </select>
         </div>
       </div>
-      <h6>Спосіб/адрес доставки</h6>
-      
-      </div>
+      <div className="infoBlock">
+      <h6><b>Доставка</b></h6>
+
+      <label>Спосіб доставки:</label>
+
+      <div className="custom-select">
+      <select value={this.state.SelectOption} onChange={this.handleChange}>
+        <option value="0">Спосіб доставки</option>
+        <option value="1">Новою Поштою</option>
+        <option value="2">Самовивіз</option>
+      </select>
+    </div>
+    <label for="tnumber">Адреса доставки:</label>
+    <input type="text" id="tnumber" name="tnumber" placeholder="наприклад: м. Київ, вул. Хрещатик, буд. 15"/>
+    </div>
+      </div>     
     );
   }
 }

@@ -21,7 +21,14 @@
     padding-top:20px;
 }
 
-/* select */
+/* select>>>>>>>>>>>>>>>>>>>> */
+.custom-select {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 0 0 0  !important;
+    margin-bottom: 20px;
+}
 /*the container must be positioned relative:*/
 .custom-select {
     position: relative;
@@ -29,12 +36,9 @@
   }
   
   .custom-select select {
-    display: none; /*hide original SELECT element:*/
+    display: none; 
   }
   
-  .select-selected {
-    background-color: DodgerBlue;
-  }
   
   /*style the arrow inside the select element:*/
   .select-selected:after {
@@ -55,23 +59,26 @@
   }
   
   /*style the items (options), including the selected item:*/
-  .select-items div,.select-selected {
-    color: #ffffff;
+  .select-selected {
+    /* color: #fff; */
     padding: 8px 16px;
     border: 1px solid transparent;
     border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
     cursor: pointer;
     user-select: none;
+    color: #000!important;
+    background-color: #9e9e9e!important;
   }
   
   /*style items (options):*/
   .select-items {
     position: absolute;
-    background-color: DodgerBlue;
+    background-color: #f1f1f1;
     top: 100%;
     left: 0;
     right: 0;
     z-index: 99;
+    color:#616161 !important;
   }
   
   /*hide the items when the select box is closed:*/
@@ -79,20 +86,27 @@
     display: none;
   }
   
-  .select-items div:hover, .same-as-selected {
+  /* .select-items div:hover, .same-as-selected {
     background-color: rgba(0, 0, 0, 0.1);
+  } */
+  .select-items div:hover{
+    background-color:#fff;
   }
+  /* select<<<<<<<<<<<<<<<<<<<<<< */
 
-  .custom-select{
+  /* .custom-select{
       width:200px;
-  }
+  } */
 
   /* info block */
   .infoBlock{
-      margin-top:20px;
+      margin-top:40px;
   }
   /* infoBlock hover */
   .infoBlock:hover{
     background-color:rgba(46, 46, 46, 0.1);
     cursor:pointer;
+  }
+  .infoBlock:hover h6{
+      color:#009688;
   }

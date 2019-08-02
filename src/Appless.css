@@ -47,7 +47,7 @@
 }
 .button_back {
   display: inline-block;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   background-color: #DEB887;
   /* background-color: #6495ED; */
   border: none;
