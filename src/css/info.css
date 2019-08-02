@@ -86,9 +86,9 @@
     display: none;
   }
   
-  /* .select-items div:hover, .same-as-selected {
-    background-color: rgba(0, 0, 0, 0.1);
-  } */
+  .select-items div{
+    padding: 8px 16px;
+  }
   .select-items div:hover{
     background-color:#fff;
   }
