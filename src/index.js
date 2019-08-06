@@ -11,8 +11,9 @@ window.switch_caregory = true;
 var prev_category = null;
 
 main_photo_container.addEventListener('click', function (event) {
-  
+if(event.target.id!='addButton'){
 window.category = event.target.id;
+
 prev_category!=window.category ? window.switch_caregory = true : window.switch_caregory = false;
 
 // let's change category title
@@ -30,6 +31,7 @@ notes.innerHTML = "<b>"+window.category+"</b>";
 
 // render main react app
 ReactDOM.render(<App/>, document.getElementById('root'));
+}
 }, false);
 
 
