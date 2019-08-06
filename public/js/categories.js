@@ -3,17 +3,21 @@ var domain =window.location.hostname
 $('.main_photo_container').click(function(event){
 var target = event.target;
 selectedId = $(target).attr('id');
-if(selectedId=='addButton')uploadOrders()
+if(selectedId=='addCategoryButton')uploadOrders()
 })
 // upload all orders from buyers
 function uploadOrders(){
+
     $.ajax({
-      url:domain+':5000/tracks',
+      url:'http://127.0.0.1:5000/tracks',
       data:' ',
       type:'GET',
-      success:function(data){
-        // var ordersArray = $.parseJSON(data);
+      success:function(jsonData){
+        var data = $.parseJSON(jsonData);
         alert(data)
+      },
+      error:function(error) {
+        alert( "error: " +JSON.stringify(error));
       }
     });
   }
