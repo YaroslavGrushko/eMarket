@@ -6,18 +6,18 @@ selectedId = $(target).attr('id');
 if(selectedId=='addCategoryButton')addCategory()
 })
 // upload all orders from buyers
-function uploadOrders(){
+function uploadOrders() {
 
-    $.ajax({
-      url:'http://127.0.0.1:5000/tracks',
-      data:' ',
-      type:'GET',
-      success:function(jsonData){
-        var data = $.parseJSON(jsonData);
-        alert(data)
-      },
-      error:function(error) {
-        alert( "error: " +JSON.stringify(error));
-      }
-    });
-  }
+  $.ajax({
+    url: 'http://127.0.0.1:5000/tracks',
+    data: ' ',
+    type: 'GET',
+    success: function (jsonData) {
+      var data = $.parseJSON(jsonData);
+      alert(data)
+    },
+    error: function (error) {
+      alert("error: " + JSON.stringify(error));
+    }
+  });
+}

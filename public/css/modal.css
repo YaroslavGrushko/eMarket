@@ -11,7 +11,7 @@
     transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
 }
 
-.modal-content {
+.my-modal-content{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -66,14 +66,15 @@ input[type=text] {
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline: none;
-  }
-  
+}
+
 input[type=text]:focus {
     border: 3px solid #555;
-  }
-.addCategoryHtml{
+}
+
+.addCategoryHtml {
     /* for button horizontal margin can be on center; */
-    text-align:center;
+    text-align: center;
 }
 
 
@@ -92,7 +93,7 @@ input[type=text]:focus {
         font-size: 1.5rem
     }
 
-    .modal-content {
+    .my-modal-content{
         position: absolute;
         top: 50%;
         left: 50%;
