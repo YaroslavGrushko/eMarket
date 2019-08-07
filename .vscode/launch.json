@@ -5,7 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Flask",
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Python: Flask",
             "type": "python",
             "request": "launch",
             "module": "flask",
@@ -20,13 +27,6 @@
                 "--no-reload"
             ],
             "jinja": true
-        },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}"
         }
     ]
 }
