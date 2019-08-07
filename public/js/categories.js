@@ -3,7 +3,7 @@ var domain =window.location.hostname
 $('.main_photo_container').click(function(event){
 var target = event.target;
 selectedId = $(target).attr('id');
-if(selectedId=='addCategoryButton')uploadOrders()
+if(selectedId=='addCategoryButton')addCategory()
 })
 // upload all orders from buyers
 function uploadOrders(){
