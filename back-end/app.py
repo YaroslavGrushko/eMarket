@@ -4,16 +4,35 @@ from flask_restful import Resource, Api
 from json import dumps
 # for has been blocked by CORS policy: Cross origin requests are only error
 from flask_cors import CORS, cross_origin
+import sqlite3
+from datetime import datetime
+
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
+conn = sqlite3.connect("eMarket.db") # или :memory: чтобы сохранить в RAM
+cursor = conn.cursor()
+cursor.execute("""CREATE TABLE IF NOT EXISTS "Managers" (
+    "manager_id" INTEGER,
+    "maneger_name" VARCHAR,
+    "maneger_password" VARCHAR,
+    "time" DATETIME
+)
+               """)
+
+# Вставляем множество данных в таблицу используя безопасный метод "?"
+managers = [(1, 'Yaroslav', '1234', datetime.now()),
+          (2, 'Vladimir', '1234', datetime.now())]
+ 
+cursor.executemany("INSERT INTO Managers VALUES (?,?,?,?)", managers)
+conn.commit()
 
     
 class Tracks(Resource):
     def get(self):
-        
+         
         resultList={
             'Vasya':
             {
