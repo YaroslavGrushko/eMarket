@@ -10,15 +10,14 @@
     <!-- css -->
     <!-- w3 styles -->
     <link rel="stylesheet" href="css/style.css">
-    <!-- main.css -->
-    <link rel="stylesheet" href="css/main.css">
     <!-- animation.css -->
     <link rel="stylesheet" href="css/animation.css">
     <!-- awesome icones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- main_photo_container -->
     <link rel="stylesheet" href="css/main_photo_container.css">
-
+    <!-- modal.css -->
+    <link rel="stylesheet" href="css/modal.css">
     <!-- JQuery: -->
     <script src="js/JQuery/jquery-3.4.1.min.js"></script>
     <title>eMarket</title>
@@ -58,7 +57,11 @@
       <div class="popup">
           <div class="popup-content">
             <!-- <img src="images/logo2.png" title="магазин якісних товарів"> -->
+<<<<<<< HEAD
             <i class="fa fa-key" style="font-size:48px;color:#bf0000; cursor: pointer;" toggle="tooltip" data-placement="bottom" title="Вхід для менеджерів"></i>
+=======
+            <i id = "login" class="fa fa-key" style="font-size:48px;color:red; cursor: pointer;" toggle="tooltip" data-placement="bottom" title="Вхід для менеджерів"></i>
+>>>>>>> addCategory-front
           </div>
       </div>
   </div>
@@ -145,12 +148,21 @@
   <div class="w3-black w3-center w3-padding-24">Розроблено YG. 2019</div>
 </div>
   <!-- End page content -->
+  <!-- modals -->
+  <div class="addCategoryModal my-modal">
+    <span class="close-button">&times;</span>
+    <div class="my-modal-content">
+    </div>
+  </div>
     <!-- js libs -->
     <!-- animation: -->
     <script src="js/animation.js"></script>
     <!-- main sidebar.js -->
     <script src="js/sidebar.js"></script>
-     <!-- main categories.js -->
-     <script src="js/categories.js"></script>
-  </body>
-</html>
+    <!-- main categories.js -->
+    <script src="js/categories.js"></script>
+    <!-- animation: -->
+    <script src="js/modal.js"></script>
+    </body>
+
+    </html>

@@ -1,0 +1,108 @@
+.my-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.my-modal-content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 10px 40px 10px 20px;
+    width: 80vw;
+    height: 90vh;
+    border-radius: 0.5rem;
+    overflow-y: scroll;
+}
+
+.close-button {
+    float: right;
+    width: 5rem;
+    line-height: 5rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0.45rem;
+    background-color: lightgray;
+    font-size: 4.5rem
+}
+
+
+.close-button:hover {
+    background-color: darkgray;
+}
+
+.show-modal {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+
+
+
+
+
+.imgContainer {
+    display: flex;
+    justify-content: center;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 3px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+input[type=text]:focus {
+    border: 3px solid #555;
+}
+
+.addCategoryHtml {
+    /* for button horizontal margin can be on center; */
+    text-align: center;
+}
+
+
+
+@media screen and (min-width: 1200px) {
+
+    /*1024px*/
+    .close-button {
+        float: right;
+        width: 1.5rem;
+        line-height: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        background-color: lightgray;
+        font-size: 1.5rem
+    }
+
+    .my-modal-content{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 10px 40px 10px 20px;
+        width: 80vw;
+        height: 90vh;
+        border-radius: 0.5rem;
+        overflow-y: scroll;
+    }
+}
