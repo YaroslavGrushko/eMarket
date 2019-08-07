@@ -9,12 +9,12 @@
 }
 
 .main_photo_container  i:hover {
-  color: blue;
+  color: #BC4899;
   cursor: pointer;
 }
 
 .main_photo_container  i:active  {
-  color: red;
+  color: #bf0000;
   cursor: pointer;
 }
 
@@ -46,11 +46,11 @@
   border: 2px solid white;
   border-radius: 20px;
   background-color:rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
 
 .addButton:hover{
   background-color:rgba(0, 0, 0, 0.5);
-
 }
 
 @media (max-width:768px) {

@@ -7,6 +7,8 @@ import './App.css';
 /*-->*/
 import './Appless.css';
 /*<--*/
+// addProductButton.css
+import './css/addProductButton.css';
 // product.css
 import './css/product.css';
 // info.css
@@ -175,6 +177,7 @@ class AProduct extends Component{
     return(
       <div className="aProduct">
       <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={this.props.onClick}></img>
+      <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
       <span className="productName">{this.props.name}</span>
       <br/>
       <span>{this.props.price}</span>  
@@ -182,7 +185,13 @@ class AProduct extends Component{
     );
   }
 }
-
+class AddProduct extends Component {
+  render(){
+    return(
+      <div class="addButtonApp WebCamVideo" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+    );
+  }
+}
 
 //component of several AwebCam components:
 class Category extends Component{
@@ -199,6 +208,9 @@ class Category extends Component{
       </Col>
   ))
 }
+      <Col>
+      <AddProduct/>
+      </Col>
         </Row>
         </Container>
 );
