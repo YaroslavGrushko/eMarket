@@ -5,58 +5,61 @@ from json import dumps
 # for has been blocked by CORS policy: Cross origin requests are only error
 from flask_cors import CORS, cross_origin
 import sqlite3
+from sqlite3 import Error
 from datetime import datetime
+from flask import jsonify
 
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-conn = sqlite3.connect("eMarket.db") # или :memory: чтобы сохранить в RAM
-cursor = conn.cursor()
-cursor.execute("""CREATE TABLE IF NOT EXISTS "Managers" (
+# conn = sqlite3.connect("eMarket.db") # или :memory: чтобы сохранить в RAM
+
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    try:
+        conn = sqlite3.connect(db_file)
+        return conn
+    except Error as e:
+        print(e)
+ 
+    return None
+
+
+
+@app.route('/categories', methods=['GET', 'POST'])
+# @login_required
+def save_category():
+    # rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
+    (
     "manager_id" INTEGER,
     "maneger_name" VARCHAR,
-    "maneger_password" VARCHAR,
+    "category_name" VARCHAR,
+    "category_code" VARCHAR,
     "time" DATETIME
-)
+    )
                """)
+    new_category = [(rData['manager_id'], rData['manager_name'], rData['category_name'], rData['category_code'], datetime.now()),]
+    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?,?)", new_category)
+    conn.commit()
 
-# Вставляем множество данных в таблицу используя безопасный метод "?"
-managers = [(1, 'Yaroslav', '1234', datetime.now()),
-          (2, 'Vladimir', '1234', datetime.now())]
- 
-cursor.executemany("INSERT INTO Managers VALUES (?,?,?,?)", managers)
-conn.commit()
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'status' : 'success POST'})
 
-    
-class Tracks(Resource):
-    def get(self):
-         
-        resultList={
-            'Vasya':
-            {
-            'age':24,
-            'sex':'mail'},
-            'Ann':
-            {
-                'age':22,
-                'sex':'femail2'
-            }  
-        }
-        # jsonStr = dumps(resultList, separators=(',', ':'))
-        jsonStr = dumps(resultList)
-        # resp = Response(result)
-        # resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000/'
-        return jsonStr
 
-api.add_resource(Tracks, '/tracks') # Route_2
-# @app.route("/tracks")
-# @cross_origin()
-# def helloWorld():
-#     mystring = "Hello, cross-origin-world!"
-#     jsonStr = dumps(mystring, separators=(',', ':'))
-#     return jsonStr
+
 
 if __name__ == '__main__':
      app.run(debug = True)
