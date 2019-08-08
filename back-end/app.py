@@ -42,15 +42,25 @@ def save_category():
     cursor = conn.cursor()
     cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
     (
-    "manager_id" INTEGER,
-    "maneger_name" VARCHAR,
+    "category_id" VARCHAR,
     "category_name" VARCHAR,
     "category_code" VARCHAR,
     "time" DATETIME
     )
                """)
+    # create the initial category table
+    # new_category = [('Зошити', 'Блокноти, зошити, альбоми', 'fa fa-book', datetime.now()),
+    #                 ('Калькулятори', 'Калькулятори, диктофони', 'fa fa-calculator', datetime.now()),
+    #                 ('Папір', 'Папір та копіювальне приладдя', 'fa fa-clone', datetime.now()),
+    #                 ('Карандаші', 'Олівці, ручки, стрижні', 'fa fa-edit', datetime.now()),
+    #                 ('Дрібниці', 'Канцелярські дрібниці', 'fa fa-eraser', datetime.now()),
+    #                 ('ДляШколи', 'Навчальне приладдя', 'fa fa-graduation-cap', datetime.now()),
+    #                ]
+    # cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
+    # conn.commit()
+    
     new_category = [(rData['manager_id'], rData['manager_name'], rData['category_name'], rData['category_code'], datetime.now()),]
-    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?,?)", new_category)
+    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
     conn.commit()
 
     if request.method == 'GET':
