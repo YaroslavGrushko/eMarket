@@ -17,6 +17,7 @@ import './css/info.css';
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 import { Script } from 'vm';
+import { returnStatement } from '@babel/types';
 
 //webcames array with city name and src to youtube live
 const PLACES={};
@@ -66,9 +67,6 @@ PLACES["ДляШколи"]=[
 
 //component of single video:
 class CustomerInfo extends Component{
-
-
-
   constructor(props) {
     super(props);
     this.state = {SelectOption: '1'};
@@ -173,7 +171,7 @@ class Product extends Component{
 
 //component of single video:
 class AProduct extends Component{
-  clickHandler(params){
+clickHandler(params){
     this.props.onClick(params);
   }
   render(){
@@ -228,22 +226,10 @@ class EditProductContent extends Component{
 }
 // edit product modal
 class EditProductModal extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      myClassList: "editProductModal my-modal " + this.props.myClassList,
-    };
-  }
-  myCloseOnClick() {
-   this.setState({
-      myClassList: "editProductModal my-modal",
-    });
-  }
   render() {
     return (
-      <div className={this.state.myClassList}>
-        <span className="close-button" onClick={this.myCloseOnClick()}>&times;</span>
+      <div className={"editProductModal my-modal " + this.props.myClassList}>
+        <span className="close-button">&times;</span>
         <EditProductContent/>
       </div>
     );
@@ -297,15 +283,14 @@ class App extends Component {
     this.state = {
       showParam:'0',
       product:"none",
-      isEdit:false,
-      EditProductModalClassList:"none",
+      editProductModalClassList:"none",
     };
   }
 //Product button handler function:
 handleClick(product, params) {
   if(params=='1'){
     this.setState({
-      EditProductModalClassList: "show-modal",
+      editProductModalClassList: "show-modal",
     })
   }else{
     this.setState({
@@ -329,6 +314,7 @@ handleBackClick(backParam){
   if(backParam=="fromProduct"){
   this.setState({
     showParam:'0',
+    editProductModalClassList:"",
   });
 }else{
   this.setState({
@@ -336,6 +322,7 @@ handleBackClick(backParam){
   });
 }
 }
+
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
@@ -356,6 +343,11 @@ renderInfo(){
   products.push(<CustomerInfo product={this.state.product}/>);
   return products;
 }
+renderModal(){
+  return(
+    <EditProductModal myClassList={this.state.editProductModalClassList}/>
+  );
+}
 renderSwitch(param){
   switch(param) {
     case '0':
@@ -373,7 +365,7 @@ renderSwitch(param){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
-      <EditProductModal myClassList={this.state.EditProductModalClassList}/>
+      {this.renderModal()}
       </div>
     );
   }
