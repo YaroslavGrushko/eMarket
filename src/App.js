@@ -172,7 +172,13 @@ class Product extends Component{
 //component of single video:
 class AProduct extends Component{
 clickHandler(params){
+  if(params=="1"){
+    var myModal = document.getElementsByClassName("editProductModal")[0];
+    myModal.classList.toggle("show-modal");
+  }else{
+// open product
     this.props.onClick(params);
+  }
   }
   render(){
     return(
@@ -226,10 +232,14 @@ class EditProductContent extends Component{
 }
 // edit product modal
 class EditProductModal extends Component {
+  onCloseModal(){
+    var myModal = document.getElementsByClassName("editProductModal")[0];
+    myModal.classList.toggle("show-modal");
+  }
   render() {
     return (
-      <div className={"editProductModal my-modal " + this.props.myClassList}>
-        <span className="close-button">&times;</span>
+      <div className={"editProductModal my-modal"}>
+        <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
         <EditProductContent/>
       </div>
     );
