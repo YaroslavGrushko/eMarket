@@ -16,12 +16,25 @@
     font-size:5rem;
 }
 
+/* edit item */
+.editItem{
+  position:absolute;
+    top:2%;
+    right:10%;
+    font-size:1.5rem;
+}
+.editItem:hover{
+  color:#398AD7;
+}
+/* delete item */
 .deleteItem{
     position:absolute;
     top:2%;
-    right:10%;
+    right:20%;
     font-size:1.5rem;
 }
 .deleteItem:hover{
     color:#bf0000;
 }
+
+

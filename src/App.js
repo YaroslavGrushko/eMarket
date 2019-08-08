@@ -176,8 +176,9 @@ class AProduct extends Component{
   render(){
     return(
       <div className="aProduct">
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={this.props.onClick}></img>
+      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={this.props.onClick(false)}></img>
       <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
+      <i class="fa fa-cog editItem" aria-hidden="true" onClick={this.props.onClick(true)}></i>
       <span className="productName">{this.props.name}</span>
       <br/>
       <span>{this.props.price}</span>  
@@ -193,6 +194,46 @@ class AddProduct extends Component {
   }
 }
 
+
+class EditProductContent extends Component{
+  render(){
+    return(
+      <div className="addCategoryHtml">
+        <div className="infoBlock">
+        <h6><b>Змінити товар</b></h6>
+        
+        <label for="fname">назва товару:</label>
+        <input type="text" id="fname" name="fname" placeholder="Введіть назву товару"/>
+
+        <label for="timage">картинка товару:</label>
+        <input type="text" id="timage" name="timage"/>
+
+        <label for="tprice">ціна товару:</label>
+        <input type="text" id="tprice" name="tprice"/>
+        </div>
+
+
+        <div class="infoBlock">
+          <h6><b>Опис товару</b></h6>
+          <input type="text" id="tsummery" name="tnumber"/>
+        </div>
+          <button className="BackButton w3-teal button_dynamic button_back">
+            <span><b>Зберегти</b></span>
+          </button>
+      </div>
+    );
+  }
+}
+class EditProductModal extends Component {
+  render() {
+    return (
+      <div className="editProductModal my-modal">
+        <span className="close-button">&times;</span>
+        <EditProductContent/>
+      </div>
+    );
+  }
+}
 //component of several AwebCam components:
 class Category extends Component{
   render(){
@@ -204,7 +245,7 @@ class Category extends Component{
       <Row md={6} sm={6}>
       {curCATEGORY.map((product, index) => (
       <Col key={index} md={4} sm={6}>     
-              <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={() => this.props.onClick(product)} />
+              <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={(isEdit) => this.props.onClick(product,isEdit)} />
       </Col>
   ))
 }
@@ -238,16 +279,24 @@ class App extends Component {
     this.state = {
       showParam:'0',
       product:"none",
+      isEdit:false,
     };
   }
 //Product button handler function:
-handleClick(product) {
+handleClick(product,isEdit) {
+  if(isEdit){
+    this.setState({
+      isEdit: true,
+    })
+  }else{
     this.setState({
       product:product,
       showParam:'1',
     });
-    window.switch_caregory=false;
+
+  window.switch_caregory=false;
   }
+}
 //when user click in <Product/>
 handleProductClick(isOrder){
   if(isOrder){
@@ -272,7 +321,7 @@ handleBackClick(backParam){
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
-    <Category category={window.category} onClick={(product) => this.handleClick(product)} />
+    <Category category={window.category} onClick={(product,isEdit) => this.handleClick(product,isEdit)} />
     );
 }
 //function that returns <BackButton/> and <WebCames/> tag(component):
@@ -290,6 +339,7 @@ renderInfo(){
   return products;
 }
 renderSwitch(param){
+  var a = 1;
   switch(param) {
     case '0':
       return this.renderCategory();
@@ -306,10 +356,11 @@ renderSwitch(param){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
+      <EditProductModal className={this.state.isEdit?"show-modal":null}/>
       </div>
     );
   }
 }
 
-//module.exports = App;
- export default App;
+//module.exports = App; 
+export default App;
