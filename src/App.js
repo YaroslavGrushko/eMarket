@@ -200,6 +200,46 @@ class AddProduct extends Component {
     );
   }
 }
+
+//component of several AwebCam components:
+class Category extends Component{
+  clickHandler(product, params){
+    this.props.onClick(product, params)
+  }
+  render(){
+  const category=this.props.category;
+  const curCATEGORY=PLACES[category];
+  const Placeslength=curCATEGORY.length;
+    return(
+      <Container>
+      <Row md={6} sm={6}>
+      {curCATEGORY.map((product, index) => (
+      <Col key={index} md={4} sm={6}>     
+          <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
+      </Col>
+  ))
+}
+      <Col>
+      <AddProduct/>
+      </Col>
+        </Row>
+        </Container>
+);
+  }
+}
+
+//components of back button on WebCams "page":
+class BackButton extends Component{
+  render(){
+    return(
+      <div>
+        <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.props.onClick()}>
+          {this.props.fromProduct ? <span><b>назад</b> до каталогу</span> : <span><b>назад</b> до  товару</span>}
+        </button>
+      </div>
+    );
+  }
+}
 // edit Product content component
 class EditProductContent extends Component{
   render(){
@@ -245,46 +285,6 @@ class EditProductModal extends Component {
     );
   }
 }
-//component of several AwebCam components:
-class Category extends Component{
-  clickHandler(product, params){
-    this.props.onClick(product, params)
-  }
-  render(){
-  const category=this.props.category;
-  const curCATEGORY=PLACES[category];
-  const Placeslength=curCATEGORY.length;
-    return(
-      <Container>
-      <Row md={6} sm={6}>
-      {curCATEGORY.map((product, index) => (
-      <Col key={index} md={4} sm={6}>     
-          <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
-      </Col>
-  ))
-}
-      <Col>
-      <AddProduct/>
-      </Col>
-        </Row>
-        </Container>
-);
-  }
-}
-
-//components of back button on WebCams "page":
-class BackButton extends Component{
-  render(){
-    return(
-      <div>
-        <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.props.onClick()}>
-          {this.props.fromProduct ? <span><b>назад</b> до каталогу</span> : <span><b>назад</b> до  товару</span>}
-        </button>
-      </div>
-    );
-  }
-}
-
 //main component of whole app:
 class App extends Component {
   constructor(props) {
@@ -293,22 +293,17 @@ class App extends Component {
     this.state = {
       showParam:'0',
       product:"none",
-      editProductModalClassList:"none",
     };
   }
 //Product button handler function:
 handleClick(product, params) {
-  if(params=='1'){
-    this.setState({
-      editProductModalClassList: "show-modal",
-    })
-  }else{
-    this.setState({
-      product:product,
-      showParam:'1',
-    });
-    window.switch_caregory=false;
-  }
+    if (params == '0') {
+      this.setState({
+        product: product,
+        showParam: '1',
+      });
+      window.switch_caregory = false;
+    }
 }
 //when user click in <Product/>
 handleProductClick(isOrder){
@@ -324,7 +319,6 @@ handleBackClick(backParam){
   if(backParam=="fromProduct"){
   this.setState({
     showParam:'0',
-    editProductModalClassList:"",
   });
 }else{
   this.setState({
@@ -353,11 +347,7 @@ renderInfo(){
   products.push(<CustomerInfo product={this.state.product}/>);
   return products;
 }
-renderModal(){
-  return(
-    <EditProductModal myClassList={this.state.editProductModalClassList}/>
-  );
-}
+
 renderSwitch(param){
   switch(param) {
     case '0':
@@ -375,7 +365,7 @@ renderSwitch(param){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
-      {this.renderModal()}
+      <EditProductModal/>
       </div>
     );
   }
