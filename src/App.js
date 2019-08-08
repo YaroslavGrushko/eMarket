@@ -173,11 +173,15 @@ class Product extends Component{
 
 //component of single video:
 class AProduct extends Component{
+  clickHandler(params){
+    this.props.onClick(params);
+  }
   render(){
     return(
       <div className="aProduct">
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={this.props.onClick}></img>
+      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('0')}></img>
       <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
+      <i class="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('1')}></i>
       <span className="productName">{this.props.name}</span>
       <br/>
       <span>{this.props.price}</span>  
@@ -192,9 +196,64 @@ class AddProduct extends Component {
     );
   }
 }
+// edit Product content component
+class EditProductContent extends Component{
+  render(){
+    return(
+      <div className="addCategoryHtml">
+        <div className="infoBlock">
+        <h6><b>Змінити товар</b></h6>
+        
+        <label for="fname">назва товару:</label>
+        <input type="text" id="fname" name="fname" placeholder="Введіть назву товару"/>
 
+        <label for="timage">картинка товару:</label>
+        <input type="text" id="timage" name="timage"/>
+
+        <label for="tprice">ціна товару:</label>
+        <input type="text" id="tprice" name="tprice"/>
+        </div>
+
+
+        <div class="infoBlock">
+          <h6><b>Опис товару</b></h6>
+          <input type="text" id="tsummery" name="tnumber"/>
+        </div>
+          <button className="BackButton w3-teal button_dynamic button_back">
+            <span><b>Зберегти</b></span>
+          </button>
+      </div>
+    );
+  }
+}
+// edit product modal
+class EditProductModal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      myClassList: "editProductModal my-modal " + this.props.myClassList,
+    };
+  }
+  myCloseOnClick() {
+   this.setState({
+      myClassList: "editProductModal my-modal",
+    });
+  }
+  render() {
+    return (
+      <div className={this.state.myClassList}>
+        <span className="close-button" onClick={this.myCloseOnClick()}>&times;</span>
+        <EditProductContent/>
+      </div>
+    );
+  }
+}
 //component of several AwebCam components:
 class Category extends Component{
+  clickHandler(product, params){
+    this.props.onClick(product, params)
+  }
   render(){
   const category=this.props.category;
   const curCATEGORY=PLACES[category];
@@ -204,7 +263,7 @@ class Category extends Component{
       <Row md={6} sm={6}>
       {curCATEGORY.map((product, index) => (
       <Col key={index} md={4} sm={6}>     
-              <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={() => this.props.onClick(product)} />
+          <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
       </Col>
   ))
 }
@@ -238,16 +297,24 @@ class App extends Component {
     this.state = {
       showParam:'0',
       product:"none",
+      isEdit:false,
+      EditProductModalClassList:"none",
     };
   }
 //Product button handler function:
-handleClick(product) {
+handleClick(product, params) {
+  if(params=='1'){
+    this.setState({
+      EditProductModalClassList: "show-modal",
+    })
+  }else{
     this.setState({
       product:product,
       showParam:'1',
     });
     window.switch_caregory=false;
   }
+}
 //when user click in <Product/>
 handleProductClick(isOrder){
   if(isOrder){
@@ -272,7 +339,7 @@ handleBackClick(backParam){
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
-    <Category category={window.category} onClick={(product) => this.handleClick(product)} />
+    <Category category={window.category} onClick={(product, isEdit) => this.handleClick(product, isEdit)} />
     );
 }
 //function that returns <BackButton/> and <WebCames/> tag(component):
@@ -306,6 +373,7 @@ renderSwitch(param){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
+      <EditProductModal myClassList={this.state.EditProductModalClassList}/>
       </div>
     );
   }

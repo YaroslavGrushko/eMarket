@@ -15,7 +15,7 @@
 #addProductButton{
     font-size:5rem;
 }
-
+/* delete item */
 .deleteItem{
     position:absolute;
     top:2%;
@@ -24,4 +24,14 @@
 }
 .deleteItem:hover{
     color:#bf0000;
+}
+
+.editItem{
+  position:absolute;
+  top:2%;
+  right:20%;
+  font-size:1.5rem;
+}
+.editItem:hover{
+  color:#BC4899;
 }
