@@ -32,7 +32,7 @@ def create_connection(db_file):
 
 
 
-@app.route('/categories', methods=['GET', 'POST'])
+@app.route('/add_categories', methods=['GET', 'POST'])
 # @login_required
 def save_category():
     # rData = request.data
@@ -59,7 +59,7 @@ def save_category():
     # cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
     # conn.commit()
     
-    new_category = [(rData['manager_id'], rData['manager_name'], rData['category_name'], rData['category_code'], datetime.now()),]
+    new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], datetime.now()),]
     cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
     conn.commit()
 
@@ -67,6 +67,26 @@ def save_category():
         return jsonify({'status' : 'success GET'})
     else:
         return jsonify({'status' : 'success POST'})
+
+
+@app.route('/read_categories', methods=['GET', 'POST'])
+# @login_required
+def read_category():
+    # rData = request.data
+    #rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("select * from Categories") # This line performs query and returns json result
+    rows = cursor.fetchall()
+
+    if request.method == 'GET':
+        # return jsonify(cursor.fetchall())
+        return {'category_id' : [row[0] for row in rows], 
+                'category_name' : [row[1] for row in rows]}
+    else:
+        return jsonify({'status' : 'success POST'})
+    
 
 
 
