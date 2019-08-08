@@ -10,7 +10,7 @@
   }
   .addButtonApp:hover{
     background-color:rgba(0, 0, 0, 0.5);
-    color: #BC4899;
+    color: #007bf2;
   }
 #addProductButton{
     font-size:5rem;
@@ -33,5 +33,5 @@
   font-size:1.5rem;
 }
 .editItem:hover{
-  color:#BC4899;
+  color:#007bf2;
 }
