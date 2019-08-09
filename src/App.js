@@ -7,14 +7,19 @@ import './App.css';
 /*-->*/
 import './Appless.css';
 /*<--*/
+// addProductButton.css
+import './css/addProductButton.css';
 // product.css
 import './css/product.css';
 // info.css
 import './css/info.css';
+// editProduct.css
+import './css/editProduct.css'
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 import { Script } from 'vm';
+import { returnStatement } from '@babel/types';
 
 //webcames array with city name and src to youtube live
 const PLACES={};
@@ -64,9 +69,6 @@ PLACES["ДляШколи"]=[
 
 //component of single video:
 class CustomerInfo extends Component{
-
-
-
   constructor(props) {
     super(props);
     this.state = {SelectOption: '1'};
@@ -89,6 +91,7 @@ class CustomerInfo extends Component{
     }
 
     loadScript('js/info.js');
+    loadScript('js/uploadImg.js');
   }
   render(){
     return(
@@ -171,10 +174,24 @@ class Product extends Component{
 
 //component of single video:
 class AProduct extends Component{
+clickHandler(params){
+  if(params=="0"){
+    var myModal = document.getElementsByClassName("editProductModal")[0];
+    myModal.classList.toggle("show-modal");
+  }
+  // else{
+// // open product
+//     this.props.onClick(params);
+//   }
+this.props.onClick(params);
+
+  }
   render(){
     return(
       <div className="aProduct">
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={this.props.onClick}></img>
+      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
+      <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
+      <i class="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
       <span className="productName">{this.props.name}</span>
       <br/>
       <span>{this.props.price}</span>  
@@ -182,10 +199,19 @@ class AProduct extends Component{
     );
   }
 }
-
+class AddProduct extends Component {
+  render(){
+    return(
+      <div class="addButtonApp WebCamVideo" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+    );
+  }
+}
 
 //component of several AwebCam components:
 class Category extends Component{
+  clickHandler(product, params){
+    this.props.onClick(product, params)
+  }
   render(){
   const category=this.props.category;
   const curCATEGORY=PLACES[category];
@@ -195,10 +221,13 @@ class Category extends Component{
       <Row md={6} sm={6}>
       {curCATEGORY.map((product, index) => (
       <Col key={index} md={4} sm={6}>     
-              <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={() => this.props.onClick(product)} />
+          <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
       </Col>
   ))
 }
+      <Col>
+      <AddProduct/>
+      </Col>
         </Row>
         </Container>
 );
@@ -217,7 +246,76 @@ class BackButton extends Component{
     );
   }
 }
+// edit Product content component
+class EditProductContent extends Component{
+previewFile(){
+    var preview = document.querySelector('#timage'); //selects the query named img
+    var file    = document.querySelector('#timageFile').files[0]; //sames as here
+    var reader  = new FileReader();
 
+    reader.onloadend = function () {
+        preview.src = reader.result;
+    }
+
+    if (file) {
+        reader.readAsDataURL(file); //reads the data as a URL
+    } else {
+        preview.src = "";
+    }
+}
+  render(){
+    return(
+      <div className="addCategoryHtml">
+      <h6><b>Змінити товар</b></h6>
+        <div className="infoBlock">
+      
+        <label htmlFor="fname">назва товару:</label>
+        <input type="text" id="fname" name="fname" placeholder="Введіть назву товару..."/>
+
+        <label htmlFor="tprice">ціна товару:</label>
+        <input type="text" id="tprice" name="tprice" placeholder="Введіть ціну товару..."/>
+        </div>
+
+        <div className="infoBlock imageContainer">
+
+        <label class='timageButton button button2' htmlFor='timageFile'>вибрати зображення</label>
+        <input type="file" id='timageFile' onChange={()=>this.previewFile()}/>
+        <img src={this.props.product.src} id="timage" height="200" alt="тут має бути картинка..."/>
+        
+        </div>
+
+
+        <div class="infoBlock">
+          опис товару:
+          <input type="text" id="tsummery" name="tnumber" placeholder='Введіть опис товару...'/>
+        </div>
+          <button className="BackButton w3-teal button_dynamic button_back">
+            <span><b>Зберегти</b></span>
+          </button>
+      </div>
+    );
+  }
+}
+// edit product modal
+class EditProductModal extends Component {
+
+  onCloseModal(){
+    var myModal = document.getElementsByClassName("editProductModal")[0];
+    myModal.classList.toggle("show-modal");
+  }
+  
+
+  render() {
+    return (
+      <div className={"editProductModal my-modal"}>
+        <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
+        <div className="my-modal-content">
+        <EditProductContent product={this.props.product}/>
+        </div>
+      </div>
+    );
+  }
+}
 //main component of whole app:
 class App extends Component {
   constructor(props) {
@@ -229,13 +327,15 @@ class App extends Component {
     };
   }
 //Product button handler function:
-handleClick(product) {
-    this.setState({
-      product:product,
-      showParam:'1',
-    });
-    window.switch_caregory=false;
-  }
+handleClick(product, params) {
+    if (params == '0'|| params=='1') {
+      this.setState({
+        product: product,
+        showParam: params,
+      });
+      window.switch_caregory = false;
+    }
+}
 //when user click in <Product/>
 handleProductClick(isOrder){
   if(isOrder){
@@ -257,10 +357,11 @@ handleBackClick(backParam){
   });
 }
 }
+
 //function that returns <Countries/> tag(component):
 renderCategory(){
   return(
-    <Category category={window.category} onClick={(product) => this.handleClick(product)} />
+    <Category category={window.category} onClick={(product, isEdit) => this.handleClick(product, isEdit)} />
     );
 }
 //function that returns <BackButton/> and <WebCames/> tag(component):
@@ -277,6 +378,7 @@ renderInfo(){
   products.push(<CustomerInfo product={this.state.product}/>);
   return products;
 }
+
 renderSwitch(param){
   switch(param) {
     case '0':
@@ -294,6 +396,7 @@ renderSwitch(param){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
+      <EditProductModal product={this.state.product}/>
       </div>
     );
   }

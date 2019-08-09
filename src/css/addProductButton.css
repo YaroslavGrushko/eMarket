@@ -1,0 +1,37 @@
+.addButtonApp{
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    position: relative;
+    border: 2px solid white;
+    border-radius: 20px;
+    background-color:rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+  .addButtonApp:hover{
+    background-color:rgba(0, 0, 0, 0.5);
+    color: #007bf2;
+  }
+#addProductButton{
+    font-size:5rem;
+}
+/* delete item */
+.deleteItem{
+    position:absolute;
+    top:2%;
+    right:10%;
+    font-size:1.5rem;
+}
+.deleteItem:hover{
+    color:#bf0000;
+}
+
+.editItem{
+  position:absolute;
+  top:2%;
+  right:20%;
+  font-size:1.5rem;
+}
+.editItem:hover{
+  color:#007bf2;
+}
