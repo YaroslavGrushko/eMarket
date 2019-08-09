@@ -83,7 +83,8 @@ def read_category():
     if request.method == 'GET':
         # return jsonify(cursor.fetchall())
         return {'category_id' : [row[0] for row in rows], 
-                'category_name' : [row[1] for row in rows]}
+                'category_name' : [row[1] for row in rows],
+                'category_code' : [row[2] for row in rows]}
     else:
         return jsonify({'status' : 'success POST'})
     

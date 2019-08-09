@@ -58,11 +58,3 @@ categoryJSON = JSON.stringify(categoryObj);
     }
   });
 }
-function showCategories(categories){
-  var main_photo_containerHTML = '';
-  $(categories).each(function(elem){
-    main_photo_containerHTML+=
-    '<div><i id="'+elem.id+'" class="'+elem.code+'" toggle="tooltip" data-placement="bottom" title="'+elem.name+'"></i></div>'
-  })
-  $('.main_photo_container').html(main_photo_containerHTML);
-}
