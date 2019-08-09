@@ -14,6 +14,12 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
+
+
+
+
+
+
 # conn = sqlite3.connect("eMarket.db") # или :memory: чтобы сохранить в RAM
 
 def create_connection(db_file):
@@ -29,6 +35,36 @@ def create_connection(db_file):
         print(e)
  
     return None
+
+# # creating default table with it content>>>>>>>>>>>>>>>>>>>>>>>
+# # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# conn = create_connection("eMarket.db")
+# cursor = conn.cursor()
+# # drop table
+# DROPsql = "DROP TABLE Categories"
+# cursor.execute(DROPsql)
+
+# cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
+# (
+# "category_id" VARCHAR,
+# "category_name" VARCHAR,
+# "category_code" VARCHAR,
+# "time" DATETIME
+# )
+#             """)
+# # create the initial category table
+# new_category = [('Зошити', 'Блокноти, зошити, альбоми', 'fa fa-book', datetime.now()),
+#                 ('Калькулятори', 'Калькулятори, диктофони', 'fa fa-calculator', datetime.now()),
+#                 ('Папір', 'Папір та копіювальне приладдя', 'fa fa-clone', datetime.now()),
+#                 ('Карандаші', 'Олівці, ручки, стрижні', 'fa fa-edit', datetime.now()),
+#                 ('Дрібниці', 'Канцелярські дрібниці', 'fa fa-eraser', datetime.now()),
+#                 ('ДляШколи', 'Навчальне приладдя', 'fa fa-graduation-cap', datetime.now()),
+#                 ]
+# cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
+# conn.commit()
+# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 
 
 
@@ -88,9 +124,6 @@ def read_category():
     else:
         return jsonify({'status' : 'success POST'})
     
-
-
-
 
 if __name__ == '__main__':
      app.run(debug = True)
