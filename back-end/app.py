@@ -32,7 +32,7 @@ def create_connection(db_file):
 
 
 
-@app.route('/categories', methods=['GET', 'POST'])
+@app.route('/add_categories', methods=['GET', 'POST'])
 # @login_required
 def save_category():
     # rData = request.data
@@ -42,21 +42,51 @@ def save_category():
     cursor = conn.cursor()
     cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
     (
-    "manager_id" INTEGER,
-    "maneger_name" VARCHAR,
+    "category_id" VARCHAR,
     "category_name" VARCHAR,
     "category_code" VARCHAR,
     "time" DATETIME
     )
                """)
-    new_category = [(rData['manager_id'], rData['manager_name'], rData['category_name'], rData['category_code'], datetime.now()),]
-    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?,?)", new_category)
+    # create the initial category table
+    # new_category = [('Зошити', 'Блокноти, зошити, альбоми', 'fa fa-book', datetime.now()),
+    #                 ('Калькулятори', 'Калькулятори, диктофони', 'fa fa-calculator', datetime.now()),
+    #                 ('Папір', 'Папір та копіювальне приладдя', 'fa fa-clone', datetime.now()),
+    #                 ('Карандаші', 'Олівці, ручки, стрижні', 'fa fa-edit', datetime.now()),
+    #                 ('Дрібниці', 'Канцелярські дрібниці', 'fa fa-eraser', datetime.now()),
+    #                 ('ДляШколи', 'Навчальне приладдя', 'fa fa-graduation-cap', datetime.now()),
+    #                ]
+    # cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
+    # conn.commit()
+    
+    new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], datetime.now()),]
+    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
     conn.commit()
 
     if request.method == 'GET':
         return jsonify({'status' : 'success GET'})
     else:
         return jsonify({'status' : 'success POST'})
+
+
+@app.route('/read_categories', methods=['GET', 'POST'])
+# @login_required
+def read_category():
+    # rData = request.data
+    #rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("select * from Categories") # This line performs query and returns json result
+    rows = cursor.fetchall()
+
+    if request.method == 'GET':
+        # return jsonify(cursor.fetchall())
+        return {'category_id' : [row[0] for row in rows], 
+                'category_name' : [row[1] for row in rows]}
+    else:
+        return jsonify({'status' : 'success POST'})
+    
 
 
 
