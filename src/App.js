@@ -175,20 +175,23 @@ class Product extends Component{
 //component of single video:
 class AProduct extends Component{
 clickHandler(params){
-  if(params=="1"){
+  if(params=="0"){
     var myModal = document.getElementsByClassName("editProductModal")[0];
     myModal.classList.toggle("show-modal");
-  }else{
-// open product
-    this.props.onClick(params);
   }
+  // else{
+// // open product
+//     this.props.onClick(params);
+//   }
+this.props.onClick(params);
+
   }
   render(){
     return(
       <div className="aProduct">
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('0')}></img>
+      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
       <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
-      <i class="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('1')}></i>
+      <i class="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
       <span className="productName">{this.props.name}</span>
       <br/>
       <span>{this.props.price}</span>  
@@ -277,7 +280,7 @@ previewFile(){
 
         <label class='timageButton button button2' htmlFor='timageFile'>вибрати зображення</label>
         <input type="file" id='timageFile' onChange={()=>this.previewFile()}/>
-        <img src="" id="timage" height="200" alt="тут має бути картинка..."/>
+        <img src={this.props.product.src} id="timage" height="200" alt="тут має бути картинка..."/>
         
         </div>
 
@@ -295,16 +298,19 @@ previewFile(){
 }
 // edit product modal
 class EditProductModal extends Component {
+
   onCloseModal(){
     var myModal = document.getElementsByClassName("editProductModal")[0];
     myModal.classList.toggle("show-modal");
   }
+  
+
   render() {
     return (
       <div className={"editProductModal my-modal"}>
         <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
         <div className="my-modal-content">
-        <EditProductContent/>
+        <EditProductContent product={this.props.product}/>
         </div>
       </div>
     );
@@ -322,10 +328,10 @@ class App extends Component {
   }
 //Product button handler function:
 handleClick(product, params) {
-    if (params == '0') {
+    if (params == '0'|| params=='1') {
       this.setState({
         product: product,
-        showParam: '1',
+        showParam: params,
       });
       window.switch_caregory = false;
     }
@@ -390,7 +396,7 @@ renderSwitch(param){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
-      <EditProductModal/>
+      <EditProductModal product={this.state.product}/>
       </div>
     );
   }
