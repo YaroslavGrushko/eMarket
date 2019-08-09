@@ -13,6 +13,8 @@ import './css/addProductButton.css';
 import './css/product.css';
 // info.css
 import './css/info.css';
+// editProduct.css
+import './css/editProduct.css'
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
@@ -89,6 +91,7 @@ class CustomerInfo extends Component{
     }
 
     loadScript('js/info.js');
+    loadScript('js/uploadImg.js');
   }
   render(){
     return(
@@ -242,26 +245,46 @@ class BackButton extends Component{
 }
 // edit Product content component
 class EditProductContent extends Component{
+previewFile(){
+    var preview = document.querySelector('#timage'); //selects the query named img
+    var file    = document.querySelector('#timageFile').files[0]; //sames as here
+    var reader  = new FileReader();
+
+    reader.onloadend = function () {
+        preview.src = reader.result;
+    }
+
+    if (file) {
+        reader.readAsDataURL(file); //reads the data as a URL
+    } else {
+        preview.src = "";
+    }
+}
   render(){
     return(
       <div className="addCategoryHtml">
+      <h6><b>Змінити товар</b></h6>
         <div className="infoBlock">
-        <h6><b>Змінити товар</b></h6>
+      
+        <label htmlFor="fname">назва товару:</label>
+        <input type="text" id="fname" name="fname" placeholder="Введіть назву товару..."/>
+
+        <label htmlFor="tprice">ціна товару:</label>
+        <input type="text" id="tprice" name="tprice" placeholder="Введіть ціну товару..."/>
+        </div>
+
+        <div className="infoBlock imageContainer">
+
+        <label class='timageButton button button2' htmlFor='timageFile'>вибрати зображення</label>
+        <input type="file" id='timageFile' onChange={()=>this.previewFile()}/>
+        <img src="" id="timage" height="200" alt="тут має бути картинка..."/>
         
-        <label for="fname">назва товару:</label>
-        <input type="text" id="fname" name="fname" placeholder="Введіть назву товару"/>
-
-        <label for="timage">картинка товару:</label>
-        <input type="text" id="timage" name="timage"/>
-
-        <label for="tprice">ціна товару:</label>
-        <input type="text" id="tprice" name="tprice"/>
         </div>
 
 
         <div class="infoBlock">
-          <h6><b>Опис товару</b></h6>
-          <input type="text" id="tsummery" name="tnumber"/>
+          опис товару:
+          <input type="text" id="tsummery" name="tnumber" placeholder='Введіть опис товару...'/>
         </div>
           <button className="BackButton w3-teal button_dynamic button_back">
             <span><b>Зберегти</b></span>
@@ -280,7 +303,9 @@ class EditProductModal extends Component {
     return (
       <div className={"editProductModal my-modal"}>
         <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
+        <div className="my-modal-content">
         <EditProductContent/>
+        </div>
       </div>
     );
   }
