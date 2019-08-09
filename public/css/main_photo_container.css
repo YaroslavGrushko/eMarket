@@ -5,19 +5,21 @@
   text-align: center;
   padding: 16px;
   text-decoration: none;
-  font-size: 40px;
+
 }
 
-.main_photo_container  i:hover {
+.main_photo_container .categoryItem:hover .categoryIcon {
   color: #007bf2;
   cursor: pointer;
 }
-
+.addButton:hover i{
+  color: #007bf2;
+  cursor: pointer;
+}
 .main_photo_container  i:active  {
   color: #bf0000;
   cursor: pointer;
 }
-
 
 /*grid in the main_photo_container*/
 
@@ -37,16 +39,19 @@
     padding: 10px;
 }
 
-.main_photo_container i {
+.main_photo_container .categoryIcon {
   font-size: 80px;
 }
-
+.main_photo_container > .categoryItem{
+  position: relative;
+}
 .addButton{
   position: relative;
   border: 2px solid white;
   border-radius: 20px;
   background-color:rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  font-size:80px;
 }
 
 .addButton:hover{
@@ -56,8 +61,13 @@
 @media (max-width:768px) {
   .main_photo_container {
     height: 150px;
-}
-.main_photo_container i {
-  font-size: 40px;
-}
+  }
+
+  .main_photo_container .categoryIcon {
+    font-size: 40px;
+  }
+
+  .addButton {
+    font-size: 40px;
+  }
 }

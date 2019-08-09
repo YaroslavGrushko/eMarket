@@ -11,7 +11,7 @@ window.switch_caregory = true;
 var prev_category = null;
 
 main_photo_container.addEventListener('click', function (event) {
-if(event.target.id!='addCategoryButton'){
+if(event.target.id!='addCategoryButton'&&(!event.target.className.includes('deleteItem'))){
 window.category = event.target.id;
 
 prev_category!=window.category ? window.switch_caregory = true : window.switch_caregory = false;

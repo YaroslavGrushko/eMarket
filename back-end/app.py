@@ -1,7 +1,8 @@
 
 from flask import Flask, request, Response
 from flask_restful import Resource, Api
-from json import dumps
+# from json import dumps
+import json
 # for has been blocked by CORS policy: Cross origin requests are only error
 from flask_cors import CORS, cross_origin
 import sqlite3
@@ -124,6 +125,16 @@ def read_category():
     else:
         return jsonify({'status' : 'success POST'})
     
+@app.route('/delete_category', methods=['GET', 'POST'])
+# @login_required
+def delete_category():
+    rData = request.get_json()
+    # data = json.loads(rData)
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM Categories WHERE category_id = "'+str(rData)+'";')
+
+    return 'Ok'
 
 if __name__ == '__main__':
      app.run(debug = True)
