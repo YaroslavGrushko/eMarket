@@ -7,29 +7,36 @@ var target = event.target;
 selectedId = $(target).attr('id');
 if(selectedId=='addCategoryButton')addCategory()
 })
-// upload all orders from buyers
 
-// function uploadCategories(){
-//   let jsonData = {
-//     'category_id' : "Степлери",
-//     'category_name' : "Степлери та скріпки",//$('#').val(),
-//     'category_code': "fa fa-paperclip"
-//   };
-//   let Data_order = JSON.stringify(jsonData);
 
-//   $.ajax({
-//     url: 'http://127.0.0.1:5000/add_categories',
-//     type: 'POST',
-//     headers: {'Content-Type' : 'application/json'},
-//     data: Data_order,
-//     success: function(data) { 
-//       alert(data.status); 
-//     },
-//     error:function(error) {
-//             alert( "error: " +JSON.stringify(error));
-//           }
-// });
-// }
+// add category
+function addCategory(){
+  drawModal(categorymodalHtml)
+}
+
+function addCategoryToServer(categName,categCode,categId){
+  let jsonData = {
+    'category_id' : categId,
+    'category_name' : categName,//$('#').val(),
+    'category_code': categCode
+  };
+  let Data_order = JSON.stringify(jsonData);
+
+  $.ajax({
+    url: 'http://127.0.0.1:5000/add_categories',
+    type: 'POST',
+    headers: {'Content-Type' : 'application/json'},
+    data: Data_order,
+    success: function(data) { 
+      // alert(data.status); 
+      getCategories();
+      $(".addCategoryModal").toggleClass("show-modal");
+    },
+    error:function(error) {
+            alert( "error: " +JSON.stringify(error));
+          }
+});
+}
 function getCategories(){
 $.ajax({
   url: 'http://127.0.0.1:5000/read_categories',
