@@ -133,8 +133,8 @@ def delete_category():
     # data = json.loads(rData)
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM Categories WHERE category_id = "'+str(rData)+'";')
-
+    cursor.execute("DELETE FROM Categories WHERE category_id ="+"'"+str(rData)+"'")
+    conn.commit()
     return 'Ok'
 
 if __name__ == '__main__':
