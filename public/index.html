@@ -14,10 +14,11 @@
     <link rel="stylesheet" href="css/animation.css">
     <!-- awesome icones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- main_photo_container -->
+    <!-- main_photo_container/categories -->
     <link rel="stylesheet" href="css/main_photo_container.css">
     <!-- modal.css -->
     <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/login.css">
     <!-- JQuery: -->
     <script src="js/JQuery/jquery-3.4.1.min.js"></script>
     <title>eMarket</title>
@@ -68,6 +69,29 @@
       <h1 style="font-family: cursive" class='center'><b># Тільки Якісні Канцтовари</b></h1>
   </div>
 
+
+  <div class="login_container">
+    <a href="#" onclick="Hide_login()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
+        <i class="fa fa-remove"></i>
+    </a>
+    <img src="images/login_icon.png">
+    <form>
+        <div class="login-input">
+            <input type="text" name="username" id="username" placeholder="Введіть логін">
+        </div>
+        <div class="login-input">
+            <input type="password" name="password" id="password" placeholder="Введіть пароль">
+        </div>
+        <div>
+            <button class="BackButton w3-teal button_dynamic button_back">
+                <span><b>увійти</b> до кабінету</span>
+            </button>
+        </div>
+        
+    </form>
+</div>
+<script src="js/login.js"></script>
+
 <!---category section-->
 <div class = "main_photo_container">
     <div><i id="Зошити" class="fa fa-book" toggle="tooltip" data-placement="bottom" title="Блокноти, зошити, альбоми"></i></div>
@@ -76,7 +100,6 @@
     <div><i id="Карандаші" class="fa fa-edit" toggle="tooltip" data-placement="bottom" title="Олівці, ручки стрижні"></i></div>
     <div><i id="Дрібниці" class="fa fa-eraser" toggle="tooltip" data-placement="bottom" title="Канцелярські дрібниці"></i></div>
     <div><i id="ДляШколи" class="fa fa-graduation-cap" toggle="tooltip" data-placement="bottom" title="Навчальне приладдя"></i></div>
-    <div class="addButton"><i id="addCategoryButton" class="fa fa-plus " title="Додати нову категорію"></i></div>
 </div>
 
 <div class="w3-main">
@@ -160,6 +183,18 @@
     <script src="js/categories.js"></script>
     <!-- animation: -->
     <script src="js/modal.js"></script>
+    <script src="js/load_зошити.js"></script>
+    <script>
+         $(function(){
+            $('.fa-key').click(function(){
+            $('.login_container').show();
+                });
+            });
+        
+        function Hide_login(){
+            $('.login_container').hide();
+        }
+    </script>
     </body>
 
     </html>
