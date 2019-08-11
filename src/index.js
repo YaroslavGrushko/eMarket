@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import $ from 'jquery';
 
 var main_photo_container= document.getElementsByClassName('main_photo_container')[0]
 
@@ -14,6 +15,7 @@ main_photo_container.addEventListener('click', function (event) {
 if(event.target.id!='addCategoryButton'&&(!event.target.className.includes('deleteItem'))){
 window.category = event.target.id;
 
+// check is category changed
 prev_category!=window.category ? window.switch_caregory = true : window.switch_caregory = false;
 
 // let's change category title
@@ -25,12 +27,10 @@ for (var i = 0; i < elem.childNodes.length; i++) {
       break;
     }        
 }
-
 notes.innerHTML = "<b>"+window.category+"</b>";
 
-
-// render main react app
-ReactDOM.render(<App/>, document.getElementById('root'));
+//read category's products and load main react component App
+read_products(window.category);
 }
 }, false);
 
@@ -39,3 +39,31 @@ ReactDOM.render(<App/>, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+
+function read_products(product_name) {
+  $.ajax({
+    url: 'http://127.0.0.1:5000/read_product',
+    type: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: JSON.stringify(product_name),
+    success: function (data) {
+      // alert(JSON.stringify(data));
+      var PRODUCTS=[];
+      for(var i=0; i<data.length; i++) {
+        var rData_row = { name: data[i][0], src: data[i][1], price: data[i][2], about: data[i][3]};
+        PRODUCTS.push(rData_row);
+      }
+      window.products = PRODUCTS;
+      // alert(JSON.stringify(PRODUCTS));
+
+      // render main react app
+      ReactDOM.render(<App/>, document.getElementById('root'));
+    },
+    error: function (error) {
+      alert("error: " + JSON.stringify(error));
+    }
+  });
+}
