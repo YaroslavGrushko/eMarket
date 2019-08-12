@@ -1,3 +1,6 @@
+.customerInfo{
+  text-align: center;
+}
 /* this css-file is about info page about client (when client click on purchase button) */
 .customerInfo input[type=text] {
         width: 100%;

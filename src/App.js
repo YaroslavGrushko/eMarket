@@ -87,7 +87,7 @@ class CustomerInfo extends Component{
     <button className="BackButton w3-teal button_dynamic button_back">
     <span><b>ЗАМОВИТИ</b></span>
   </button>
-      </div>     
+      </div>    
     );
   }
 }
@@ -139,7 +139,7 @@ this.props.onClick(params);
   render(){
     return(
       <div className="aProduct">
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
+      <img className="productImage" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
       <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
       <i class="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
       <span className="productName">{this.props.name}</span>
@@ -152,7 +152,7 @@ this.props.onClick(params);
 class AddProduct extends Component {
   render(){
     return(
-      <div class="addButtonApp WebCamVideo" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+      <div class="addButtonApp productImage" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
     );
   }
 }
