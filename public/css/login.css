@@ -1,7 +1,11 @@
+/* this file is about login-form */
 .login_container {
-    display: none; /* Hidden by default */
-    z-index: 1; /* Sit on top */
-    position: fixed; /* Stay in place */
+    display: none;
+    /* Hidden by default */
+    z-index: 1;
+    /* Sit on top */
+    position: fixed;
+    /* Stay in place */
     width: 60%;
     height: 350px;
     left: 20%;
@@ -12,11 +16,10 @@
     box-shadow: 0 -5px 0 #3adbfd;
 }
 
-.login_container  input[type="text"] {
+.login_container input[type="text"] {
     width: 100%;
     height: 50px;
     margin-bottom: 25px;
-    /* border-radius: 4px; */
     border: 3px solid #ccc;
     padding-left: 10px;
     font-family: inherit;
@@ -28,7 +31,6 @@
     width: 100%;
     height: 50px;
     margin-bottom: 50px;
-    /* border-radius: 4px; */
     border: 3px solid #ccc;
     padding-left: 10px;
     font-family: inherit;
@@ -54,4 +56,3 @@
     color: #319ebc;
     transition: all 0.3s;
 }
-

@@ -1,3 +1,7 @@
+/* this file is about modal window
+it is used in many purposes */
+
+/* main part od modal window */
 .my-modal {
     position: fixed;
     left: 0;
@@ -11,7 +15,8 @@
     transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
 }
 
-.my-modal-content{
+/* content of the modal */
+.my-modal-content {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -24,6 +29,7 @@
     overflow-y: scroll;
 }
 
+/* button of modal closing */
 .close-button {
     float: right;
     width: 5rem;
@@ -40,17 +46,14 @@
     background-color: darkgray;
 }
 
+/* css class that is disabled by default
+and when user want to see this modal this class will be enabled */
 .show-modal {
     opacity: 1;
     visibility: visible;
     transform: scale(1);
     transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
-
-
-
-
-
 
 .imgContainer {
     display: flex;
@@ -78,7 +81,7 @@ input[type=text]:focus {
 }
 
 
-
+/* for desktop screen */
 @media screen and (min-width: 1200px) {
 
     /*1024px*/
@@ -93,7 +96,7 @@ input[type=text]:focus {
         font-size: 1.5rem
     }
 
-    .my-modal-content{
+    .my-modal-content {
         position: absolute;
         top: 50%;
         left: 50%;
