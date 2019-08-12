@@ -54,4 +54,9 @@
     color: #319ebc;
     transition: all 0.3s;
 }
-
+.displayNone{
+    display: none !important;
+}
+.showItem{
+    display: block !important;
+}

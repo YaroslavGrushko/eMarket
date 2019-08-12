@@ -128,22 +128,49 @@ class Product extends Component{
 
 //component of single product:
 class AProduct extends Component{
+  // constructor(props) {
+  //   super(props);
+
+  //   this.state = {
+  //     admin_state:false,
+  //   };
+  // }
 clickHandler(params){
   if(params=="0"){
     var myModal = document.getElementsByClassName("editProductModal")[0];
     myModal.classList.toggle("show-modal");
-    
   }
   
 this.props.onClick(params);
 
   }
+  renderAdminModeTrue(){ 
+    return(
+      <React.Fragment>
+        <i className="fa fa-trash deleteItem" aria-hidden="true"></i>
+        <i className="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+      </React.Fragment>
+    )
+    
+  } 
+  renderAdminModeFalse(){
+    return(
+      <React.Fragment>
+        <i className="fa fa-trash deleteItem displayNone" aria-hidden="true"></i>
+        <i className="fa fa-cog editItem displayNone" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+      </React.Fragment>
+    )
+  } 
+// componentDidMount(){
+// this.setState({
+//   admin_state : window.admin_state
+// })
+// }
   render(){
     return(
       <div className="aProduct">
       <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
-      <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
-      <i class="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
       <span className="productName">{this.props.name}</span>
       <br/>
       <span>{this.props.price}</span>  
@@ -152,9 +179,22 @@ this.props.onClick(params);
   }
 }
 class AddProduct extends Component {
-  render(){
+  renderAdminModeTrue(){ 
     return(
       <div class="addButtonApp WebCamVideo" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+    )
+    
+  } 
+  renderAdminModeFalse(){
+    return(
+      <div class="addButtonApp WebCamVideo displayNone" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+    )
+  } 
+  render(){
+    return(
+      <div>
+      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
+      </div>
     );
   }
 }

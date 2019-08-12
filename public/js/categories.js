@@ -95,10 +95,10 @@ function showCategories(categories) {
   $(categories).each(function (index, category) {
     // var category = elem[0];
     main_photo_containerHTML +=
-      '<div class="categoryItem"><i class="fa fa-trash deleteItem"></i><i id="' + category.id + '" class="' + category.code + ' categoryIcon" toggle="tooltip" data-placement="bottom" title="' + category.name + '"></i></div>'
+      '<div class="categoryItem"><i class="fa fa-trash deleteItem displayNone"></i><i id="' + category.id + '" class="' + category.code + ' categoryIcon" toggle="tooltip" data-placement="bottom" title="' + category.name + '"></i></div>'
   })
   main_photo_containerHTML +=
-    '<div class="addButton"><i id="addCategoryButton" class="fa fa-plus " title="Додати нову категорію"></i></div>';
+    '<div class="addButton displayNone"><i id="addCategoryButton" class="fa fa-plus" title="Додати нову категорію"></i></div>';
   $('.main_photo_container').html(main_photo_containerHTML);
 
 
@@ -108,6 +108,33 @@ function showCategories(categories) {
     var result = confirm("do you want to delete '" + selectedId + " category?");
     if(result)deleteCategory(selectedId);
   });
+// login onclick
+
+
+
+  $('#login').click(function () {
+    
+    if ($("input#username").val() == "admin" && $("input#password").val() == "admin") {
+      window.admin_state = true;
+      
+      $('.fa.fa-trash.deleteItem').addClass('showItem');
+      $('.addButton').addClass('showItem');
+      $('.addButtonApp').addClass('showItem');
+    
+    } else {
+      window.admin_state = false;
+
+      $('.fa.fa-trash.deleteItem').removeClass('showItem');
+      $('.addButton').removeClass('showItem');
+      $('.addButtonApp').removeClass('showItem');
+    
+    }
+    
+    // alert("window.admin_state= " + window.admin_state);
+  
+  });
+
+
 }
 
 
