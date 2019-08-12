@@ -1,7 +1,5 @@
 // import React from 'react';
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 //less (newest analogue of css):
 /*-->*/
