@@ -1,7 +1,6 @@
 
 
-.productImage,
-.City {
+.productImage{
   width: 23vh;
   height: 13vh;
   margin: 3px;
@@ -30,6 +29,10 @@
 
 }
 
+.backButtonContainer{
+  width:50vw;
+  margin:auto;
+}
 /* button that returns visitor on the start page (viewing of countries): */
 .BackButton {
   margin:auto;
