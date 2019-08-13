@@ -43,7 +43,6 @@ class CustomerInfo extends Component{
 
   componentDidMount() {
     loadScript('js/info.js');
-    // loadScript('js/uploadImg.js');
   }
   render(){
     return(
@@ -221,7 +220,7 @@ class Category extends Component{
 class BackButton extends Component{
   render(){
     return(
-      <div>
+      <div className="backButtonContainer">
         <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.props.onClick()}>
           {this.props.fromProduct ? <span><b>назад</b> до каталогу</span> : <span><b>назад</b> до  товару</span>}
         </button>

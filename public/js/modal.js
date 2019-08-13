@@ -1,3 +1,7 @@
+/* this file is about modal window
+it is used in many purposes */
+
+// modal for categories : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<div class="infoBlock">'+
 '<h6><b>Додати Категорію</b></h6>'+
@@ -40,25 +44,4 @@ $('.addCategoryModal').click(function (event) {
       addCategoryToServer(categName, categCode, categId)
   }
 })
-
-// // upload all orders from buyers
-// function addCategoryToServer(categName,categCode) {
-// var categoryObj={};
-// categoryObj.categName = categName;
-// categoryObj.categCode = categCode;
-// categoryJSON = JSON.stringify(categoryObj);
-//   $.ajax({
-//     url: 'http://127.0.0.1:5000/tracks',
-//     data: categoryJSON,
-//     type: 'POST',
-//     success: function (categoriesJSON) {
-//       var categories = $.parseJSON(categoriesJSON);
-//       alert(categoriesJSON);
-//       showCategories(categories);
-//       $(".addCategoryModal").toggleClass("show-modal");
-//     },
-//     error: function (error) {
-//       alert("error: " + JSON.stringify(error));
-//     }
-//   });
-// }
+// modal for categories : <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

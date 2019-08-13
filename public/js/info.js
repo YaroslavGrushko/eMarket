@@ -1,4 +1,7 @@
 // js for Client info page
+
+// code below is about select->option in info page (when customer fill it's personal data) >>>
+
 var x, i, j, selElmnt, a, b, c;
 /*look for any elements with the class "custom-select":*/
 x = document.getElementsByClassName("custom-select");
@@ -71,3 +74,5 @@ function closeAllSelect(elmnt) {
 /*if the user clicks anywhere outside the select box,
 then close all select boxes:*/
 document.addEventListener("click", closeAllSelect);
+
+// code above is about select->option in info page (when customer fill it's personal data) <<<
