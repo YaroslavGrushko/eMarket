@@ -121,6 +121,8 @@ function showCategories(categories) {
       $('.fa.fa-trash.deleteItem').addClass('showItem');
       $('.addButton').addClass('showItem');  
       $('.productsCategoryTitle').html('');
+      var logout = '<img src="././images/log-out.png" alt="" title="вийти">';
+      $('.moving-zone').find('.popup-content').html(logout);
     } else {
       window.admin_state = false;
       window.switch_admin_mode = true;
