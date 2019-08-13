@@ -1,17 +1,12 @@
 
 
-.WebCamVideo,
+.productImage,
 .City {
   width: 23vh;
   height: 13vh;
   margin: 3px;
 }
-.CountryButton {
-  width: 23vh;
-  height: 13vh;
-  margin: 6px;
-  border-radius: 30px;
-}
+
 .aProduct{
   font-size:1.3rem;
   display:flex;
@@ -27,12 +22,7 @@
   background-color:rgba(46, 46, 46, 0.1);
   cursor:pointer;
 }
-/*  .City{
-  width:30vw;
-  height:30vw;
-  margin:6px;
-  }
-*/
+
 .clock_span{
   border-radius: 8px;
   background-color: rgba(255,255,255, 0.5);
@@ -41,6 +31,7 @@
 
 /* button that returns visitor on the start page (viewing of countries): */
 .BackButton {
+  margin:auto;
   margin-top: 0;
   width: 50vw;
   height: auto;
@@ -48,18 +39,15 @@
 }
 .button_dynamic {
   display: inline-block;
-  /* border-radius: 8px; */
   background-color: #DEB887;
-  /* background-color: #6495ED; */
   border: none;
   color: #FFFFFF;
   text-align: center;
   font-size: 20px;
   padding: 0;
-  /*  width: 200px;*/
   transition: all 0.5s;
   cursor: pointer;
-  margin: 5px;
+  /* margin: 5px; */
 }
 .button_dynamic span {
   cursor: pointer;
@@ -97,14 +85,6 @@
   transition: 0.5s;
 }
 
-/*hover effect#1 of Country button*/
-/* .grow {
-  transition: all 0.2s ease-in-out;
-}
-.grow:hover {
-  transform: scale(1.1);
-} */
-
 /* images for button of countries: */
 .light {
   color: #FFCB9C;
@@ -116,18 +96,13 @@
 
 @media screen and (min-width: 468px) {
 
-  .WebCamVideo,
+  .productImage,
   .City {
     width: 53vh;
     height: 30vh;
     margin: 6px;
   }
-  /* .CountryButton {
-    width: 30vw;
-    height: 19.6875vw;
-    margin: 6px;
-    border-radius: 30px;
-  } */
+  
   .BackButton {
     margin-top: 0.3vw;
     width: 50vw;

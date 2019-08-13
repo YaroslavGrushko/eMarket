@@ -1,5 +1,5 @@
-
-.main_photo_container  i {
+/* this file is about div with categories of products */
+.main_photo_container i {
   display: block;
   color: white;
   text-align: center;
@@ -12,52 +12,53 @@
   color: #007bf2;
   cursor: pointer;
 }
-.addButton:hover i{
+
+.addButton:hover i {
   color: #007bf2;
   cursor: pointer;
 }
-.main_photo_container  i:active  {
+
+.main_photo_container i:active {
   color: #bf0000;
   cursor: pointer;
 }
 
 /*grid in the main_photo_container*/
-
 .main_photo_container {
-    width: 100%;
-    height: 280px;
-    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2) ), url(../images/main_photo1.jpg);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+  width: 100%;
+  height: 280px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2)), url(../images/main_photo1.jpg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 
-    display: grid;
-    align-content: center;
-    grid-template-columns: auto auto auto auto  auto;
-    /* grid-template-columns: auto; */
-    /* grid-template-rows: auto auto; */
-    grid-gap: 10px;
-    padding: 10px;
+  display: grid;
+  align-content: center;
+  grid-template-columns: auto auto auto auto auto;
+  grid-gap: 10px;
+  padding: 10px;
 }
 
 .main_photo_container .categoryIcon {
   font-size: 80px;
 }
-.main_photo_container > .categoryItem{
+
+.main_photo_container>.categoryItem {
   position: relative;
 }
-.addButton{
+
+.addButton {
   position: relative;
   border: 2px solid white;
   border-radius: 20px;
-  background-color:rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  font-size:80px;
+  font-size: 80px;
 }
 
-.addButton:hover{
-  background-color:rgba(0, 0, 0, 0.5);
+.addButton:hover {
+  background-color: rgba(0, 0, 0, 0.5);
 }
-
+/* for the mobile phone screen */
 @media (max-width:768px) {
   .main_photo_container {
     height: 150px;
