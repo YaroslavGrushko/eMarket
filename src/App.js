@@ -43,7 +43,6 @@ class CustomerInfo extends Component{
 
   componentDidMount() {
     loadScript('js/info.js');
-    // loadScript('js/uploadImg.js');
   }
   render(){
     return(
