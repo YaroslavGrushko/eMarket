@@ -113,25 +113,21 @@ function showCategories(categories) {
 
 
   $('#login').click(function () {
+    window.switch_admin_mode = false;
     
     if ($("input#username").val() == "admin" && $("input#password").val() == "admin") {
       window.admin_state = true;
-      
+      window.switch_admin_mode = true;
       $('.fa.fa-trash.deleteItem').addClass('showItem');
-      $('.addButton').addClass('showItem');
-      $('.addButtonApp').addClass('showItem');
-    
+      $('.addButton').addClass('showItem');  
+      $('.productsCategoryTitle').html('');
     } else {
       window.admin_state = false;
-
+      window.switch_admin_mode = true;
       $('.fa.fa-trash.deleteItem').removeClass('showItem');
       $('.addButton').removeClass('showItem');
-      $('.addButtonApp').removeClass('showItem');
-    
+      $('.productsCategoryTitle').html('');
     }
-    
-    // alert("window.admin_state= " + window.admin_state);
-  
   });
 
 

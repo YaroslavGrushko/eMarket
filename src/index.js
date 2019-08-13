@@ -30,7 +30,9 @@ main_photo_container.addEventListener('click', function (event) {
       }
     }
     notes.innerHTML = "<b>" + window.category + "</b>";
-
+    //  window.isAppRender = is app.js will be render
+    window.isAppRender = true;
+    // $('.productsCategoryTitle').addClass('showItem'); 
     //read category's products and load main react component App
     read_products(window.category);
 
@@ -76,7 +78,17 @@ function read_products(product_name) {
     }
   });
 }
+
+// check is admin_mode changed
 $( "#login" ).click(function() {
-  ReactDOM.render( <App/> , document.getElementById('root'));
-  // alert('зашло');
+  if (window.switch_admin_mode==true) {
+    var firstI = $(main_photo_container).find('.categoryIcon')[0];
+    window.category = $(firstI).attr('id');
+
+    //  window.isAppRender = is app.js will be render
+    window.isAppRender = false;
+    // render products
+    read_products(window.category)
+  }
 });
+

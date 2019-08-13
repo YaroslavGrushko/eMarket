@@ -206,7 +206,6 @@ class Category extends Component{
   const category=this.props.category;
   PRODUCTS[category] = window.products;
   const curCATEGORY=PRODUCTS[category];
-  
     return(
       <Container>
       <Row md={6} sm={6}>
@@ -221,7 +220,7 @@ class Category extends Component{
       </Col>
       </Row>
       </Container>
-);
+          );
   }
 }
 
@@ -382,12 +381,15 @@ renderSwitch(param){
 }
   //////////
   render() {
+    if(window.isAppRender){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
       <EditProductModal product={this.state.product}/>
       </div>
-    );
+    );}else{
+      return(null);
+    }
   }
 }
 
