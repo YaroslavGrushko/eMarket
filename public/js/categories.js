@@ -121,8 +121,14 @@ function showCategories(categories) {
       $('.fa.fa-trash.deleteItem').addClass('showItem');
       $('.addButton').addClass('showItem');  
       $('.productsCategoryTitle').html('');
-      var logout = '<img src="././images/log-out.png" alt="" title="вийти">';
-      $('.moving-zone').find('.popup-content').html(logout);
+
+      var images =
+      '<div class = "logo">'+
+      '<img src="././images/log-out.png" alt="" title="вийти"> '+
+      '<img src="././images/dashboard.png" alt="" title="кабінет">'+  
+      '</div>';
+      
+      $('.moving-zone').find('.popup-content').html(images);
     } else {
       window.admin_state = false;
       window.switch_admin_mode = true;

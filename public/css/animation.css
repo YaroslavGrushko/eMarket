@@ -4,7 +4,7 @@
 because, moning zone is anywhere on the screen */
 .moving-zone {
     position: absolute;
-    margin-left: 77%;
+    margin-left: 60%;
     top: 2%;
     width: 5%;
     perspective: 800px;
@@ -48,7 +48,7 @@ because, moning zone is anywhere on the screen */
 @media (min-width:1024px) {
 
     .moving-zone {
-        margin-left: 93%;
+        margin-left: 78%;
     }
 
 }
