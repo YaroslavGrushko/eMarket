@@ -126,13 +126,6 @@ class Product extends Component{
 
 //component of single product:
 class AProduct extends Component{
-  // constructor(props) {
-  //   super(props);
-
-  //   this.state = {
-  //     admin_state:false,
-  //   };
-  // }
 clickHandler(params){
   if(params=="0"){
     var myModal = document.getElementsByClassName("editProductModal")[0];
