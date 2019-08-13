@@ -82,13 +82,10 @@ function read_products(product_name) {
 // check is admin_mode changed
 $( "#login" ).click(function() {
   if (window.switch_admin_mode==true) {
-    var firstI = $(main_photo_container).find('.categoryIcon')[0];
-    window.category = $(firstI).attr('id');
-
     //  window.isAppRender = is app.js will be render
     window.isAppRender = false;
-    // render products
-    read_products(window.category)
+    // render main react app
+    ReactDOM.render( <App/> , document.getElementById('root'));
   }
 });
 
