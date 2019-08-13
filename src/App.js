@@ -1,14 +1,12 @@
 // import React from 'react';
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 //less (newest analogue of css):
 /*-->*/
 import './Appless.css';
 /*<--*/
 // addProductButton.css
-import './css/addProductButton.css';
+import './css/addDeleteItem.css';
 // product.css
 import './css/product.css';
 // info.css
@@ -89,7 +87,7 @@ class CustomerInfo extends Component{
     <button className="BackButton w3-teal button_dynamic button_back">
     <span><b>ЗАМОВИТИ</b></span>
   </button>
-      </div>     
+      </div>    
     );
   }
 }
@@ -169,7 +167,7 @@ this.props.onClick(params);
   render(){
     return(
       <div className="aProduct">
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
+      <img className="productImage" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
       {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
       <span className="productName">{this.props.name}</span>
       <br/>
@@ -181,13 +179,13 @@ this.props.onClick(params);
 class AddProduct extends Component {
   renderAdminModeTrue(){ 
     return(
-      <div class="addButtonApp WebCamVideo" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+      <div class="addButtonApp productImage" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
     )
     
   } 
   renderAdminModeFalse(){
     return(
-      <div class="addButtonApp WebCamVideo displayNone" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+      <div class="addButtonApp productImage displayNone" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
     )
   } 
   render(){
