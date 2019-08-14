@@ -19,6 +19,8 @@
     <!-- modal.css -->
     <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/logo.css">
+    <link rel="stylesheet" href="css/about.css">
     <!-- JQuery: -->
     <script src="js/JQuery/jquery-3.4.1.min.js"></script>
     <title>eMarket</title>
@@ -58,7 +60,7 @@
       <div class="popup">
           <div class="popup-content">
             <!-- <img src="images/logo2.png" title="магазин якісних товарів"> -->
-            <i class="fa fa-key" style="font-size:48px;color:#bf0000; cursor: pointer;" toggle="tooltip" data-placement="bottom" title="Вхід для менеджерів"></i>
+            <i class="fa fa-key key-position" style="font-size:48px;color:#bf0000; cursor: pointer;" toggle="tooltip" data-placement="bottom" title="Вхід для менеджерів"></i>
 
           </div>
       </div>
@@ -69,7 +71,7 @@
       <h1 style="font-family: cursive" class='center'><b># Тільки Якісні Канцтовари</b></h1>
   </div>
 
-
+<!--Login section-->
   <div class="login_container">
     <a href="#" onclick="Hide_login()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
         <i class="fa fa-remove"></i>
@@ -83,14 +85,13 @@
             <input type="password" name="password" id="password" placeholder="Введіть пароль">
         </div>
         <div>
-            <button class="BackButton w3-teal button_dynamic button_back">
+            <button type="button" class="BackButton w3-teal button_dynamic button_back" id="login">
                 <span><b>увійти</b> до кабінету</span>
             </button>
         </div>
         
     </form>
 </div>
-<script src="js/login.js"></script>
 
 <!---category section-->
 <div class = "main_photo_container">
@@ -113,7 +114,7 @@
     <!-- about -->
     <div class="w3-container w3-padding-large" style="margin-bottom:32px" id="about">
         <h4><b>Про нас</b></h4>
-        <p> Ми невеличкий магазин канцтоварів у Києвi. Хороше відношення наших співробітників до клієнів має чільне місце серед пріорітетів магазину YK. Одною з провідних ідей YK (Yакісні Kанцтовари) є належна якість товарів.
+        <p> Ми сучасний та зручний магазин канцтоварів у Києвi. Добре відношення наших співробітників до клієнів має чільне місце серед пріорітетів магазину YK. Одною з провідних ідей YK (Yакісні Kанцтовари) є належна якість товарів.
         </p>
     </div>
 
@@ -136,7 +137,6 @@
       </div>
       <!-- <hr class="w3-opacity"> -->
   </div>
-
   <!-- Footer -->
   <footer class="w3-container w3-padding-32 w3-dark-grey">
       <div class="w3-row-padding">

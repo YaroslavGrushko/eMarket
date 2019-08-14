@@ -1,3 +1,7 @@
+/* this file is about modal window
+it is used in many purposes */
+
+// modal for categories : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<div class="infoBlock">'+
 '<h6><b>Додати Категорію</b></h6>'+
@@ -7,7 +11,7 @@ var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<label for="fname">назва категорії:</label>'+
 '<input type="text" id="fname" name="fname" placeholder="Введіть назву категорії"/>'+
 '<label for="tcode">Вставте Unicode-шифр fa fa-icon_name-а:</label>'+
-'<input type="text" id="tcode" name="tnumber" placeholder="Unicode-шифр fa-fa icon-а"/>'+
+'<input type="text" id="tcode" name="tnumber" placeholder="Unicode-шифр fa fa-icon-а"/>'+
 '</div>'+
 '<button class="BackButton w3-teal button_dynamic button_back">'+
 '<span><b>Створити</b></span>'+
@@ -40,25 +44,4 @@ $('.addCategoryModal').click(function (event) {
       addCategoryToServer(categName, categCode, categId)
   }
 })
-
-// // upload all orders from buyers
-// function addCategoryToServer(categName,categCode) {
-// var categoryObj={};
-// categoryObj.categName = categName;
-// categoryObj.categCode = categCode;
-// categoryJSON = JSON.stringify(categoryObj);
-//   $.ajax({
-//     url: 'http://127.0.0.1:5000/tracks',
-//     data: categoryJSON,
-//     type: 'POST',
-//     success: function (categoriesJSON) {
-//       var categories = $.parseJSON(categoriesJSON);
-//       alert(categoriesJSON);
-//       showCategories(categories);
-//       $(".addCategoryModal").toggleClass("show-modal");
-//     },
-//     error: function (error) {
-//       alert("error: " + JSON.stringify(error));
-//     }
-//   });
-// }
+// modal for categories : <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

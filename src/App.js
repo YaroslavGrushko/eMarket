@@ -1,14 +1,12 @@
 // import React from 'react';
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 //less (newest analogue of css):
 /*-->*/
 import './Appless.css';
 /*<--*/
 // addProductButton.css
-import './css/addProductButton.css';
+import './css/addDeleteItem.css';
 // product.css
 import './css/product.css';
 // info.css
@@ -45,7 +43,6 @@ class CustomerInfo extends Component{
 
   componentDidMount() {
     loadScript('js/info.js');
-    // loadScript('js/uploadImg.js');
   }
   render(){
     return(
@@ -89,7 +86,7 @@ class CustomerInfo extends Component{
     <button className="BackButton w3-teal button_dynamic button_back">
     <span><b>ЗАМОВИТИ</b></span>
   </button>
-      </div>     
+      </div>    
     );
   }
 }
@@ -132,18 +129,38 @@ clickHandler(params){
   if(params=="0"){
     var myModal = document.getElementsByClassName("editProductModal")[0];
     myModal.classList.toggle("show-modal");
-    
   }
   
 this.props.onClick(params);
 
   }
+  renderAdminModeTrue(){ 
+    return(
+      <React.Fragment>
+        <i className="fa fa-trash deleteItem" aria-hidden="true"></i>
+        <i className="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+      </React.Fragment>
+    )
+    
+  } 
+  renderAdminModeFalse(){
+    return(
+      <React.Fragment>
+        <i className="fa fa-trash deleteItem displayNone" aria-hidden="true"></i>
+        <i className="fa fa-cog editItem displayNone" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+      </React.Fragment>
+    )
+  } 
+// componentDidMount(){
+// this.setState({
+//   admin_state : window.admin_state
+// })
+// }
   render(){
     return(
       <div className="aProduct">
-      <img className="WebCamVideo" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
-      <i class="fa fa-trash deleteItem" aria-hidden="true"></i>
-      <i class="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+      <img className="productImage" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
+      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
       <span className="productName">{this.props.name}</span>
       <br/>
       <span>{this.props.price}</span>  
@@ -152,9 +169,22 @@ this.props.onClick(params);
   }
 }
 class AddProduct extends Component {
+  renderAdminModeTrue(){ 
+    return(
+      <div class="addButtonApp productImage" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+    )
+    
+  } 
+  renderAdminModeFalse(){
+    return(
+      <div class="addButtonApp productImage displayNone" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+    )
+  } 
   render(){
     return(
-      <div class="addButtonApp WebCamVideo" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+      <div>
+      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
+      </div>
     );
   }
 }
@@ -168,7 +198,6 @@ class Category extends Component{
   const category=this.props.category;
   PRODUCTS[category] = window.products;
   const curCATEGORY=PRODUCTS[category];
-  
     return(
       <Container>
       <Row md={6} sm={6}>
@@ -183,7 +212,7 @@ class Category extends Component{
       </Col>
       </Row>
       </Container>
-);
+          );
   }
 }
 
@@ -191,7 +220,7 @@ class Category extends Component{
 class BackButton extends Component{
   render(){
     return(
-      <div>
+      <div className="backButtonContainer">
         <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.props.onClick()}>
           {this.props.fromProduct ? <span><b>назад</b> до каталогу</span> : <span><b>назад</b> до  товару</span>}
         </button>
@@ -344,12 +373,15 @@ renderSwitch(param){
 }
   //////////
   render() {
+    if(window.isAppRender){
     return (
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
       <EditProductModal product={this.state.product}/>
       </div>
-    );
+    );}else{
+      return(null);
+    }
   }
 }
 

@@ -5,33 +5,39 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import $ from 'jquery';
 
-var main_photo_container= document.getElementsByClassName('main_photo_container')[0]
+
+
+var main_photo_container = document.getElementsByClassName('main_photo_container')[0]
 
 // set the category switcher outside of react
 window.switch_caregory = true;
 var prev_category = null;
 
 main_photo_container.addEventListener('click', function (event) {
-if(event.target.id!='addCategoryButton'&&(!event.target.className.includes('deleteItem'))){
-window.category = event.target.id;
+  if (event.target.id != 'addCategoryButton' && (!event.target.className.includes('deleteItem'))) {
+    window.category = event.target.id;
 
-// check is category changed
-prev_category!=window.category ? window.switch_caregory = true : window.switch_caregory = false;
+    // check is category changed
+    prev_category != window.category ? window.switch_caregory = true : window.switch_caregory = false;
 
-// let's change category title
-var elem = document.getElementById('products');
-var notes = null;
-for (var i = 0; i < elem.childNodes.length; i++) {
-    if (elem.childNodes[i].className == "productsCategoryTitle") {
-      notes = elem.childNodes[i];
-      break;
-    }        
-}
-notes.innerHTML = "<b>"+window.category+"</b>";
+    // let's change category title
+    var elem = document.getElementById('products');
+    var notes = null;
+    for (var i = 0; i < elem.childNodes.length; i++) {
+      if (elem.childNodes[i].className == "productsCategoryTitle") {
+        notes = elem.childNodes[i];
+        break;
+      }
+    }
+    notes.innerHTML = "<b>" + window.category + "</b>";
+    //  window.isAppRender = is app.js will be render
+    window.isAppRender = true;
+    // $('.productsCategoryTitle').addClass('showItem'); 
+    //read category's products and load main react component App
+    read_products(window.category);
 
-//read category's products and load main react component App
-read_products(window.category);
-}
+
+  }
 }, false);
 
 
@@ -51,19 +57,35 @@ function read_products(product_name) {
     data: JSON.stringify(product_name),
     success: function (data) {
       // alert(JSON.stringify(data));
-      var PRODUCTS=[];
-      for(var i=0; i<data.length; i++) {
-        var rData_row = { name: data[i][0], src: data[i][1], price: data[i][2], about: data[i][3]};
+      var PRODUCTS = [];
+      for (var i = 0; i < data.length; i++) {
+        var rData_row = {
+          name: data[i][0],
+          src: data[i][1],
+          price: data[i][2],
+          about: data[i][3]
+        };
         PRODUCTS.push(rData_row);
       }
       window.products = PRODUCTS;
       // alert(JSON.stringify(PRODUCTS));
 
       // render main react app
-      ReactDOM.render(<App/>, document.getElementById('root'));
+      ReactDOM.render( <App/> , document.getElementById('root'));
     },
     error: function (error) {
       alert("error: " + JSON.stringify(error));
     }
   });
 }
+
+// check is admin_mode changed
+$( "#login" ).click(function() {
+  if (window.switch_admin_mode==true) {
+    //  window.isAppRender = is app.js will be render
+    window.isAppRender = false;
+    // render main react app
+    ReactDOM.render( <App/> , document.getElementById('root'));
+  }
+});
+

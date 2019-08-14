@@ -1,7 +1,7 @@
-/* .customerInfo{
-    padding-top:20px;
-} */
-
+.customerInfo{
+  text-align: center;
+}
+/* this css-file is about info page about client (when client click on purchase button) */
 .customerInfo input[type=text] {
         width: 100%;
         padding: 12px 20px;
@@ -60,7 +60,6 @@
   
   /*style the items (options), including the selected item:*/
   .select-selected {
-    /* color: #fff; */
     padding: 8px 16px;
     border: 1px solid transparent;
     border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
@@ -86,17 +85,12 @@
     display: none;
   }
   
-  /* .select-items div:hover, .same-as-selected {
-    background-color: rgba(0, 0, 0, 0.1);
-  } */
   .select-items div:hover{
     background-color:#fff;
   }
   /* select<<<<<<<<<<<<<<<<<<<<<< */
 
-  /* .custom-select{
-      width:200px;
-  } */
+
 
   /* info block */
   .infoBlock{
