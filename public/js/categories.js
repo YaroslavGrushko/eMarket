@@ -160,10 +160,8 @@ function showCategories(categories) {
     }
   });
 
-
 }
 
-
-
-  
-
+$(".main_photo_container").click(function (){
+  $('html, body').animate({
+  scrollTop: $('#products').offset().top}, 'slow');})
