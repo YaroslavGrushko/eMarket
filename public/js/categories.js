@@ -92,6 +92,19 @@ function columnsToObjects(ids, names, codes){
 // show categories
 function showCategories(categories) {
   var main_photo_containerHTML = '';
+  var categoriesRowHeight = 140;
+
+  
+  // number of categories
+  var catCount = categories.length;
+  //+1 because of addCategory button
+  if (window.admin_state) {
+    catCount += 1;
+  }
+
+  // let's call categoriesPhotoaAdjuster function
+  // to adhast height of categories photo
+  categoriesPhotoAdjuster(categoriesRowHeight, catCount);
   $(categories).each(function (index, category) {
     // var category = elem[0];
     main_photo_containerHTML +=
@@ -108,9 +121,18 @@ function showCategories(categories) {
     var result = confirm("do you want to delete '" + selectedId + " category?");
     if(result)deleteCategory(selectedId);
   });
+
+ // to adjast height of categories photo
+  function categoriesPhotoAdjuster(rowHeight, catCount){
+    // count of rows in categories section
+    var rowCount = Math.ceil(catCount/5);
+    var categotiesPhotoHeight = rowCount*rowHeight;
+    var categotiesPhotoHeightStr = categotiesPhotoHeight + 'px';
+    // let's adjust categories photo/section height
+    $('.main_photo_container').css('height',categotiesPhotoHeightStr);
+  }
+
 // login onclick
-
-
 
   $('#login').click(function () {
     window.switch_admin_mode = false;
