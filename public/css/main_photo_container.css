@@ -22,6 +22,11 @@
   color: #bf0000;
   cursor: pointer;
 }
+/* height of a row of category */
+#categoryRowHeight{
+  display: none;
+  height: 140px;
+}
 
 /*grid in the main_photo_container*/
 .main_photo_container {
@@ -63,9 +68,10 @@
 }
 /* for the mobile phone screen */
 @media (max-width:768px) {
-  .main_photo_container {
-    /* height: 150px; */
-    /* height: 1000px; */
+
+ /* height of a row of category */
+  #categoryRowHeight{
+    height: 75px;
   }
 
   .main_photo_container .categoryIcon {

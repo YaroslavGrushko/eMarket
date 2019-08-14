@@ -11,7 +11,7 @@ var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<label for="fname">назва категорії:</label>'+
 '<input type="text" id="fname" name="fname" placeholder="Введіть назву категорії"/>'+
 '<label for="tcode">Вставте Unicode-шифр fa fa-icon_name-а:</label>'+
-'<input type="text" id="tcode" name="tnumber" placeholder="Unicode-шифр fa-fa icon-а"/>'+
+'<input type="text" id="tcode" name="tnumber" placeholder="Unicode-шифр fa fa-icon-а"/>'+
 '</div>'+
 '<button class="BackButton w3-teal button_dynamic button_back">'+
 '<span><b>Створити</b></span>'+
