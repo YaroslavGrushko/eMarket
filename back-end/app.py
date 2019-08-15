@@ -15,7 +15,6 @@ from flask_sqlalchemy import SQLAlchemy
 # for creating admin user >>>>>>>>>>>>>>>
 from flask import Blueprint, render_template, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-# from models import User
 # for creating admin user <<<<<<<<<<<<<<<
 
 
@@ -60,31 +59,34 @@ def create_connection(db_file):
  
     return None
 
-# # creating default admin user >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# def signup_admin():
-#     # let's create db
-#     with app.app_context():
-#         db.create_all()
-#     # name = request.form.get('name')
-#     # password = request.form.get('password')
-#     name = 'admin'
-#     password = 'admin'
-#     user = User.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
+# creating default admin user >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+def signup_admin():
+    # let's create db
+    with app.app_context():
+        db.create_all()
+        # let's import user model from db
+        from models import User
 
-#     if user: # if a user is found, we want to redirect back to signup page so user can try again
-#         # return redirect(url_for('auth.signup'))
-#         return 'it is ALREADY exists ADMIN'
-#     # create new user with the form data. Hash the password so plaintext version isn't saved.
-#     new_user = User(name=name, password=generate_password_hash(password, method='sha256'))
+        # name = request.form.get('name')
+        # password = request.form.get('password')
+        name = 'admin'
+        password = 'admin'
+        user = User.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
 
-#     # add the new user to the database
-#     db.session.add(new_user)
-#     db.session.commit()
+        if user: # if a user is found, we want to redirect back to signup page so user can try again
+            # return redirect(url_for('auth.signup'))
+            return 'it is ALREADY exists ADMIN'
+        # create new user with the form data. Hash the password so plaintext version isn't saved.
+        new_user = User(name=name, password=generate_password_hash(password, method='sha256'))
 
-#     # return redirect(url_for('auth.login'))
-# # exactly create admin in Db 
-# # signup_admin()
-# # creating default admin user <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        # add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+
+    # return redirect(url_for('auth.login'))
+# exactly create admin in Db 
+# signup_admin()
+# creating default admin user <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 
