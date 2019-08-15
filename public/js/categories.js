@@ -151,22 +151,6 @@ function showCategories(categories) {
     $('.main_photo_container').css('height', categotiesPhotoHeightStr);
   }
 
-  // login onclick
-  $('#login').click(function () {
-    window.switch_admin_mode = false;
-
-    if ($("input#username").val() == "admin" && $("input#password").val() == "admin") {
-      window.admin_state = true;
-      window.switch_admin_mode = true;
-      // let's load categories from Db
-      getCategories();
-    } else {
-      window.admin_state = false;
-      window.switch_admin_mode = true;
-      // let's load categories from Db
-      getCategories();
-    }
-  });
 
 
   // if it is admin mode:
@@ -188,6 +172,26 @@ function showCategories(categories) {
     $('.productsCategoryTitle').html('');
   }
 }
+
+  // login onclick
+    function switchLoginStatus(isAdmin){
+      window.switch_admin_mode = false;
+  
+      // if ($("input#username").val() == "admin" && $("input#password").val() == "admin") {
+        if(isAdmin){
+        window.admin_state = true;
+        window.switch_admin_mode = true;
+        // let's load categories from Db
+        getCategories();
+      } 
+      else {
+        window.admin_state = false;
+        window.switch_admin_mode = true;
+        // let's load categories from Db
+        getCategories();
+      }
+    }
+  
 // =====================================
 // <<<<<<<<<< show categories - is a big 
 // function that is appropriate for

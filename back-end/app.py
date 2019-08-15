@@ -17,7 +17,9 @@ from flask import Blueprint, render_template, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 # for creating admin user <<<<<<<<<<<<<<<
 
-
+# for cookie tracking
+from flask_login import LoginManager
+from flask_login import login_required, current_user
 
 app = Flask(__name__)
 CORS(app)
@@ -31,7 +33,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 db = SQLAlchemy()
 # let's inicizlize db
 db.init_app(app)
+# A user loader tells Flask-Login how to find
+# a specific user from the ID that is stored in their session cookie
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login_post'
+login_manager.init_app(app)
 
+@login_manager.user_loader
+def load_user(user_id):
+    # since the user_id is just the primary key of our user table, use it in the query for the user
+    return User.query.get(int(user_id))
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # blueprint for auth routes in our app
 # this is import auth.py from auth.py :)
@@ -44,6 +57,7 @@ from main import main as main_blueprint
 app.register_blueprint(main_blueprint)
 
 api = Api(app)
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -265,7 +279,7 @@ def signup_admin():
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 @app.route('/add_categories', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def save_category():
     # rData = request.data
     rData = request.get_json()
@@ -304,7 +318,7 @@ def read_category():
         return jsonify({'status' : 'success POST'})
     
 @app.route('/delete_category', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def delete_category():
     rData = request.get_json()
     # data = json.loads(rData)

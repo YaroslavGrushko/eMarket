@@ -6,14 +6,15 @@ function LoginToServer() {
     let Data_order = JSON.stringify(jsonData);
   
     $.ajax({
-      url: 'http://127.0.0.1:5000/profile',
+      url: 'http://127.0.0.1:5000/login',
       type: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       data: Data_order,
       success: function (data) {
-        alert('Hi, dear '+ data.status.Admin_Name+'!'); 
+        switchLoginStatus(data.loginStatus);
+        alert('Hi, dear '+ data.loginStatus+'!'); 
       },
       error: function (error) {
         alert("error: " + JSON.stringify(error));
