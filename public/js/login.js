@@ -11,15 +11,13 @@ function LoginToServer() {
       url: 'http://127.0.0.1:5000/login',
       type: 'POST',
 
-      // beforeSend: function (xhr) {
-      //     xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
-      // },
       beforeSend: function (xhr) {
-        xhr.setRequestHeader ("Authorization", username + ":" + password);
-    },
+          xhr.setRequestHeader ("authorization", "Basic " + btoa(username + ":" + password));
+      },
+    
       success: function (data) {
-        switchLoginStatus(data.loginStatus);
-        // alert('Hi, dear '+ data.loginStatus+'!'); 
+        // switchLoginStatus(data.loginStatus);
+         alert('API key: '+ data.token+'!'); 
       },
       error: function (error) {
         alert("error: " + JSON.stringify(error));
