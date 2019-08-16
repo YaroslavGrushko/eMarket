@@ -25,7 +25,7 @@ import base64
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
-def login():
+def login1():
     return render_template('login.html')
 
 @auth.route('/login', methods=['POST'])
@@ -45,10 +45,12 @@ def login_post():
     # if the above check passes, then we know the user has the right credentials
     login_user(user)
     # if the above check passes, then we know the user has the right credentials
-    return redirect(url_for('main.profile'))
+    return redirect(url_for('main.profile1'))
 
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+
