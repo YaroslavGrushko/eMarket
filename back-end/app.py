@@ -249,25 +249,25 @@ def save_category():
         return jsonify({'status' : 'adding successfully'})
 
 
-# @app.route('/read_categories', methods=['GET', 'POST'])
-# # @login_required
-# def read_category():
-#     # rData = request.data
-#     #rData = request.get_json()
+@app.route('/read_categories', methods=['GET', 'POST'])
+# @login_required
+def read_category():
+    # rData = request.data
+    #rData = request.get_json()
 
-#     conn = create_connection("eMarket.db")
-#     cursor = conn.cursor()
-#     cursor.execute("select * from Categories") # This line performs query and returns json result
-#     rows = cursor.fetchall()
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("select * from Categories") # This line performs query and returns json result
+    rows = cursor.fetchall()
 
-#     if request.method == 'GET':
-#         # return jsonify(cursor.fetchall())
-#         return {'category_id' : [row[0] for row in rows], # column1
-#                 'category_name' : [row[1] for row in rows], # column2
-#                 'category_code' : [row[2] for row in rows]} # column3
+    if request.method == 'GET':
+        # return jsonify(cursor.fetchall())
+        return {'category_id' : [row[0] for row in rows], # column1
+                'category_name' : [row[1] for row in rows], # column2
+                'category_code' : [row[2] for row in rows]} # column3
 
-#     else:
-#         return jsonify({'status' : 'success POST'})
+    else:
+        return jsonify({'status' : 'success POST'})
     
 @app.route('/delete_category', methods=['GET', 'POST'])
 # @login_required
