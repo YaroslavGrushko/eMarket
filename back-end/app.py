@@ -37,24 +37,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 # let's inicizlize db
 db.init_app(app)
 
-# let's import user model from db
-from models import User
-# A user loader tells Flask-Login how to find
-# a specific user from the ID that is stored in their session cookie
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
-login_manager = LoginManager()
-# login_manager.session_protection = 'strong'
-login_manager.login_view = 'auth.login1'
-login_manager.init_app(app)
-
-@login_manager.user_loader
-def load_user(user_id):
-    # since the user_id is just the primary key of our user table, use it in the query for the user
-    return User.query.get(int(user_id))
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -70,49 +52,7 @@ def create_connection(db_file):
  
     return None
 
-# blueprint for auth routes in our app
-# this is import auth.py from auth.py :)
-from auth import auth as auth_blueprint
-app.register_blueprint(auth_blueprint)
-
-# blueprint for non-auth parts of app
-# this is import main.py from main.py :)
-from main import main as main_blueprint
-app.register_blueprint(main_blueprint)
-
 api = Api(app)
-
-
-
-# creating default admin user >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-def signup_admin():
-    # let's create db
-    with app.app_context():
-        db.create_all()
-        # # let's import user model from db
-        # from models import User
-
-        # name = request.form.get('name')
-        # password = request.form.get('password')
-        name = 'admin'
-        password = 'admin'
-        user = User.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
-
-        if user: # if a user is found, we want to redirect back to signup page so user can try again
-            # return redirect(url_for('auth.signup'))
-            return 'it is ALREADY exists ADMIN'
-        # create new user with the form data. Hash the password so plaintext version isn't saved.
-        new_user = User(name=name, password=generate_password_hash(password, method='sha256'))
-
-        # add the new user to the database
-        db.session.add(new_user)
-        db.session.commit()
-
-    # return redirect(url_for('auth.login'))
-# exactly create admin in Db 
-# signup_admin()
-# creating default admin user <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
 
 
 # # creating default table with it content>>>>>>>>>>>>>>>>>>>>>>>
@@ -291,7 +231,7 @@ def signup_admin():
 # from auth import load_user_from_header
 
 @app.route('/add_categories', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def save_category():
     # rData = request.data
     rData = request.get_json()
@@ -330,7 +270,7 @@ def save_category():
 #         return jsonify({'status' : 'success POST'})
     
 @app.route('/delete_category', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def delete_category():
 
     rData = request.get_json()
