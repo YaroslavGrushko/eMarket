@@ -31,7 +31,8 @@ CORS(app)
 
 # for user authentification in SQLite Db >>>>>>>>>>>
 app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mytodo.db'
 # for user authentification in SQLite Db <<<<<<<<<<<<
 
 # let's inicizlize db
