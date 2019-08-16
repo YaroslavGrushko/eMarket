@@ -69,12 +69,19 @@ function getCategories() {
 }
 // delete selected category
 function deleteCategory(id){
+  var username = 'admin';
+  var password = 'admin';
   $.ajax({
     url: 'http://127.0.0.1:5000/delete_category',
     type: 'POST',
+    xhrFields: {withCredentials: true},
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
+  },
     headers: {
       'Content-Type': 'application/json'
     },
+   
     data: JSON.stringify(id),
     success: function (data) {
       // alert(data.status); 
@@ -161,19 +168,29 @@ function showCategories(categories) {
 
     var images =
       '<div class = "logo">' +
-      '<img src="././images/log-out.png" alt="" title="вийти"> ' +
+      '<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ' +
       '<img src="././images/dashboard.png" alt="" title="кабінет">' +
       '</div>';
     $('.moving-zone').find('.popup-content').html(images);
+
+    $("#logout").click(function (){
+      LogoutToServer();
+      })
+
     // if it is not admin mode
   } else {
     $('.fa.fa-trash.deleteItem').removeClass('showItem');
     $('.addButton').removeClass('showItem');
     $('.productsCategoryTitle').html('');
+    // login button
+    var icon =
+    '<i class="fa fa-key key-position" style="font-size:48px;color:#bf0000; cursor: pointer;" toggle="tooltip" data-placement="bottom" title="Вхід для менеджерів"></i>';
+
+    $('.moving-zone').find('.popup-content').html(icon);
   }
 }
 
-  // login onclick
+  // login from back response handler
     function switchLoginStatus(isAdmin){
       window.switch_admin_mode = false;
   

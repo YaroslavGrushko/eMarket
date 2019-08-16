@@ -21,6 +21,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager
 from flask_login import login_required, current_user
 
+
+
+# init SQLAlchemy so we can use it later in our models
+db = SQLAlchemy()
+
 app = Flask(__name__)
 CORS(app)
 
@@ -29,15 +34,17 @@ app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 # for user authentification in SQLite Db <<<<<<<<<<<<
 
-# init SQLAlchemy so we can use it later in our models
-db = SQLAlchemy()
 # let's inicizlize db
 db.init_app(app)
+
+# let's import user model from db
+from models import User
 # A user loader tells Flask-Login how to find
 # a specific user from the ID that is stored in their session cookie
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login_post'
+# login_manager.session_protection = 'strong'
+login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
 @login_manager.user_loader
@@ -59,6 +66,7 @@ app.register_blueprint(main_blueprint)
 api = Api(app)
 
 
+
 def create_connection(db_file):
     """ create a database connection to the SQLite database
         specified by the db_file
@@ -78,8 +86,8 @@ def signup_admin():
     # let's create db
     with app.app_context():
         db.create_all()
-        # let's import user model from db
-        from models import User
+        # # let's import user model from db
+        # from models import User
 
         # name = request.form.get('name')
         # password = request.form.get('password')
@@ -277,6 +285,7 @@ def signup_admin():
 # conn.commit()
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# from auth import load_user_from_header
 
 @app.route('/add_categories', methods=['GET', 'POST'])
 @login_required
@@ -320,6 +329,7 @@ def read_category():
 @app.route('/delete_category', methods=['GET', 'POST'])
 @login_required
 def delete_category():
+
     rData = request.get_json()
     # data = json.loads(rData)
     conn = create_connection("eMarket.db")
