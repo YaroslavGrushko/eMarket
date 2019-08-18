@@ -4,8 +4,10 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import $ from 'jquery';
+import { switchLoginStatus } from './categories.js';
 
 
+// load products from selected category outside of react:>>>>>>>>>>>>>>>>>>>>>>>
 
 var main_photo_container = document.getElementsByClassName('main_photo_container')[0]
 
@@ -32,10 +34,9 @@ main_photo_container.addEventListener('click', function (event) {
     notes.innerHTML = "<b>" + window.category + "</b>";
     //  window.isAppRender = is app.js will be render
     window.isAppRender = true;
-    // $('.productsCategoryTitle').addClass('showItem'); 
-    //read category's products and load main react component App
+    
+    //read category's products and load main react component App with products
     read_products(window.category);
-
 
   }
 }, false);
@@ -68,8 +69,7 @@ function read_products(product_name) {
         PRODUCTS.push(rData_row);
       }
       window.products = PRODUCTS;
-      // alert(JSON.stringify(PRODUCTS));
-
+    
       // render main react app
       ReactDOM.render( <App/> , document.getElementById('root'));
     },
@@ -78,14 +78,52 @@ function read_products(product_name) {
     }
   });
 }
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-// check is admin_mode changed
+function LoginToServer() {
+  // let jsonData = {
+  //   'Admin_Name': $('#username').val(),
+  //   'Admin_Password': $('#password').val()
+  // };
+  // let Data_order = JSON.stringify(jsonData);
+  var username = $('#username').val();
+  var password = $('#password').val();
+
+  $.ajax({
+    url: 'http://127.0.0.1:5000/login',
+    type: 'POST',
+
+    beforeSend: function (xhr) {
+        xhr.setRequestHeader ("authorization", "Basic " + btoa(username + ":" + password));
+    },
+  
+    success: function (data) {
+      // set new window.admin_state and window.switch_admin_mode values:
+       switchLoginStatus(true);
+       localStorage.setItem('x-access-token', data.token);
+      //  window.isAppRender = is app.js will be render
+        window.isAppRender = false;
+      // reload main react app with new window.admin_state value
+        ReactDOM.render( <App/> , document.getElementById('root'));
+    },
+    error: function (error) {
+      // alert("error: " + JSON.stringify(error));
+      alert("АУТЕНТИФІКАЦІЮ НЕ ПРОЙДЕНО");
+    }
+  });
+}
+
+// if admin mode is activated:
 $( "#login" ).click(function() {
-  if (window.switch_admin_mode==true) {
-    //  window.isAppRender = is app.js will be render
-    window.isAppRender = false;
-    // render main react app
-    ReactDOM.render( <App/> , document.getElementById('root'));
-  }
+  LoginToServer();
 });
 
+// // if logout is activated:
+// $("").click(function (){
+//   alert("logout");
+//   switchLoginStatus(false);
+//   //  window.isAppRender = is app.js will be render
+//   window.isAppRender = false;
+//   // reload main react app with new window.admin_state value
+//   ReactDOM.render( <App/> , document.getElementById('root'));
+// })

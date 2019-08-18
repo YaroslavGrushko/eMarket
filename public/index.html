@@ -2,11 +2,11 @@
 <html lang="uk">
   <head>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <link rel="shortcut icon" href="public/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
     
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="manifest" href="public/manifest.json"/>
     <!-- css -->
     <!-- w3 styles -->
     <link rel="stylesheet" href="css/style.css">
@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/about.css">
     <!-- JQuery: -->
     <script src="js/JQuery/jquery-3.4.1.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
     <title>eMarket</title>
   </head>
   <body class="w3-light-grey">
@@ -30,10 +31,10 @@
     <!-- Sidebar/menu -->
     <nav class="w3-sidebar w3-collapse w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
       <div class="w3-container">
-          <a href="#" onclick="w3_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
+          <a href="#" onclick="Sidebar_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
               <i class="fa fa-remove"></i>
           </a>
-          <img src="images/logo2.png" style="width:45%;" class="w3-round"><br><br>
+          <img src="images/logo2.png" alt="LOGO" style="width:45%;" class="w3-round"><br><br>
           <h4><b>ІНТЕРНЕТ МАГАЗИН</b></h4>
       </div>
       <div class="w3-bar-block">
@@ -52,31 +53,31 @@
   </nav>
 
   <!-- Overlay effect when opening sidebar on small screens -->
-  <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+  <div onclick="Sidebar_close()" class="w3-overlay w3-hide-large w3-animate-opacity"  style="cursor:pointer" title="close side menu" id="myOverlay">
+  </div>
     
     <!-- main animation -->
     <div class="moving-zone">
-
       <div class="popup">
-          <div class="popup-content">
-            <!-- <img src="images/logo2.png" title="магазин якісних товарів"> -->
-            <i class="fa fa-key key-position" style="font-size:48px;color:#bf0000; cursor: pointer;" toggle="tooltip" data-placement="bottom" title="Вхід для менеджерів"></i>
-
+          <div  class="popup-content">
+              <div class="logo">
+                  <i class="fa fa-key key-position" id="admin_mode_icon" style="font-size:48px;color:#bf0000; cursor: pointer;" data-placement="bottom" title="Вхід для менеджерів"></i>
+             </div>
           </div>
       </div>
   </div>
 
-  <span class="w3-button w3-hide-large w3-xxlarge w3-hover open-hamburger" onclick="w3_open()"><i class="fa fa-bars"></i></span>
+  <span class="w3-button w3-hide-large w3-xxlarge w3-hover open-hamburger" onclick="Sidebar_open()"><i class="fa fa-bars"></i></span>
   <div class="w3-container">
       <h1 style="font-family: cursive" class='center'><b># Тільки Якісні Канцтовари</b></h1>
   </div>
 
 <!--Login section-->
   <div class="login_container">
-    <a href="#" onclick="Hide_login()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
+    <a href="#" onclick="Login_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
         <i class="fa fa-remove"></i>
     </a>
-    <img src="images/login_icon.png">
+    <img src="images/login_icon.png" alt="Login_icon">
     <form>
         <div class="login-input">
             <input type="text" name="username" id="username" placeholder="Введіть логін">
@@ -89,25 +90,25 @@
                 <span><b>увійти</b> до кабінету</span>
             </button>
         </div>
-       
     </form>
 </div>
 
 <!---category section-->
 <div class = "main_photo_container">
-    <div><i id="Зошити" class="fa fa-book" toggle="tooltip" data-placement="bottom" title="Блокноти, зошити, альбоми"></i></div>
-    <div><i id="Калькулятори" class="fa fa-calculator" toggle="tooltip" data-placement="bottom" title="Калькулятори, диктофони"></i></div>
-    <div><i id="Папір" class="fa fa-clone" toggle="tooltip" data-placement="bottom" title="Папір та копіювальне приладдя"></i></div>
-    <div><i id="Карандаші" class="fa fa-edit" toggle="tooltip" data-placement="bottom" title="Олівці, ручки стрижні"></i></div>
-    <div><i id="Дрібниці" class="fa fa-eraser" toggle="tooltip" data-placement="bottom" title="Канцелярські дрібниці"></i></div>
-    <div><i id="ДляШколи" class="fa fa-graduation-cap" toggle="tooltip" data-placement="bottom" title="Навчальне приладдя"></i></div>
+    <div><i id="Зошити" class="fa fa-book" data-placement="bottom" title="Блокноти, зошити, альбоми"></i></div>
+    <div><i id="Калькулятори" class="fa fa-calculator" data-placement="bottom" title="Калькулятори, диктофони"></i></div>
+    <div><i id="Папір" class="fa fa-clone" data-placement="bottom" title="Папір та копіювальне приладдя"></i></div>
+    <div><i id="Карандаші" class="fa fa-edit" data-placement="bottom" title="Олівці, ручки стрижні"></i></div>
+    <div><i id="Дрібниці" class="fa fa-eraser" data-placement="bottom" title="Канцелярські дрібниці"></i></div>
+    <div><i id="ДляШколи" class="fa fa-graduation-cap" data-placement="bottom" title="Навчальне приладдя"></i></div>
 </div>
 
 <div class="w3-main">
 
    <div class="w3-container w3-padding-large" id="products">
         <h4 class = "productsCategoryTitle"></h4>
-        <div id="root"></div>
+        <div id="root">
+        </div>
         <hr>
    </div>
    
@@ -179,24 +180,8 @@
     <script src="js/animation.js"></script>
     <!-- main sidebar.js -->
     <script src="js/sidebar.js"></script>
-    <!-- main categories.js -->
-    <script src="js/categories.js"></script>
-    <!-- login.js -->
+    <!-- Login menu -->
     <script src="js/login.js"></script>
-    <!-- animation: -->
-    <script src="js/modal.js"></script>
-    <script src="js/load_зошити.js"></script>
-    <script>
-         $(function(){
-            $('.fa-key').click(function(){
-            $('.login_container').show();
-                });
-            });
-        
-        function Hide_login(){
-            $('.login_container').hide();
-        }
-    </script>
     </body>
 
     </html>

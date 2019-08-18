@@ -242,73 +242,6 @@ api = Api(app)
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # from auth import load_user_from_header
 
-@app.route('/add_categories', methods=['GET', 'POST'])
-# @login_required
-def save_category():
-    # rData = request.data
-    rData = request.get_json()
-
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    
-    new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], datetime.now()),]
-    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
-    conn.commit()
-
-    if request.method == 'GET':
-        return jsonify({'status' : 'success GET'})
-    else:
-        return jsonify({'status' : 'adding successfully'})
-
-
-@app.route('/read_categories', methods=['GET', 'POST'])
-# @login_required
-def read_category():
-    # rData = request.data
-    #rData = request.get_json()
-
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    cursor.execute("select * from Categories") # This line performs query and returns json result
-    rows = cursor.fetchall()
-
-    if request.method == 'GET':
-        # return jsonify(cursor.fetchall())
-        return {'category_id' : [row[0] for row in rows], # column1
-                'category_name' : [row[1] for row in rows], # column2
-                'category_code' : [row[2] for row in rows]} # column3
-
-    else:
-        return jsonify({'status' : 'success POST'})
-    
-@app.route('/delete_category', methods=['GET', 'POST'])
-# @login_required
-def delete_category():
-
-    rData = request.get_json()
-    # data = json.loads(rData)
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM Categories WHERE category_id ="+"'"+str(rData)+"'")
-    conn.commit()
-    return 'Ok'
-
-@app.route('/read_product', methods=['GET', 'POST'])
-# @login_required
-def read_products():
-    rData = request.data
-    rData = request.get_json()
-
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    cursor.execute("select * from "+ rData) # This line performs query and returns json result
-    rows = cursor.fetchall()
-
-    if request.method == 'POST':
-        return jsonify(rows) 
-    else:
-        return jsonify({'status' : 'success GET'})
-
 
 # flask API-authorization >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -394,6 +327,75 @@ def login():
     return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+#DB-routes>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@app.route('/read_categories', methods=['GET', 'POST'])
+
+def read_category():
+    # rData = request.data
+    #rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("select * from Categories") # This line performs query and returns json result
+    rows = cursor.fetchall()
+
+    if request.method == 'GET':
+        # return jsonify(cursor.fetchall())
+        return {'category_id' : [row[0] for row in rows], # column1
+                'category_name' : [row[1] for row in rows], # column2
+                'category_code' : [row[2] for row in rows]} # column3
+
+    else:
+        return jsonify({'status' : 'success POST'})
+
+@app.route('/add_categories', methods=['GET', 'POST'])
+def save_category():
+    # rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    
+    new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], datetime.now()),]
+    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
+    conn.commit()
+
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'status' : 'adding successfully'})
+
+    
+@app.route('/delete_category', methods=['GET', 'POST'])
+def delete_category():
+
+    rData = request.get_json()
+    # data = json.loads(rData)
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM Categories WHERE category_id ="+"'"+str(rData)+"'")
+    conn.commit()
+    return 'Ok'
+
+@app.route('/read_product', methods=['GET', 'POST'])
+def read_products():
+    rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("select * from "+ rData) # This line performs query and returns json result
+    rows = cursor.fetchall()
+
+    if request.method == 'POST':
+        return jsonify(rows) 
+    else:
+        return jsonify({'status' : 'success GET'})
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':
      app.run(debug = True)

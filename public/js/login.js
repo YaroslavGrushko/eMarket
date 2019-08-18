@@ -1,53 +1,15 @@
-function LoginToServer() {
-    // let jsonData = {
-    //   'Admin_Name': $('#username').val(),
-    //   'Admin_Password': $('#password').val()
-    // };
-    // let Data_order = JSON.stringify(jsonData);
-    username = $('#username').val();
-    password = $('#password').val();
+// Script to open and close Login menu
+// function Login_open() {
+//     // document.getElementsByClassName("login_container")[0].style.display = "block";
+//     $('.login_container').show();
+   
+// }
 
-    $.ajax({
-      url: 'http://127.0.0.1:5000/login',
-      type: 'POST',
+function Login_close() {
+    // document.getElementsByClassName(".login_container")[0].style.display = "none";
+    $('.login_container').hide();
+}
 
-      beforeSend: function (xhr) {
-          xhr.setRequestHeader ("authorization", "Basic " + btoa(username + ":" + password));
-      },
-    
-      success: function (data) {
-        // switchLoginStatus(data.loginStatus);
-         alert('API key: '+ data.token+'!'); 
-      },
-      error: function (error) {
-        alert("error: " + JSON.stringify(error));
-      }
-    });
-  }
-  function LogoutToServer() {
-    // let jsonData = {
-    //   'Admin_Name': $('#username').val(),
-    //   'Admin_Password': $('#password').val()
-    // };
-    // let Data_order = JSON.stringify(jsonData);
-  
-    $.ajax({
-      url: 'http://127.0.0.1:5000/logout',
-      type: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      xhrFields: {withCredentials: true},
-      // data: Data_order,
-      success: function (data) {
-        switchLoginStatus(data.loginStatus);
-      },
-      error: function (error) {
-        alert("error: " + JSON.stringify(error));
-      }
-    });
-  }
-  $("#login").click(function (){
-    LoginToServer();
-    })
- 
+// $('#admin_mode_icon').click(function() {
+//     $('.login_container').show();
+//   });

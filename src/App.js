@@ -42,7 +42,7 @@ class CustomerInfo extends Component{
   }
 
   componentDidMount() {
-    loadScript('js/info.js');
+    loadScript('./info.js');
   }
   render(){
     return(

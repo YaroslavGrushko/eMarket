@@ -45,16 +45,15 @@ $('.contactButton').click(function(){
 })
 
 
-
  // Script to open and close sidebar
- function w3_open() {
+ function Sidebar_open() {
     document.getElementById("mySidebar").style.display = "block";
     // document.getElementById("myOverlay").style.display = "block";
     document.getElementsByClassName("w3-main")[0].style.marginLeft = "300px";
     $('.open-hamburger').hide();
 }
 
-function w3_close() {
+function Sidebar_close() {
     document.getElementById("mySidebar").style.display = "none";
     document.getElementById("myOverlay").style.display = "none";
     document.getElementsByClassName("w3-main")[0].style.marginLeft = "0px";
