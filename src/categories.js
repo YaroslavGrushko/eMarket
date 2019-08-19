@@ -34,7 +34,7 @@ export function addCategoryToServer(categName, categCode, categId) {
     url: 'http://127.0.0.1:5000/add_categories',
     type: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
     },
     data: Data_order,
     success: function (data) {
@@ -75,17 +75,12 @@ function getCategories() {
 }
 // delete selected category
 function deleteCategory(id){
-  var username = 'admin';
-  var password = 'admin';
+ 
   $.ajax({
     url: 'http://127.0.0.1:5000/delete_category',
     type: 'POST',
-    xhrFields: {withCredentials: true},
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
-  },
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
     },
    
     data: JSON.stringify(id),
@@ -190,12 +185,15 @@ function showCategories(categories) {
   $('#admin_mode_icon').click(function() {
     $('.login_container').show();
   });
+
+
   // if logout is activated:
   $("#logout").click(function (){
     alert("logout");
     switchLoginStatus(false);
     //  window.isAppRender = is app.js will be render
     window.isAppRender = false;
+    localStorage.removeItem('x-access-token');
     // reload main react app with new window.admin_state value
     ReactDOM.render( <App/> , document.getElementById('root'));
   })

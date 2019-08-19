@@ -280,36 +280,13 @@ def token_required(f):
         except:
             return jsonify({'message' : 'Token is invalid!'}), 401
 
-        return f(current_user, *args, **kwargs)
+        return f(*args, **kwargs)
 
     return decorated
-
-@app.route('/user', methods=['GET'])
-@token_required
-def get_all_users(current_user):
-
-    if not current_user.admin:
-        return jsonify({'message' : 'Cannot perform that function!'})
-
-    users = User.query.all()
-
-    output = []
-
-    for user in users:
-        user_data = {}
-        user_data['public_id'] = user.public_id
-        user_data['name'] = user.name
-        user_data['password'] = user.password
-        user_data['admin'] = user.admin
-        output.append(user_data)
-
-    return jsonify({'users' : output})
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     auth = request.authorization
-
 
     if not auth or not auth.username or not auth.password:
         return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
@@ -332,7 +309,6 @@ def login():
 #DB-routes>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @app.route('/read_categories', methods=['GET', 'POST'])
-
 def read_category():
     # rData = request.data
     #rData = request.get_json()
@@ -352,6 +328,7 @@ def read_category():
         return jsonify({'status' : 'success POST'})
 
 @app.route('/add_categories', methods=['GET', 'POST'])
+@token_required
 def save_category():
     # rData = request.data
     rData = request.get_json()
@@ -370,6 +347,7 @@ def save_category():
 
     
 @app.route('/delete_category', methods=['GET', 'POST'])
+@token_required
 def delete_category():
 
     rData = request.get_json()
@@ -381,6 +359,7 @@ def delete_category():
     return 'Ok'
 
 @app.route('/read_product', methods=['GET', 'POST'])
+
 def read_products():
     rData = request.data
     rData = request.get_json()
@@ -394,6 +373,29 @@ def read_products():
         return jsonify(rows) 
     else:
         return jsonify({'status' : 'success GET'})
+
+
+@app.route('/user', methods=['GET'])
+@token_required
+# def get_all_users(current_user):
+def get_all_users():   
+
+    # if not current_user.admin:
+    #     return jsonify({'message' : 'Cannot perform that function!'})
+
+    users = User.query.all()
+
+    output = []
+
+    for user in users:
+        user_data = {}
+        user_data['public_id'] = user.public_id
+        user_data['name'] = user.name
+        user_data['password'] = user.password
+        user_data['admin'] = user.admin
+        output.append(user_data)
+
+    return jsonify({'users' : output})
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

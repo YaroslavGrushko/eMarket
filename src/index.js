@@ -80,6 +80,9 @@ function read_products(product_name) {
 }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+
+//function for login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 function LoginToServer() {
   // let jsonData = {
   //   'Admin_Name': $('#username').val(),
@@ -92,7 +95,7 @@ function LoginToServer() {
   $.ajax({
     url: 'http://127.0.0.1:5000/login',
     type: 'POST',
-
+    
     beforeSend: function (xhr) {
         xhr.setRequestHeader ("authorization", "Basic " + btoa(username + ":" + password));
     },
@@ -118,12 +121,4 @@ $( "#login" ).click(function() {
   LoginToServer();
 });
 
-// // if logout is activated:
-// $("").click(function (){
-//   alert("logout");
-//   switchLoginStatus(false);
-//   //  window.isAppRender = is app.js will be render
-//   window.isAppRender = false;
-//   // reload main react app with new window.admin_state value
-//   ReactDOM.render( <App/> , document.getElementById('root'));
-// })
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
