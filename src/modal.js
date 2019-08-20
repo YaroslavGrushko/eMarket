@@ -1,8 +1,9 @@
 /* this file is about modal window
 it is used in many purposes */
-
+import $ from 'jquery';
+import { addCategoryToServer } from './categories.js';
 // modal for categories : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-var categorymodalHtml = '<div class="addCategoryHtml">'+
+export var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<div class="infoBlock">'+
 '<h6><b>Додати Категорію</b></h6>'+
 
@@ -21,7 +22,7 @@ var categorymodalHtml = '<div class="addCategoryHtml">'+
 
 
 // draw modal in mainpage
-function drawModal(modalHtml){
+export function drawModal(modalHtml){
     $('.addCategoryModal .my-modal-content').html( modalHtml);
   // show modal
     $(".addCategoryModal").toggleClass("show-modal");

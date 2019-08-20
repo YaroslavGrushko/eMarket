@@ -42,7 +42,7 @@ class CustomerInfo extends Component{
   }
 
   componentDidMount() {
-    loadScript('js/info.js');
+    loadScript('./info.js');
   }
   render(){
     return(
@@ -92,8 +92,19 @@ class CustomerInfo extends Component{
 }
 
 
-//component of single product:
+//component of product description:
 class Product extends Component{
+  renderAdminModeTrue(){ 
+    return(
+      <span>{this.props.product.in_price.replace("₴","")} грн./{this.props.product.in_price.replace("₴","")} грн.</span>
+    )
+    
+  } 
+  renderAdminModeFalse(){
+    return(
+      <span>{this.props.product.in_price.replace("₴","")} грн</span>
+    )
+  } 
   render(){
     return(
       <div className="product">
@@ -105,7 +116,7 @@ class Product extends Component{
       <Col key={1} md={4} sm={12}> 
       <div className="productMain">   
       <span className="productName">{this.props.product.name}</span>
-      <span>{this.props.product.price.replace("₴","")} грн</span>
+      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
       <button className="button button2" onClick={() => this.props.onClick(true)}>Замовити</button>
       </div> 
       </Col>
@@ -123,7 +134,7 @@ class Product extends Component{
   }
 }
 
-//component of single product:
+//component of product:
 class AProduct extends Component{
 clickHandler(params){
   if(params=="0"){
@@ -139,6 +150,9 @@ this.props.onClick(params);
       <React.Fragment>
         <i className="fa fa-trash deleteItem" aria-hidden="true"></i>
         <i className="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+        <span className="productName">{this.props.name}</span>
+      <br/>
+      <span>{this.props.in_price}/{this.props.out_price}</span>  
       </React.Fragment>
     )
     
@@ -148,26 +162,23 @@ this.props.onClick(params);
       <React.Fragment>
         <i className="fa fa-trash deleteItem displayNone" aria-hidden="true"></i>
         <i className="fa fa-cog editItem displayNone" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
+        <span className="productName">{this.props.name}</span>
+      <br/>
+      <span>{this.props.in_price}</span>  
       </React.Fragment>
     )
   } 
-// componentDidMount(){
-// this.setState({
-//   admin_state : window.admin_state
-// })
-// }
   render(){
     return(
       <div className="aProduct">
       <img className="productImage" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
       {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
-      <span className="productName">{this.props.name}</span>
-      <br/>
-      <span>{this.props.price}</span>  
       </div>
     );
   }
 }
+
+
 class AddProduct extends Component {
   renderAdminModeTrue(){ 
     return(
@@ -189,11 +200,12 @@ class AddProduct extends Component {
   }
 }
 
-//component of several Aproduct components:
+//component of Aproduct's container:
 class Category extends Component{
   clickHandler(product, params){
     this.props.onClick(product, params)
   }
+  
   render(){
   const category=this.props.category;
   PRODUCTS[category] = window.products;
@@ -202,8 +214,8 @@ class Category extends Component{
       <Container>
       <Row md={6} sm={6}>
       {curCATEGORY.map((product, index) => (
-      <Col key={index} md={4} sm={6}>     
-          <AProduct className="Wrapper" src={product.src} name={product.name} price={product.price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
+      <Col key={index} md={4} sm={6}>    
+        <AProduct className="Wrapper" src={product.src} name={product.name} in_price={product.in_price} out_price={product.out_price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
       </Col>
   ))
 }
@@ -278,6 +290,8 @@ previewFile(){
     );
   }
 }
+
+
 // edit product modal
 class EditProductModal extends Component {
 

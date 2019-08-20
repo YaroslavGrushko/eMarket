@@ -1,14 +1,20 @@
-var domain =window.location.hostname
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import $ from 'jquery';
+import { drawModal } from './modal.js';
+import { categorymodalHtml } from './modal.js';
+import './index.js'
+
 // get categories
 getCategories();
 
 // categories section onclick
 $('.main_photo_container').click(function(event){
 var target = event.target;
-selectedId = $(target).attr('id');
+var selectedId = $(target).attr('id');
 if(selectedId=='addCategoryButton')addCategory()
 })
-
 
 // add category
 function addCategory(){
@@ -16,7 +22,7 @@ function addCategory(){
 }
 // addCategoryToServer - is a function that is responsible
 // for POST category to Db (add new category)
-function addCategoryToServer(categName, categCode, categId) {
+export function addCategoryToServer(categName, categCode, categId) {
   let jsonData = {
     'category_id': categId,
     'category_name': categName, //$('#').val(),
@@ -28,7 +34,7 @@ function addCategoryToServer(categName, categCode, categId) {
     url: 'http://127.0.0.1:5000/add_categories',
     type: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
     },
     data: Data_order,
     success: function (data) {
@@ -69,12 +75,14 @@ function getCategories() {
 }
 // delete selected category
 function deleteCategory(id){
+ 
   $.ajax({
     url: 'http://127.0.0.1:5000/delete_category',
     type: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
     },
+   
     data: JSON.stringify(id),
     success: function (data) {
       // alert(data.status); 
@@ -107,14 +115,12 @@ function showCategories(categories) {
   var main_photo_containerHTML = '';
   // var categoriesRowHeight = 140;
 
-
   // number of categories
   var catCount = categories.length;
   //+1 because of addCategory button
   if (window.admin_state) {
     catCount += 1;
   }
-
 
   $(categories).each(function (index, category) {
     // var category = elem[0];
@@ -126,18 +132,20 @@ function showCategories(categories) {
   // adding additional display:none categories row
   // this is for read categories row height from css file
   main_photo_containerHTML += '<div id="categoryRowHeight"></div>';
+
   $('.main_photo_container').html(main_photo_containerHTML);
 
   // delteItem click event:
   $('.categoryItem .deleteItem').click(function (event) {
     var selectedId = $(event.target).parent().find('.categoryIcon').attr('id');
-    var result = confirm("do you want to delete '" + selectedId + " category?");
+    var result = window.confirm("do you want to delete '" + selectedId + " category?");
     if (result) deleteCategory(selectedId);
   });
   
   // let's call categoriesPhotoaAdjuster function
   // to adhast height of categories photo
   categoriesPhotoAdjuster(catCount);
+
   // to adjast height of categories photo
   function categoriesPhotoAdjuster(catCount) {
     var rowHeight = $('#categoryRowHeight').css('height');
@@ -151,24 +159,6 @@ function showCategories(categories) {
     $('.main_photo_container').css('height', categotiesPhotoHeightStr);
   }
 
-  // login onclick
-  $('#login').click(function () {
-    window.switch_admin_mode = false;
-
-    if ($("input#username").val() == "admin" && $("input#password").val() == "admin") {
-      window.admin_state = true;
-      window.switch_admin_mode = true;
-      // let's load categories from Db
-      getCategories();
-    } else {
-      window.admin_state = false;
-      window.switch_admin_mode = true;
-      // let's load categories from Db
-      getCategories();
-    }
-  });
-
-
   // if it is admin mode:
   if (window.admin_state) {
     $('.fa.fa-trash.deleteItem').addClass('showItem');
@@ -176,18 +166,58 @@ function showCategories(categories) {
     $('.productsCategoryTitle').html('');
 
     var images =
-      '<div class = "logo">' +
-      '<img src="././images/log-out.png" alt="" title="вийти"> ' +
-      '<img src="././images/dashboard.png" alt="" title="кабінет">' +
-      '</div>';
-    $('.moving-zone').find('.popup-content').html(images);
+      '<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ' +
+      '<img src="././images/dashboard.png" alt="" title="кабінет">' ;
+    $('.moving-zone').find('.logo').html(images);
+
+
     // if it is not admin mode
   } else {
     $('.fa.fa-trash.deleteItem').removeClass('showItem');
     $('.addButton').removeClass('showItem');
     $('.productsCategoryTitle').html('');
+    // login button
+    var icon =
+    '<i class="fa fa-key key-position" id="admin_mode_icon" style="font-size:48px;color:#bf0000; cursor: pointer;" data-placement="bottom" title="Вхід для менеджерів"></i>';
+
+    $('.moving-zone').find('.logo').html(icon);
   }
+  $('#admin_mode_icon').click(function() {
+    $('.login_container').show();
+  });
+
+
+  // if logout is activated:
+  $("#logout").click(function (){
+    alert("logout");
+    switchLoginStatus(false);
+    //  window.isAppRender = is app.js will be render
+    window.isAppRender = false;
+    localStorage.removeItem('x-access-token');
+    // reload main react app with new window.admin_state value
+    ReactDOM.render( <App/> , document.getElementById('root'));
+  })
 }
+
+  // login from back response handler
+    export function switchLoginStatus(isAdmin){
+      window.switch_admin_mode = false;
+  
+      // if ($("input#username").val() == "admin" && $("input#password").val() == "admin") {
+        if(isAdmin){
+        window.admin_state = true;
+        window.switch_admin_mode = true;
+        // let's load categories from Db
+        getCategories();
+      } 
+      else {
+        window.admin_state = false;
+        window.switch_admin_mode = true;
+        // let's load categories from Db
+        getCategories();
+      }
+    }
+  
 // =====================================
 // <<<<<<<<<< show categories - is a big 
 // function that is appropriate for

@@ -12,3 +12,10 @@
     grid-gap: 10px;
     padding: 10px;
   }
+
+  /* for the mobile phone screen */
+@media (max-width:768px) {
+  #about{
+    background-size: auto 100%;
+  }
+}
