@@ -63,8 +63,9 @@ function read_products(product_name) {
         var rData_row = {
           name: data[i][0],
           src: data[i][1],
-          price: data[i][2],
-          about: data[i][3]
+          in_price: data[i][2],
+          out_price: data[i][3],
+          about: data[i][4]
         };
         PRODUCTS.push(rData_row);
       }
