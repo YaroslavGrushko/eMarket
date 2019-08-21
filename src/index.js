@@ -5,6 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import $ from 'jquery';
 import { switchLoginStatus } from './categories.js';
+import { read_products } from './products.js';
 
 
 // load products from selected category outside of react:>>>>>>>>>>>>>>>>>>>>>>>
@@ -48,48 +49,10 @@ main_photo_container.addEventListener('click', function (event) {
 serviceWorker.unregister();
 
 
-function read_products(product_name) {
-  $.ajax({
-    url: 'http://127.0.0.1:5000/read_product',
-    type: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: JSON.stringify(product_name),
-    success: function (data) {
-      // alert(JSON.stringify(data));
-      var PRODUCTS = [];
-      for (var i = 0; i < data.length; i++) {
-        var rData_row = {
-          name: data[i][0],
-          src: data[i][1],
-          in_price: data[i][2],
-          out_price: data[i][3],
-          about: data[i][4]
-        };
-        PRODUCTS.push(rData_row);
-      }
-      window.products = PRODUCTS;
-    
-      // render main react app
-      ReactDOM.render( <App/> , document.getElementById('root'));
-    },
-    error: function (error) {
-      alert("error: " + JSON.stringify(error));
-    }
-  });
-}
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
 //function for login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 function LoginToServer() {
-  // let jsonData = {
-  //   'Admin_Name': $('#username').val(),
-  //   'Admin_Password': $('#password').val()
-  // };
-  // let Data_order = JSON.stringify(jsonData);
+  
   var username = $('#username').val();
   var password = $('#password').val();
 
@@ -120,6 +83,9 @@ function LoginToServer() {
 // if admin mode is activated:
 $( "#login" ).click(function() {
   LoginToServer();
+  $('.login_container').hide();
 });
+
+// logout is in the showCategories of categories.js
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
