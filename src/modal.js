@@ -2,6 +2,8 @@
 it is used in many purposes */
 import $ from 'jquery';
 import { addCategoryToServer } from './categories.js';
+
+
 // modal for categories : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 export var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<div class="infoBlock">'+

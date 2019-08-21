@@ -9,9 +9,9 @@
     width: 60%;
     height: 350px;
     left: 20%;
-    top: 10%;
+    top: 15%;
     background-color: rgba(24, 33, 52, 0.7);
-    margin: 100px auto 0 auto;
+    margin: 0 auto 0 auto;
     text-align: center;
     box-shadow: 0 -5px 0 #3adbfd;
 }

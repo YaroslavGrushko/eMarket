@@ -138,7 +138,7 @@ function showCategories(categories) {
   // delteItem click event:
   $('.categoryItem .deleteItem').click(function (event) {
     var selectedId = $(event.target).parent().find('.categoryIcon').attr('id');
-    var result = window.confirm("do you want to delete '" + selectedId + " category?");
+    var result = window.confirm("do you want to delete " + selectedId + " category?");
     if (result) deleteCategory(selectedId);
   });
   
@@ -185,11 +185,9 @@ function showCategories(categories) {
   $('#admin_mode_icon').click(function() {
     $('.login_container').show();
   });
-
-
-  // if logout is activated:
+    
+    // if logout is activated:
   $("#logout").click(function (){
-    alert("logout");
     switchLoginStatus(false);
     //  window.isAppRender = is app.js will be render
     window.isAppRender = false;
@@ -222,6 +220,8 @@ function showCategories(categories) {
 // <<<<<<<<<< show categories - is a big 
 // function that is appropriate for
 // displaing categories in appropriate way
+
+// for scrolling to products when categori's icon is pressed:
 
 $(".main_photo_container").click(function (){
   $('html, body').animate({
