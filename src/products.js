@@ -6,6 +6,7 @@ import { drawModal } from './modal.js';
 import { categorymodalHtml } from './modal.js';
 import './index.js'
 
+
 export function read_products(product_name) {
     $.ajax({
       url: 'http://127.0.0.1:5000/read_product',
@@ -15,8 +16,13 @@ export function read_products(product_name) {
       },
       data: JSON.stringify(product_name),
       success: function (data) {
-        // alert(JSON.stringify(data));
-        var PRODUCTS = [];
+        
+        // check if products table is not empty
+        if (data.name_of_not_exist_table != null && window.admin_state != true) {
+          alert("Table: <<"+data.name_of_not_exist_table+">> dose not exist!");
+        } 
+        else{
+          var PRODUCTS = [];
         for (var i = 0; i < data.length; i++) {
           var rData_row = {
             name: data[i][0],
@@ -28,13 +34,18 @@ export function read_products(product_name) {
           PRODUCTS.push(rData_row);
         }
         window.products = PRODUCTS;
-      
-        // render main react app
+        
+  
+        // reload window.products in App and render main react app
         ReactDOM.render( <App/> , document.getElementById('root'));
+        }
       },
       error: function (error) {
         alert("error: " + JSON.stringify(error));
       }
     });
   }
+ 
+
+  
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

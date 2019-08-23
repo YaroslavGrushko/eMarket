@@ -371,14 +371,18 @@ def read_products():
 
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
-    cursor.execute("select * from "+ rData) # This line performs query and returns json result
-    rows = cursor.fetchall()
-
-    if request.method == 'POST':
+    # before reading check if the table exists:
+    cursor.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='"+rData+"'")
+    # to get a tuple with one element, the value of COUNT(*):
+    result_of_query=cursor.fetchone()
+    # to find the value of count(*) (0 if table no exist and 1 if  table exist):
+    value_of_count=result_of_query[0]
+    if value_of_count==0:
+        return jsonify({'name_of_not_exist_table' : rData})
+    else: 
+        cursor.execute("select * from "+ rData) # This line performs query and returns json result
+        rows = cursor.fetchall()
         return jsonify(rows) 
-    else:
-        return jsonify({'status' : 'success GET'})
-
 
 @app.route('/user', methods=['GET'])
 @token_required

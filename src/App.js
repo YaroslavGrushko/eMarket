@@ -18,6 +18,10 @@ import "bootstrap/dist/css/bootstrap.css"; //подключаем только �
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 import { Script } from 'vm';
 import { returnStatement } from '@babel/types';
+// import { categorymodalHtmlProduct } from './modal.js';
+// import { closeButton } from './modal.js';
+import $ from 'jquery';
+import { drawModalProduct } from './modal.js';
 
 const PRODUCTS={};
 
@@ -178,11 +182,27 @@ this.props.onClick(params);
   }
 }
 
-
+// component for adding product:
 class AddProduct extends Component {
+
+  clickHandler(){
+    // drawModalProduct(categorymodalHtmlProduct);
+    drawModalProduct();
+
+  //   closeButton();
+  //   $('.addCategoryModal .close-button').click(function(){
+  //     $(".addCategoryModal").toggleClass("show-modal");
+  // })
+}
+
+  // componentDidMount() {
+  //   closeButton();
+  //   // closeButton();
+  // }
+
   renderAdminModeTrue(){ 
     return(
-      <div class="addButtonApp productImage" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
+      <div class="addButtonApp productImage" onClick={()=>this.clickHandler()} title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
     )
     
   } 
@@ -298,6 +318,7 @@ class EditProductModal extends Component {
   onCloseModal(){
     var myModal = document.getElementsByClassName("editProductModal")[0];
     myModal.classList.toggle("show-modal");
+    document.getElementsByClassName('.addCategoryModal .my-modal-content').innerHTML = "";
   }
   render() {
     return (
@@ -305,6 +326,24 @@ class EditProductModal extends Component {
         <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
         <div className="my-modal-content">
         <EditProductContent product={this.props.product}/>
+        </div>
+      </div>
+    );
+  }
+}
+
+// add product modal
+class AddProductModal extends Component {
+
+  onCloseModal(){
+    var myModal = document.getElementsByClassName("addCategoryModal")[0];
+    myModal.classList.toggle("show-modal");
+  }
+  render() {
+    return (
+      <div className={"addCategoryModal my-modal"}>
+        <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
+        <div className="my-modal-content">
         </div>
       </div>
     );
@@ -392,6 +431,7 @@ renderSwitch(param){
       <div className="App">
       {this.renderSwitch(this.state.showParam)}
       <EditProductModal product={this.state.product}/>
+      <AddProductModal/>
       </div>
     );}else{
       return(null);
