@@ -360,6 +360,7 @@ def delete_category():
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
     cursor.execute("DELETE FROM Categories WHERE category_id ="+"'"+str(rData)+"'")
+    cursor.execute("DROP TABLE"+"'"+str(rData)+"'")
     conn.commit()
     return 'Ok'
 
