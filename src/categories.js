@@ -195,6 +195,11 @@ function showCategories(categories) {
     // reload main react app with new window.admin_state value
     ReactDOM.render( <App/> , document.getElementById('root'));
   })
+
+  // for scrolling to products when categori's icon is pressed:
+$(".categoryIcon").click(function (){
+  $('html, body').animate({
+  scrollTop: $('#products').offset().top}, 'slow');})
 }
 
   // login from back response handler
@@ -221,11 +226,7 @@ function showCategories(categories) {
 // function that is appropriate for
 // displaing categories in appropriate way
 
-// for scrolling to products when categori's icon is pressed:
 
-$(".main_photo_container").click(function (){
-  $('html, body').animate({
-  scrollTop: $('#products').offset().top}, 'slow');})
 
 
 // when window is resized, we must alter 

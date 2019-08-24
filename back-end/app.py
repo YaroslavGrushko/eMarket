@@ -371,14 +371,48 @@ def read_products():
 
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
-    cursor.execute("select * from "+ rData) # This line performs query and returns json result
-    rows = cursor.fetchall()
-
-    if request.method == 'POST':
+    # before reading check if the table exists:
+    cursor.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='"+rData+"'")
+    # to get a tuple with one element, the value of COUNT(*):
+    result_of_query=cursor.fetchone()
+    # to find the value of count(*) (0 if table no exist and 1 if  table exist):
+    value_of_count=result_of_query[0]
+    if value_of_count==0:
+        return jsonify({'name_of_not_exist_table' : rData})
+    else: 
+        cursor.execute("select * from "+ rData) # This line performs query and returns json result
+        rows = cursor.fetchall()
         return jsonify(rows) 
-    else:
-        return jsonify({'status' : 'success GET'})
 
+@app.route('/add_product', methods=['GET', 'POST'])
+@token_required
+def add_product():
+    # rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    
+    # cursor.execute('create table if not exists ' + rData['Product_Name'] + 
+    # '(name VARCHAR, src VARCHAR, in_price VARCHAR, out_price VARCHAR, about VARCHAR)')
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS """ + rData['Current_Category'] +"""(
+        name VARCHAR,
+        src VARCHAR,
+        in_price VARCHAR,
+        out_price VARCHAR,
+        about VARCHAR)
+        """)
+
+    new_product = [( rData['Product_Name'], rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'])]
+    cursor.executemany("INSERT INTO " + rData['Current_Category'] +" VALUES (?,?,?,?,?)", new_product)
+    conn.commit()
+
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'status' : rData['Current_Category']})
 
 @app.route('/user', methods=['GET'])
 @token_required
