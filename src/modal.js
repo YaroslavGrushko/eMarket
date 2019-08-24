@@ -1,5 +1,6 @@
 /* this file is about modal window
 it is used in many purposes */
+
 import $ from 'jquery';
 import { addCategoryToServer } from './categories.js';
 import { addProductToServer } from './products.js';
@@ -46,12 +47,11 @@ $('.addCategoryModal').click(function (event) {
       addCategoryToServer(categName, categCode, categId)
   }
 })
-// modal for categories : <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+// modal for categories : <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 // draw modal in mainpage for products>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-// export function drawModalProduct(modalHtml){
 export function drawModalProduct() {
+var button_access = true; //for depreciation of hidden .addCategoryModal onclick handlers!!!
 var modalHtml = '<div class="addCategoryHtml">'+
 '<div class="infoBlock">'+
 '<h6><b>Додати товар</b></h6>'+
@@ -63,13 +63,16 @@ var modalHtml = '<div class="addCategoryHtml">'+
 '<label for="fout_price">вихідна ціна:</label>'+
 '<input type="text" id="fout_price" name="fout_price" placeholder="Введіть вихідну ціну товару"/>'+
 '<label for="faddress">Вставте посилання на малюнок:</label>'+
-'<input type="text" id="faddress" name="faddress" placeholder="адреса малюнку"/>'+
+'<input type="text" id="faddress" name="faddress" placeholder="images/назва_категорії/назва_фото.png"/>'+
+'<label for="fabout">Вставте опис товару:</label>'+
+'<input type="text" id="fabout" name="fabout" placeholder="опис товару"/>'+
 '</div>'+
 '<button class="BackButton w3-teal button_dynamic button_back">'+
 '<span><b>Додати</b></span>'+
   '</button>'+
 '</div>';
 
+// load modalHtml into modal div
 $('.addCategoryModal .my-modal-content').html(modalHtml);
 
 // show modal
@@ -78,18 +81,21 @@ $(".addCategoryModal").toggleClass("show-modal");
 // .addCategoryModal onClick
 $('.addCategoryModal').click(function (event) {
   if ($(event.target).is('button') || $(event.target).is('button span') || $(event.target).is('button span b')) {
+
     var infoBlock = $(event.target).closest('div');
 
+    var CurrentCategory = window.category;
     var ProductName = $(infoBlock).find('#fname').val();
     var ProductInPrice = $(infoBlock).find('#fin_price').val();
     var ProductOutPrice = $(infoBlock).find('#fout_price').val();
     var ProductPhoto = $(infoBlock).find('#faddress').val();
+    var ProductAbout = $(infoBlock).find('#fabout').val();
 
-    if ((ProductName != '') && (ProductInPrice != '') && (ProductOutPrice != '') && (ProductPhoto != '') && (ProductName != undefined) && (ProductInPrice != undefined) && (ProductOutPrice != undefined) && (ProductPhoto != undefined))
-      // addProductToServer(ProductName, ProductInPrice, ProductOutPrice, ProductPhoto);
-      alert("task for backend is completed");
+    if ((button_access != false) && (ProductName != '') && (ProductInPrice != '') && (ProductOutPrice != '') && (ProductPhoto != '') && (ProductName != undefined) && (ProductInPrice != undefined) && (ProductOutPrice != undefined) && (ProductPhoto != undefined)){
+      addProductToServer(CurrentCategory, ProductName, ProductInPrice, ProductOutPrice, ProductPhoto, ProductAbout);
+      button_access = false;
+    }
+    
   }
 })
 }
-
-// modal for products : <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

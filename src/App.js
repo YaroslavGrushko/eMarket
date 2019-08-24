@@ -186,19 +186,8 @@ this.props.onClick(params);
 class AddProduct extends Component {
 
   clickHandler(){
-    // drawModalProduct(categorymodalHtmlProduct);
     drawModalProduct();
-
-  //   closeButton();
-  //   $('.addCategoryModal .close-button').click(function(){
-  //     $(".addCategoryModal").toggleClass("show-modal");
-  // })
 }
-
-  // componentDidMount() {
-  //   closeButton();
-  //   // closeButton();
-  // }
 
   renderAdminModeTrue(){ 
     return(
