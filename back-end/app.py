@@ -360,6 +360,7 @@ def delete_category():
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
     cursor.execute("DELETE FROM Categories WHERE category_id ="+"'"+str(rData)+"'")
+    cursor.execute("DROP TABLE"+"'"+str(rData)+"'")
     conn.commit()
     return 'Ok'
 
@@ -407,6 +408,53 @@ def add_product():
 
     new_product = [( rData['Product_Name'], rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'])]
     cursor.executemany("INSERT INTO " + rData['Current_Category'] +" VALUES (?,?,?,?,?)", new_product)
+    conn.commit()
+
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'status' : rData['Current_Category']})
+
+@app.route('/update_product', methods=['GET', 'POST'])
+@token_required
+def update_product():
+    rData = request.get_json()
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    
+    """
+    update src, in_price, out_price and end about of a """+ rData['Current_Category'] +"""
+    :param conn:
+    :param task:
+    :return: project id
+    """
+    sql = ''' UPDATE ''' + rData['Current_Category'] +'''
+              SET src = ? ,
+                  in_price = ? ,
+                  out_price = ?,
+                  about = ?
+              WHERE name = ?'''
+    
+    task = (rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'], rData['Product_Name'])
+    cursor.execute(sql, task)
+    conn.commit()
+
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'status' : rData['Current_Category']})
+
+@app.route('/delete_product', methods=['GET', 'POST'])
+@token_required
+def delete_product():
+    rData = request.get_json()
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    
+    sql = ''' DELETE FROM ''' + rData['Current_Category'] +'''
+              WHERE name = \"''' + rData['Product_Name'] +'''\"  '''
+    
+    cursor.execute(sql)
     conn.commit()
 
     if request.method == 'GET':
