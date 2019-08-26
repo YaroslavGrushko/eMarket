@@ -22,6 +22,8 @@ import { returnStatement } from '@babel/types';
 // import { closeButton } from './modal.js';
 import $ from 'jquery';
 import { drawModalProduct } from './modal.js';
+import { updateProductToServer } from './products.js';
+import { deleteProructFromServer } from './products.js';
 
 const PRODUCTS={};
 
@@ -144,15 +146,23 @@ clickHandler(params){
   if(params=="0"){
     var myModal = document.getElementsByClassName("editProductModal")[0];
     myModal.classList.toggle("show-modal");
+    window.selected_product_name = this.props.name;
   }
-  
-this.props.onClick(params);
+    this.props.onClick(params);
+  }
 
+deleteHandler(params){
+  if(params=="0"){
+    window.selected_product_name = this.props.name;
+    deleteProructFromServer(window.category, window.selected_product_name);
   }
+    this.props.onClick(params);
+  }
+
   renderAdminModeTrue(){ 
     return(
       <React.Fragment>
-        <i className="fa fa-trash deleteItem" aria-hidden="true"></i>
+        <i className="fa fa-trash deleteItem" aria-hidden="true" onClick={()=>this.deleteHandler('0')}></i>
         <i className="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
         <span className="productName">{this.props.name}</span>
       <br/>
@@ -164,7 +174,7 @@ this.props.onClick(params);
   renderAdminModeFalse(){
     return(
       <React.Fragment>
-        <i className="fa fa-trash deleteItem displayNone" aria-hidden="true"></i>
+        <i className="fa fa-trash deleteItem displayNone" aria-hidden="true" onClick={()=>this.deleteHandler('0')}></i>
         <i className="fa fa-cog editItem displayNone" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
         <span className="productName">{this.props.name}</span>
       <br/>
@@ -249,13 +259,14 @@ class BackButton extends Component{
     );
   }
 }
+
 // edit Product content component
 class EditProductContent extends Component{
 previewFile(){
     var preview = document.querySelector('#timage'); //selects the query named img
     var file    = document.querySelector('#timageFile').files[0]; //sames as here
     var reader  = new FileReader();
-
+    
     reader.onloadend = function () {
         preview.src = reader.result;
     }
@@ -266,17 +277,33 @@ previewFile(){
         preview.src = "";
     }
 }
+
+readValues(){
+  var CurrentCategory = window.category;
+  var ProductName = window.selected_product_name;
+
+  var ProductInPrice =document.getElementById("fproduct_in_price").value;
+  var ProductOutPrice =document.getElementById("fproduct_out_price").value;
+  var ProductPhoto = document.querySelector('#timage').getAttribute("src");
+  var ProductAbout =document.getElementById("tsummery").value;
+  var test =2;
+  updateProductToServer(CurrentCategory, ProductName, ProductInPrice, ProductOutPrice, ProductPhoto, ProductAbout);
+}
+
   render(){
     return(
       <div className="addCategoryHtml">
       <h6><b>Змінити товар</b></h6>
         <div className="infoBlock">
       
-        <label htmlFor="fname">назва товару:</label>
-        <input type="text" id="fname" name="fname" placeholder="Введіть назву товару..."/>
+        {/* <label htmlFor="fproduct_name">назва товару:</label>
+        <input type="text" id="fproduct_name" name="fproduct_name" placeholder="Введіть назву товару..."/> */}
 
-        <label htmlFor="tprice">ціна товару:</label>
-        <input type="text" id="tprice" name="tprice" placeholder="Введіть ціну товару..."/>
+        <label htmlFor="fproduct_in_price">вхідна ціна товару:</label>
+        <input type="text" id="fproduct_in_price" name="fproduct_in_price" placeholder="Введіть вхідну ціну товару..."/>
+        
+        <label htmlFor="fproduct_out_price">вихідна ціна товару:</label>
+        <input type="text" id="fproduct_out_price" name="fproduct_out_price" placeholder="Введіть вихідну ціну товару..."/>
         </div>
 
         <div className="infoBlock imageContainer">
@@ -292,7 +319,7 @@ previewFile(){
           опис товару:
           <input type="text" id="tsummery" name="tnumber" placeholder='Введіть опис товару...'/>
         </div>
-          <button className="BackButton w3-teal button_dynamic button_back">
+          <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.readValues()}>
             <span><b>Зберегти</b></span>
           </button>
       </div>
