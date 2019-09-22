@@ -243,7 +243,7 @@ class Cart extends Component{
       </div>
 
       <br></br>
-      {/* create a stateless component to display the shopping cart items */}
+      {/* create a component to display the shopping cart items */}
       <ProductDisplay items={this.state.items} updateTotalQuantity={(changed_total_quantity) => this.updateTotalQuantity(changed_total_quantity)}/>
       <br></br>
 
