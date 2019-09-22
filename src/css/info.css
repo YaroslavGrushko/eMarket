@@ -20,7 +20,7 @@
 .paymentMeth{
     padding-top:20px;
 }
-
+/* 
 /* select>>>>>>>>>>>>>>>>>>>> */
 .custom-select {
     background: transparent !important;
@@ -89,8 +89,7 @@
     background-color:#fff;
   }
   /* select<<<<<<<<<<<<<<<<<<<<<< */
-
-
+ 
 
   /* info block */
   .infoBlock{
@@ -100,7 +99,7 @@
   /* infoBlock hover */
   .infoBlock:hover{
     background-color:rgba(46, 46, 46, 0.1);
-    cursor:pointer;
+    /* cursor:pointer; */
   }
   .infoBlock:hover h6{
       color:#009688;

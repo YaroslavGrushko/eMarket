@@ -15,6 +15,7 @@ var main_photo_container = document.getElementsByClassName('main_photo_container
 // set the category switcher outside of react
 window.switch_caregory = true;
 var prev_category = null;
+window.order=[]; // value with product's order
 
 main_photo_container.addEventListener('click', function (event) {
   if (event.target.id != 'addCategoryButton' && (!event.target.className.includes('deleteItem'))) {
@@ -23,16 +24,6 @@ main_photo_container.addEventListener('click', function (event) {
     // check is category changed
     prev_category != window.category ? window.switch_caregory = true : window.switch_caregory = false;
 
-    // let's change category title
-    var elem = document.getElementById('products');
-    var notes = null;
-    for (var i = 0; i < elem.childNodes.length; i++) {
-      if (elem.childNodes[i].className == "productsCategoryTitle") {
-        notes = elem.childNodes[i];
-        break;
-      }
-    }
-    notes.innerHTML = "<b>" + window.category + "</b>";
     //  window.isAppRender = is app.js will be render
     window.isAppRender = true;
     
@@ -41,6 +32,7 @@ main_photo_container.addEventListener('click', function (event) {
 
   }
 }, false);
+
 
 
 // If you want your app to work offline and load faster, you can change

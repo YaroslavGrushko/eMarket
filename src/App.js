@@ -1,117 +1,305 @@
-// import React from 'react';
 import React, { Component } from 'react';
 
 //less (newest analogue of css):
-/*-->*/
 import './Appless.css';
-/*<--*/
-// addProductButton.css
 import './css/addDeleteItem.css';
-// product.css
 import './css/product.css';
-// info.css
-import './css/info.css';
-// editProduct.css
 import './css/editProduct.css'
+import './css/cart.css'
+import './css/info.css'
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
-import { Script } from 'vm';
-import { returnStatement } from '@babel/types';
-// import { categorymodalHtmlProduct } from './modal.js';
-// import { closeButton } from './modal.js';
-import $ from 'jquery';
+
 import { drawModalProduct } from './modal.js';
 import { updateProductToServer } from './products.js';
 import { deleteProructFromServer } from './products.js';
+import { addOrderCustumerToServer } from './cart.js';
+import { addOrderProductsToServer } from './cart.js';
+import Select from 'react-select'; //выпадающий список
 
 const PRODUCTS={};
 
-var loadScript = function (src) {
-  var tag = document.createElement('script');
-  tag.async = false;
-  tag.src = src;
-  var body = document.getElementsByTagName('body')[0];
-  body.appendChild(tag);
+// component for selected product's quantity in cart:
+class Quantity extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {quantity: this.props.quantity}
+  }
+
+  updateQuantity = ( ) => {
+    window.total_quantity = 0.0;
+    for (let i = 0; i < window.items.length; i++) { 
+      window.total_quantity = window.total_quantity + window.items[i].quantity*1.0;
+     };
+    this.setState({
+      total_quantity : window.total_quantity
+    });
+  };
+
+  handleQuantityChange = async (e) => {
+    const userInput = e.target.value;
+    await this.setState({quantity: userInput});
+    this.updateQuantity();
+    this.props.quantityCallBack(this.state.quantity);
+  }
+
+  render(){
+    var test = 3;
+    return(
+      <td>
+        <input
+          name="number"
+          type="number"
+          value={this.props.quantity}
+          onChange={this.handleQuantityChange}
+          max="10"
+          min="1"/>
+      </td>
+    )
+  }
 }
 
-//component of single product:
-class CustomerInfo extends Component{
+//component that handles the display of each individual product
+class Display extends React.Component{
+  //will update quantity in this component, then send values to parent (ProductDisplay) component
   constructor(props) {
     super(props);
-    this.state = {SelectOption: '1'};
-    this.handleChange = this.handleChange.bind(this);
+  }
+  //get changedQuantity from child (Quantity), then send it to parent (ProductDisplay) component
+  quantityCallBack = (changedQuantity) => {
+    this.props.item.quantity = changedQuantity;
+    this.props.item.total = this.props.item.in_price*changedQuantity;
+    this.props.productUpdate(this.props.item.quantity, this.props.item.total, this.props.index);//send changedQuantity to parent (ProductDisplay) component
+  }
+  //render individual item
+  render() {
+    var test =1;
+      return (
+          <div key={this.props.index} className="CartItem">
+              <figure>
+                  <img className='img'src={this.props.item.src} alt={this.props.item.name} id={this.props.index} />
+                  <figcaption onClick = {()=>this.props.removeItem(this.props.index)}><i class="fa fa-trash-o" ></i></figcaption>
+              </figure>
+              <form>
+                  <table className="ContentInformation"><tbody>
+                      <tr>
+                          <td><b>Кількість:</b></td>
+                          <Quantity quantityCallBack={this.quantityCallBack} quantity={this.props.item.quantity} />
+                      </tr>
+                      <tr>
+                          <td><b>Ціна:</b></td>
+                          <td>{this.props.item.in_price}&nbsp;грн.</td>
+                      </tr>
+                      <tr>
+                          <td><b>Сума:</b></td>
+                          <td>{this.props.item.total}&nbsp;грн.</td>
+                      </tr>
+                      </tbody></table>
+              </form>
+              <br></br>
+          </div>
+      )
+  }
+}
+
+//A function to display all the cart items the user selected and allow them to change quantity
+class ProductDisplay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items:window.items
+    };
   }
 
-  handleChange(event) {
-    this.setState({SelectOption: event.target.value});
+  //update products upon change quantity.
+  productUpdate = (quantity, total, index) => {  
+    window.total_quantity = 0.0;
+    window.items[index].quantity = quantity;
+    window.items[index].total = total;
+    for (let i = 0; i < window.items.length; i++) { 
+      window.total_quantity = window.total_quantity + window.items[i].quantity*1.0;
+    };
+    this.props.updateTotalQuantity(window.total_quantity);//send total_quantity to parent (Cart) component
   }
 
-  componentDidMount() {
-    loadScript('./info.js');
+  // remove selectsd item (by index) from items)
+  removeItem = (index) => {
+    var array = this.state.items.slice();// make a separate copy of the array
+    if (index !== -1) {
+      array.splice(index, 1);
+      window.items = [];
+      window.items = array.slice();// copy array to window.items
+    }
+    this.setState({items: array});
+    window.total_quantity = 0.0;
+    for (let i = 0; i < window.items.length; i++) { 
+      window.total_quantity = window.total_quantity + window.items[i].quantity*1.0;
+    };
+    this.props.updateTotalQuantity(window.total_quantity);//send canged total_quantity to parent (Cart) component
   }
+
+  render() {
+    var test =1;
+      return (
+        <div className="cartList">
+            {this.state.items.map((currItem, index)=> 
+              <Display item={currItem} index={index} key={index} productUpdate={this.productUpdate} removeItem={this.removeItem}/>
+            )}
+        </div>
+      )
+  }
+}
+
+//component of Cart:
+class Cart extends Component{
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      selected_delivery_options: {label:window.selected_delivery},
+      selected_pay_options: {label:window.selected_pay},
+      selected_name: window.selected_name,
+      selected_phone: window.selected_phone,
+      selected_address: window.selected_address
+    };
+    
+    this.handleChangeName = this.handleChangeName.bind(this);
+    this.handleChangePhone = this.handleChangePhone.bind(this);
+    this.handleChangeAddress = this.handleChangeAddress.bind(this);
+  }
+
+  clickHandlerOrder(){
+    window.order_customer = {};
+    window.order_customer = {
+      customer_name : window.selected_name,
+      customer_phone : window.selected_phone,
+      customer_address : window.selected_address,
+      customer_delivery : window.selected_delivery,
+      customer_pay : window.selected_pay
+    };
+    window.order_products = {};
+    window.order_products = {
+      customer_phone : window.selected_phone,
+      customer_products : window.items
+    };
+    addOrderCustumerToServer(window.order_customer);
+    addOrderProductsToServer(window.order_products);
+  }
+
+  handleChangeDelivery = selected_delivery_options => {
+    this.setState({ selected_delivery_options });
+    window.selected_delivery = selected_delivery_options.label;
+  };
+
+  handleChangePay = selected_pay_options => {
+    this.setState({ selected_pay_options });
+    window.selected_pay = selected_pay_options.label;
+    console.log(`selected_pay_options:`, window.selected_pay);
+  };
+
+  handleChangeName(event) {
+    this.setState({selected_name: event.target.value});
+    // console.log(`selected_name:`, event.target.value);
+    window.selected_name = event.target.value;
+  }
+
+  handleChangePhone(event) {
+    this.setState({selected_phone: event.target.value});
+    // console.log(`selected_phone:`, event.target.value);
+    window.selected_phone = event.target.value;
+  }
+
+  handleChangeAddress(event) {
+    this.setState({selected_address: event.target.value});
+    // console.log(`selected_address:`, event.target.value);
+    window.selected_address = event.target.value;
+  }
+
+  updateTotalQuantity=(changed_total_quantity) => {
+    this.props.updateTotalQuantity(changed_total_quantity);//send changed_total_quantity to parent (App) component
+  }
+
   render(){
+    // values for delivery select tag:
+    const delivery_options = [
+      { value: 'self', label: 'Самовивіз' },
+      { value: 'delivery', label: 'Доставка Новою поштою' }
+    ];
+    const { selected_delivery_options } = this.state;
+
+    // values for pay select tag:
+    const pay_options = [
+      { value: 'cash', label: 'Накладений платіж' },
+      { value: 'cashless', label: 'На картку ПриватБанку' }
+    ];
+    const { selected_pay_options } = this.state;
+    
     return(
-      <div className="customerInfo">
+    <div className="customerInfo">
       <div className="infoBlock">
+      <div className="selectedProducts">
+        <h6><b>Обрані товари</b></h6>
+      </div>
+
+      <br></br>
+      {/* create a stateless component to display the shopping cart items */}
+      <ProductDisplay items={this.state.items} updateTotalQuantity={(changed_total_quantity) => this.updateTotalQuantity(changed_total_quantity)}/>
+      <br></br>
+
       <h6><b>Контактні дані</b></h6>
      
       <label for="fname">Ваше ім'я:</label>
-      <input type="text" id="fname" name="fname" placeholder="Введіть Ваше ім'я..."/>
+      <input type="text" id="fname" name="fname" placeholder="Введіть Ваше ім'я..." value={this.state.selected_name} onChange={this.handleChangeName}/>
       <label for="tnumber">Контактний телефон:</label>
-      <input type="text" id="tnumber" name="tnumber" placeholder="+380 ** *** ** **"/>
+      <input type="text" id="tnumber" name="tnumber" placeholder="+380 ** *** ** **" value={this.state.selected_phone} onChange={this.handleChangePhone}/>
       </div>
 
       <div className="infoBlock">
-      <h6><b>Спосіб оплати</b></h6>
+        <h6><b>Спосіб оплати</b></h6>
 
-      <div className="custom-select">
-          <select value={this.state.SelectOption} onChange={this.handleChange}>
-            <option value="0">Спосіб оплати</option>
-            <option value="1">Накладений платіж</option>
-            <option value="2">на картку ПриватБанку</option>
-          </select>
+        <div className="custom-select">
+          <Select options = {pay_options} value={selected_pay_options} onChange={this.handleChangePay}/>
         </div>
       </div>
+
       <div className="infoBlock">
-      <h6><b>Доставка</b></h6>
+        <h6><b>Доставка</b></h6>
 
-      <label>Спосіб доставки:</label>
+        <label>Спосіб доставки:</label>
 
-      <div className="custom-select">
-      <select value={this.state.SelectOption} onChange={this.handleChange}>
-        <option value="0">Спосіб доставки</option>
-        <option value="1">Новою Поштою</option>
-        <option value="2">Самовивіз</option>
-      </select>
-    </div>
-    <label for="tnumber">Адреса доставки:</label>
-    <input type="text" id="tnumber" name="tnumber" placeholder="наприклад: м. Київ, вул. Хрещатик, буд. 15"/>
-    </div>
+        <div className="custom-select">
+          <Select options = {delivery_options} value={selected_delivery_options} onChange={this.handleChangeDelivery}/> 
+        </div>
 
-    <button className="BackButton w3-teal button_dynamic button_back">
+        <label for="tnumber">Адреса доставки:</label>
+        <input type="text" id="tnumber" name="tnumber" placeholder="наприклад: м. Київ, вул. Хрещатик, буд. 15" value={this.state.selected_address} onChange={this.handleChangeAddress}/>
+      </div>
+
+    <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.clickHandlerOrder()}>
     <span><b>ЗАМОВИТИ</b></span>
-  </button>
-      </div>    
+    </button>
+  </div> 
     );
   }
 }
 
-
-//component of product description:
+//component of product description (add to cart):
 class Product extends Component{
-  renderAdminModeTrue(){ 
+  renderAdminModeTrue(inp,outp){ 
     return(
-      <span>{this.props.product.in_price.replace("₴","")} грн./{this.props.product.in_price.replace("₴","")} грн.</span>
+      <span>{inp.replace("₴","")} грн./{outp.replace("₴","")} грн.</span>
     )
-    
   } 
-  renderAdminModeFalse(){
+  renderAdminModeFalse(inp){
     return(
-      <span>{this.props.product.in_price.replace("₴","")} грн</span>
+      <span>{inp.replace("₴","")} грн</span>
     )
   } 
   render(){
+    let in_pr=this.props.product.in_price || ''; //to avoid the bug with in_price is undefined 
+    let out_pr=this.props.product.out_price || ''; //to avoid the bug with in_price is undefined
+    window.selected_product = this.props.product; //selected product to add into cart
     return(
       <div className="product">
       <Container>
@@ -122,8 +310,8 @@ class Product extends Component{
       <Col key={1} md={4} sm={12}> 
       <div className="productMain">   
       <span className="productName">{this.props.product.name}</span>
-      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
-      <button className="button button2" onClick={() => this.props.onClick(true)}>Замовити</button>
+      {window.admin_state?this.renderAdminModeTrue(in_pr,out_pr):this.renderAdminModeFalse(in_pr)}
+      <button className="button button2" onClick={() => this.props.onClick(true)}><i class="fa fa-shopping-cart"></i>&nbsp;Додати в корзину</button>
       </div> 
       </Col>
       </Row>
@@ -142,20 +330,20 @@ class Product extends Component{
 
 //component of product:
 class AProduct extends Component{
-clickHandler(params){
-  if(params=="0"){
-    var myModal = document.getElementsByClassName("editProductModal")[0];
-    myModal.classList.toggle("show-modal");
-    window.selected_product_name = this.props.name;
-  }
+  clickHandler(params){
+    if(params=="0"){
+      var myModal = document.getElementsByClassName("editProductModal")[0];
+      myModal.classList.toggle("show-modal");
+      window.selected_product_name = this.props.name;
+      }
     this.props.onClick(params);
   }
 
-deleteHandler(params){
-  if(params=="0"){
+  deleteHandler(params){
+    if(params=="0"){
     window.selected_product_name = this.props.name;
     deleteProructFromServer(window.category, window.selected_product_name);
-  }
+    }
     this.props.onClick(params);
   }
 
@@ -194,16 +382,13 @@ deleteHandler(params){
 
 // component for adding product:
 class AddProduct extends Component {
-
   clickHandler(){
     drawModalProduct();
-}
-
+  }
   renderAdminModeTrue(){ 
     return(
       <div class="addButtonApp productImage" onClick={()=>this.clickHandler()} title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
     )
-    
   } 
   renderAdminModeFalse(){
     return(
@@ -219,7 +404,7 @@ class AddProduct extends Component {
   }
 }
 
-//component of Aproduct's container:
+//component of product's container:
 class Category extends Component{
   clickHandler(product, params){
     this.props.onClick(product, params)
@@ -236,8 +421,8 @@ class Category extends Component{
       <Col key={index} md={4} sm={6}>    
         <AProduct className="Wrapper" src={product.src} name={product.name} in_price={product.in_price} out_price={product.out_price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
       </Col>
-  ))
-}
+        ))
+      }
       <Col>
         <AddProduct/>
       </Col>
@@ -248,11 +433,14 @@ class Category extends Component{
 }
 
 //components of back button :
-class BackButton extends Component{
+class BackButton extends Component {
+  clickHandler() {
+    this.props.onClick();
+  }
   render(){
     return(
       <div className="backButtonContainer">
-        <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.props.onClick()}>
+        <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.clickHandler()}>
           {this.props.fromProduct ? <span><b>назад</b> до каталогу</span> : <span><b>назад</b> до  товару</span>}
         </button>
       </div>
@@ -260,9 +448,37 @@ class BackButton extends Component{
   }
 }
 
+//components of category title and cart symbol :
+class CategoryTitleAndCart extends Component {
+  constructor(props) {
+    super(props)
+  }
+  renderAdminModeTrue(cat_tit){ 
+    return(
+      <b>  {cat_tit}  </b>
+    )
+  } 
+  renderAdminModeFalse(cat_tit){
+    return(
+      <div>
+        <b> {cat_tit} </b><div class="cd-cart" id="cart" onClick={()=>this.props.onClick(true)}><span class="cart_counter">{this.props.total_quantity}</span></div>
+      </div>
+    )
+  } 
+  render(){
+    return(
+      <div>
+        <h4 className="productsCategoryTitle">
+        {window.admin_state?this.renderAdminModeTrue(this.props.category_title):this.renderAdminModeFalse(this.props.category_title)}
+        </h4>
+      </div>
+    );
+  }
+}
+
 // edit Product content component
 class EditProductContent extends Component{
-previewFile(){
+  previewFile(){
     var preview = document.querySelector('#timage'); //selects the query named img
     var file    = document.querySelector('#timageFile').files[0]; //sames as here
     var reader  = new FileReader();
@@ -276,17 +492,16 @@ previewFile(){
     } else {
         preview.src = "";
     }
-}
+  }
 
 readValues(){
   var CurrentCategory = window.category;
   var ProductName = window.selected_product_name;
-
   var ProductInPrice =document.getElementById("fproduct_in_price").value;
   var ProductOutPrice =document.getElementById("fproduct_out_price").value;
   var ProductPhoto = document.querySelector('#timage').getAttribute("src");
   var ProductAbout =document.getElementById("tsummery").value;
-  var test =2;
+  
   updateProductToServer(CurrentCategory, ProductName, ProductInPrice, ProductOutPrice, ProductPhoto, ProductAbout);
 }
 
@@ -295,10 +510,7 @@ readValues(){
       <div className="addCategoryHtml">
       <h6><b>Змінити товар</b></h6>
         <div className="infoBlock">
-      
-        {/* <label htmlFor="fproduct_name">назва товару:</label>
-        <input type="text" id="fproduct_name" name="fproduct_name" placeholder="Введіть назву товару..."/> */}
-
+  
         <label htmlFor="fproduct_in_price">вхідна ціна товару:</label>
         <input type="text" id="fproduct_in_price" name="fproduct_in_price" placeholder="Введіть вхідну ціну товару..."/>
         
@@ -350,7 +562,6 @@ class EditProductModal extends Component {
 
 // add product modal
 class AddProductModal extends Component {
-
   onCloseModal(){
     var myModal = document.getElementsByClassName("addCategoryModal")[0];
     myModal.classList.toggle("show-modal");
@@ -365,37 +576,85 @@ class AddProductModal extends Component {
     );
   }
 }
+
 //main component of whole app:
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      total_quantity : 0,
       showParam:'0',
       product:"none",
     };
+
   }
+
+  updateQuantity = ( ) => {
+    window.total_quantity = 0.0;
+    for (let i = 0; i < window.items.length; i++) { 
+      window.total_quantity = window.total_quantity + window.items[i].quantity*1.0;
+     };
+    this.setState({
+      total_quantity : window.total_quantity
+    });
+  };
+  
+  updateTotalQuantity = (changed_total_quantity) => {
+    this.setState({
+      total_quantity : changed_total_quantity
+    });
+  };
+  
 //Product button handler function:
 handleClick(product, params) {
-    if (params == '0'|| params=='1') {
-      this.setState({
-        product: product,
-        showParam: params,
-      });
-      window.switch_caregory = false;
-    }
+  if (params == '0'|| params=='1') {
+    this.setState({
+      product: product,
+      showParam: params,
+    });
+    window.switch_caregory = false;
+  }
 }
-//when user click in <Product/>
+//when user click add to cart button in <Product/>
 handleProductClick(isOrder){
+  //function for adding selected product into cart items array:
+  function item_for_cart_items(product) {
+    if (product==undefined){ //when cart is empty this value is undefined
+      var item = { name : "", in_price : "", src : "", quantity : 0, total : 0 };
+    }else{
+      var item = { name : product.name, in_price : product.in_price, 
+         src : product.src, quantity : 1, total : product.in_price };
+    } 
+    return item;
+  }
+
   if(isOrder){
+    var item = item_for_cart_items(this.state.product);
+    if (window.items==undefined) window.items=[];
+    window.items.push(item);
+
+  this.updateQuantity();
+    
   this.setState({
     showParam:'2',
   });
 }
 window.switch_caregory=false;
 } 
+
+handleCartClick(isCart){
+  if(isCart){
+  this.setState({
+    showParam:'2',
+  });
+}
+window.switch_caregory=false;
+} 
+
 //"to back" button handler function:
 handleBackClick(backParam){
+ 
   if(backParam=="fromProduct"){
   this.setState({
     showParam:'0',
@@ -413,23 +672,23 @@ renderCategory(){
     <Category category={window.category} onClick={(product, isEdit) => this.handleClick(product, isEdit)} />
     );
 }
-//function that returns <BackButton/> and <Product/> tag(component):
+//function that returns <BackButton/> and <Product/> tag (component):
 renderProduct(){
 let products=[];
-  products.push(<BackButton key={1} fromProduct={true}  onClick={() => this.handleBackClick("fromProduct")} />);
-  products.push(<Product key={2} product={this.state.product} onClick={(isOrder) => this.handleProductClick(isOrder)} />);
+  products.push(<BackButton key={2} fromProduct={true}  onClick={() => this.handleBackClick("fromProduct")} />);
+  products.push(<Product key={3} product={this.state.product} onClick={(isOrder) => this.handleProductClick(isOrder)} />);
   return products;
 }
-// function that returns <CustomerInfo/> tag(component):
+// function that returns <Cart/> tag ( cart component):
 renderInfo(){
   let products=[];
   products.push(<BackButton key={1} fromProduct={false} onClick={() => this.handleBackClick("fromInfo")} />);
-  products.push(<CustomerInfo product={this.state.product}/>);
+  products.push(<Cart product={this.state.product}  updateTotalQuantity={(changed_total_quantity) => this.updateTotalQuantity(changed_total_quantity)}/>);
   return products;
 }
 // function that switch rendering
 renderSwitch(param){
-  switch(param) {
+    switch(param) {
     case '0':
       return this.renderCategory();
     case '1':
@@ -440,14 +699,15 @@ renderSwitch(param){
       return this.renderCategory();
   }
 }
-  //////////
+  ////////////////////////////////////////////
   render() {
     if(window.isAppRender){
     return (
-      <div className="App">
-      {this.renderSwitch(this.state.showParam)}
-      <EditProductModal product={this.state.product}/>
-      <AddProductModal/>
+      <div className="App">       
+        <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam=='2' && window.switch_caregory == false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
+        {this.renderSwitch(this.state.showParam)}
+        <EditProductModal product={this.state.product}/>
+        <AddProductModal/>
       </div>
     );}else{
       return(null);
@@ -457,4 +717,6 @@ renderSwitch(param){
 
 
 
+
  export default App;
+ 
