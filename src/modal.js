@@ -23,7 +23,7 @@ export var categorymodalHtml = '<div class="addCategoryHtml">'+
   '</button>'+
 '</div>';
 
-// draw modal in mainpage
+// draw modal in mainpage for categories
 export function drawModal(modalHtml){
     $('.addCategoryModal .my-modal-content').html( modalHtml);
   // show modal
@@ -47,7 +47,7 @@ $('.addCategoryModal').click(function (event) {
       addCategoryToServer(categName, categCode, categId)
   }
 })
-// modal for categories : <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// modal for categories <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 // draw modal in mainpage for products>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 export function drawModalProduct() {
