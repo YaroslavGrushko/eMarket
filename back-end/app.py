@@ -484,6 +484,65 @@ def get_all_users():
 
     return jsonify({'users' : output})
 
+
+@app.route('/add_сheckout_customer', methods=['GET', 'POST'])
+# @token_required
+def add_сheckout_customer():
+    # rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS """ + rData['customer_name'] +'_'+ rData['customer_phone'] +"""(
+        name VARCHAR,
+        phone VARCHAR,
+        address VARCHAR,
+        delivery VARCHAR,
+        pay VARCHAR)
+        """)
+
+    new_customer = [( rData['customer_name'], rData['customer_phone'], rData['customer_address'], rData['customer_delivery'], rData['customer_pay'])]
+    cursor.executemany("INSERT INTO " + rData['customer_name'] +'_'+ rData['customer_phone'] +" VALUES (?,?,?,?,?)", new_customer)
+    conn.commit()
+
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'status' : rData['customer_name']})   
+
+@app.route('/add_product_customer', methods=['GET', 'POST'])
+# @token_required
+def add_product_customer():
+    # rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS """ 'products'+ rData['customer_phone'] +"""(
+        name VARCHAR,
+        in_price REAL,
+        out_price REAL,
+        src VARCHAR,
+        quantity INTEGER,
+        total REAL)
+        """)
+
+    for item in rData['customer_products']:
+        new_checkout_products = []
+        new_checkout_products = [( item['name'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'])]
+        cursor.executemany("INSERT INTO " 'products'+ rData['customer_phone'] +" VALUES (?,?,?,?,?,?)", new_checkout_products)
+    
+    conn.commit()
+
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'status' : rData['customer_phone']})   
+
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':

@@ -14,8 +14,8 @@ import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 import { drawModalProduct } from './modal.js';
 import { updateProductToServer } from './products.js';
 import { deleteProructFromServer } from './products.js';
-import { addOrderCustumerToServer } from './cart.js';
-import { addOrderProductsToServer } from './cart.js';
+import { addСheckoutCustumerToServer } from './cart.js';
+import { addСheckoutProductsToServer } from './cart.js';
 import Select from 'react-select'; //выпадающий список
 
 const PRODUCTS={};
@@ -69,7 +69,7 @@ class Display extends React.Component{
   //get changedQuantity from child (Quantity), then send it to parent (ProductDisplay) component
   quantityCallBack = (changedQuantity) => {
     this.props.item.quantity = changedQuantity;
-    this.props.item.total = this.props.item.in_price*changedQuantity;
+    this.props.item.total = this.props.item.out_price*changedQuantity;
     this.props.productUpdate(this.props.item.quantity, this.props.item.total, this.props.index);//send changedQuantity to parent (ProductDisplay) component
   }
   //render individual item
@@ -89,7 +89,7 @@ class Display extends React.Component{
                       </tr>
                       <tr>
                           <td><b>Ціна:</b></td>
-                          <td>{this.props.item.in_price}&nbsp;грн.</td>
+                          <td>{this.props.item.out_price}&nbsp;грн.</td>
                       </tr>
                       <tr>
                           <td><b>Сума:</b></td>
@@ -169,22 +169,22 @@ class Cart extends Component{
     this.handleChangeAddress = this.handleChangeAddress.bind(this);
   }
 
-  clickHandlerOrder(){
-    window.order_customer = {};
-    window.order_customer = {
+  clickHandlerCheckout(){
+    window.checkout_customer = {};
+    window.checkout_customer = {
       customer_name : window.selected_name,
       customer_phone : window.selected_phone,
       customer_address : window.selected_address,
       customer_delivery : window.selected_delivery,
       customer_pay : window.selected_pay
     };
-    window.order_products = {};
-    window.order_products = {
+    window.checkout_products = {};
+    window.checkout_products = {
       customer_phone : window.selected_phone,
       customer_products : window.items
     };
-    addOrderCustumerToServer(window.order_customer);
-    addOrderProductsToServer(window.order_products);
+    addСheckoutCustumerToServer(window.checkout_customer);
+    addСheckoutProductsToServer(window.checkout_products);
   }
 
   handleChangeDelivery = selected_delivery_options => {
@@ -276,7 +276,7 @@ class Cart extends Component{
         <input type="text" id="tnumber" name="tnumber" placeholder="наприклад: м. Київ, вул. Хрещатик, буд. 15" value={this.state.selected_address} onChange={this.handleChangeAddress}/>
       </div>
 
-    <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.clickHandlerOrder()}>
+    <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.clickHandlerCheckout()}>
     <span><b>ЗАМОВИТИ</b></span>
     </button>
   </div> 
@@ -298,7 +298,7 @@ class Product extends Component{
   } 
   render(){
     let in_pr=this.props.product.in_price || ''; //to avoid the bug with in_price is undefined 
-    let out_pr=this.props.product.out_price || ''; //to avoid the bug with in_price is undefined
+    let out_pr=this.props.product.out_price || ''; //to avoid the bug with out_price is undefined
     window.selected_product = this.props.product; //selected product to add into cart
     return(
       <div className="product">
@@ -366,7 +366,7 @@ class AProduct extends Component{
         <i className="fa fa-cog editItem displayNone" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
         <span className="productName">{this.props.name}</span>
       <br/>
-      <span>{this.props.in_price}</span>  
+      <span>{this.props.out_price}</span>  
       </React.Fragment>
     )
   } 
@@ -621,10 +621,10 @@ handleProductClick(isOrder){
   //function for adding selected product into cart items array:
   function item_for_cart_items(product) {
     if (product==undefined){ //when cart is empty this value is undefined
-      var item = { name : "", in_price : "", src : "", quantity : 0, total : 0 };
+      var item = { name : "", in_price : "", out_price : "", src : "", quantity : 0, total : 0 };
     }else{
-      var item = { name : product.name, in_price : product.in_price, 
-         src : product.src, quantity : 1, total : product.in_price };
+      var item = { name : product.name, in_price : product.in_price, out_price : product.out_price,
+         src : product.src, quantity : 1, total : product.out_price };
     } 
     return item;
   }
