@@ -25,26 +25,31 @@ it is used in many purposes */
     padding: 10px 40px 10px 20px;
     width: 80vw;
     height: 90vh;
-    border-radius: 0.5rem;
+    border-radius: 0.1rem;
     overflow-y: scroll;
 }
 
-/* button of modal closing */
-.close-button {
-    float: right;
-    width: 5rem;
-    line-height: 5rem;
+.modal-warning-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    /* padding: 10px 40px 10px 20px; */
+
+    width: 50vw;
+    height: 30vh;
+    border-radius: 0.5rem;
+    border: 5px solid red;
     text-align: center;
-    cursor: pointer;
-    border-radius: 0.45rem;
-    background-color: lightgray;
-    font-size: 4.5rem
+    display: table;
 }
 
-
-.close-button:hover {
-    background-color: darkgray;
+.modal-warning-text{
+    display: table-cell;
+    vertical-align: middle;
 }
+
 
 /* css class that is disabled by default
 and when user want to see this modal this class will be enabled */
@@ -105,7 +110,29 @@ input[type=text]:focus {
         padding: 10px 40px 10px 20px;
         width: 80vw;
         height: 90vh;
-        border-radius: 0.5rem;
+        border-radius: 0.1rem;
         overflow-y: scroll;
     }
+
+    .modal-warning-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        /* padding: 10px 40px 10px 20px; */
+    
+        width: 50vw;
+        height: 30vh;
+        border-radius: 0.5rem;
+        border: 5px solid red;
+        text-align: center;
+        display: table;
+    }
+    
+    .modal-warning-text{
+        display: table-cell;
+        vertical-align: middle;
+    }
+
 }
