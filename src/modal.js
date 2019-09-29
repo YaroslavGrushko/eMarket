@@ -73,7 +73,7 @@ var modalHtml = '<div class="addCategoryHtml">'+
 '</div>';
 
 // load modalHtml into modal div
-$('.addCategoryModal .my-modal-content').html(modalHtml);
+$('.my-modal-content').html(modalHtml);
 
 // show modal
 $(".addCategoryModal").toggleClass("show-modal");

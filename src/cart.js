@@ -2,47 +2,47 @@ import $ from 'jquery';
 
 // addOrderCustomerToServer - is a function that is responsible
 // for POST order with custumer's data to Db 
-export function addOrderCustumerToServer(orderCustomer) {
+export function addСheckoutCustumerToServer(checkoutCustomer) {
   
-  let Data_order = JSON.stringify(orderCustomer);
+  let Data_Сheckout = JSON.stringify(checkoutCustomer);
 
-  // $.ajax({
-  //   url: 'http://127.0.0.1:5000/add_orderCustomer',
-  //   type: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
-  //   },
-  //   data: Data_order,
-  //   success: function (data) {
-  //     alert(data.status); 
-  //   },
-  //   error: function (error) {
-  //     alert("error: " + JSON.stringify(error));
-  //   }
-  // });
-  alert("order Customer is formed");
+  $.ajax({
+    url: 'http://127.0.0.1:5000/add_сheckout_customer',
+    type: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: Data_Сheckout,
+    success: function (data) {
+      alert("Customer "+data.status+" is registered."); 
+    },
+    error: function (error) {
+      alert("error: " + JSON.stringify(error));
+    }
+  });
+  
 }
 
 // addOrderProductsToServer - is a function that is responsible
 // for POST order with custumer's products to Db 
-export function addOrderProductsToServer(orderProducts) {
+export function addСheckoutProductsToServer(checkoutProducts) {
   
-  let Data_order = JSON.stringify(orderProducts);
-
-  // $.ajax({
-  //   url: 'http://127.0.0.1:5000/add_orderProducts',
-  //   type: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
-  //   },
-  //   data: Data_order,
-  //   success: function (data) {
-  //     alert(data.status); 
-  //   },
-  //   error: function (error) {
-  //     alert("error: " + JSON.stringify(error));
-  //   }
-  // });
-  alert("order Products is formed");
+  let Data_order = JSON.stringify(checkoutProducts);
+  
+  $.ajax({
+    url: 'http://127.0.0.1:5000/add_product_customer',
+    type: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: Data_order,
+    success: function (data) {
+      alert("Products "+data.status+" is registered."); 
+    },
+    error: function (error) {
+      alert("error: " + JSON.stringify(error));
+    }
+  });
+  
 }
 

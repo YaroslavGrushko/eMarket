@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 
-//less (newest analogue of css):
-import './Appless.css';
+import './css/main_App.css';
 import './css/addDeleteItem.css';
 import './css/product.css';
 import './css/editProduct.css'
 import './css/cart.css'
 import './css/info.css'
+// import './css/warning_dialog.css'
+// import './css/style.css'
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
@@ -14,8 +15,9 @@ import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
 import { drawModalProduct } from './modal.js';
 import { updateProductToServer } from './products.js';
 import { deleteProructFromServer } from './products.js';
-import { addOrderCustumerToServer } from './cart.js';
-import { addOrderProductsToServer } from './cart.js';
+import { addСheckoutCustumerToServer } from './cart.js';
+import { addСheckoutProductsToServer } from './cart.js';
+
 import Select from 'react-select'; //выпадающий список
 
 const PRODUCTS={};
@@ -45,7 +47,6 @@ class Quantity extends React.Component {
   }
 
   render(){
-    var test = 3;
     return(
       <td>
         <input
@@ -60,7 +61,7 @@ class Quantity extends React.Component {
   }
 }
 
-//component that handles the display of each individual product
+//component that handles the display of each individual product in cart
 class Display extends React.Component{
   //will update quantity in this component, then send values to parent (ProductDisplay) component
   constructor(props) {
@@ -69,7 +70,7 @@ class Display extends React.Component{
   //get changedQuantity from child (Quantity), then send it to parent (ProductDisplay) component
   quantityCallBack = (changedQuantity) => {
     this.props.item.quantity = changedQuantity;
-    this.props.item.total = this.props.item.in_price*changedQuantity;
+    this.props.item.total = this.props.item.out_price*changedQuantity;
     this.props.productUpdate(this.props.item.quantity, this.props.item.total, this.props.index);//send changedQuantity to parent (ProductDisplay) component
   }
   //render individual item
@@ -89,7 +90,7 @@ class Display extends React.Component{
                       </tr>
                       <tr>
                           <td><b>Ціна:</b></td>
-                          <td>{this.props.item.in_price}&nbsp;грн.</td>
+                          <td>{this.props.item.out_price}&nbsp;грн.</td>
                       </tr>
                       <tr>
                           <td><b>Сума:</b></td>
@@ -103,7 +104,7 @@ class Display extends React.Component{
   }
 }
 
-//A function to display all the cart items the user selected and allow them to change quantity
+//A component to display all the cart items the user selected and allow them to change quantity
 class ProductDisplay extends React.Component {
   constructor(props) {
     super(props);
@@ -169,22 +170,26 @@ class Cart extends Component{
     this.handleChangeAddress = this.handleChangeAddress.bind(this);
   }
 
-  clickHandlerOrder(){
-    window.order_customer = {};
-    window.order_customer = {
+  clickHandlerCheckout(){
+    window.checkout_customer = {};
+    window.checkout_customer = {
       customer_name : window.selected_name,
       customer_phone : window.selected_phone,
       customer_address : window.selected_address,
       customer_delivery : window.selected_delivery,
       customer_pay : window.selected_pay
     };
-    window.order_products = {};
-    window.order_products = {
+    window.checkout_products = {};
+    window.checkout_products = {
       customer_phone : window.selected_phone,
       customer_products : window.items
     };
-    addOrderCustumerToServer(window.order_customer);
-    addOrderProductsToServer(window.order_products);
+    if (window.selected_name==undefined || window.selected_phone==undefined ||window.selected_address==undefined 
+      || window.selected_delivery==undefined || window.selected_pay==undefined) {Warning();} 
+      else{
+        addСheckoutCustumerToServer(window.checkout_customer);
+        addСheckoutProductsToServer(window.checkout_products);
+      };
   }
 
   handleChangeDelivery = selected_delivery_options => {
@@ -238,26 +243,25 @@ class Cart extends Component{
     return(
     <div className="customerInfo">
       <div className="infoBlock">
-      <div className="selectedProducts">
-        <h6><b>Обрані товари</b></h6>
-      </div>
+        <div className="selectedProducts">
+          <h6><b>Обрані товари</b></h6>
+        </div>
 
-      <br></br>
-      {/* create a component to display the shopping cart items */}
-      <ProductDisplay items={this.state.items} updateTotalQuantity={(changed_total_quantity) => this.updateTotalQuantity(changed_total_quantity)}/>
-      <br></br>
+        <br></br>
+        {/* create a component to display the shopping cart items */}
+        <ProductDisplay items={this.state.items} updateTotalQuantity={(changed_total_quantity) => this.updateTotalQuantity(changed_total_quantity)}/>
+        <br></br>
 
-      <h6><b>Контактні дані</b></h6>
+        <h6><b>Контактні дані</b></h6>
      
-      <label for="fname">Ваше ім'я:</label>
-      <input type="text" id="fname" name="fname" placeholder="Введіть Ваше ім'я..." value={this.state.selected_name} onChange={this.handleChangeName}/>
-      <label for="tnumber">Контактний телефон:</label>
-      <input type="text" id="tnumber" name="tnumber" placeholder="+380 ** *** ** **" value={this.state.selected_phone} onChange={this.handleChangePhone}/>
+        <label for="fname">Ваше ім'я:</label>
+        <input type="text" id="fname" name="fname" placeholder="Введіть Ваше ім'я..." value={this.state.selected_name} onChange={this.handleChangeName}/>
+        <label for="tnumber">Контактний телефон:</label>
+        <input type="text" id="tnumber" name="tnumber" placeholder="+380 ** *** ** **" value={this.state.selected_phone} onChange={this.handleChangePhone}/>
       </div>
 
       <div className="infoBlock">
         <h6><b>Спосіб оплати</b></h6>
-
         <div className="custom-select">
           <Select options = {pay_options} value={selected_pay_options} onChange={this.handleChangePay}/>
         </div>
@@ -265,19 +269,16 @@ class Cart extends Component{
 
       <div className="infoBlock">
         <h6><b>Доставка</b></h6>
-
         <label>Спосіб доставки:</label>
-
         <div className="custom-select">
           <Select options = {delivery_options} value={selected_delivery_options} onChange={this.handleChangeDelivery}/> 
         </div>
-
         <label for="tnumber">Адреса доставки:</label>
         <input type="text" id="tnumber" name="tnumber" placeholder="наприклад: м. Київ, вул. Хрещатик, буд. 15" value={this.state.selected_address} onChange={this.handleChangeAddress}/>
       </div>
 
-    <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.clickHandlerOrder()}>
-    <span><b>ЗАМОВИТИ</b></span>
+    <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.clickHandlerCheckout()}>
+      <span><b>ЗАМОВИТИ</b></span>
     </button>
   </div> 
     );
@@ -298,38 +299,38 @@ class Product extends Component{
   } 
   render(){
     let in_pr=this.props.product.in_price || ''; //to avoid the bug with in_price is undefined 
-    let out_pr=this.props.product.out_price || ''; //to avoid the bug with in_price is undefined
+    let out_pr=this.props.product.out_price || ''; //to avoid the bug with out_price is undefined
     window.selected_product = this.props.product; //selected product to add into cart
     return(
       <div className="product">
-      <Container>
-      <Row> 
-      <Col key={0} md={8} sm={12}>     
-      <img src={this.props.product.src} frameBorder="0" onClick={this.props.onClick}></img>
-      </Col>
-      <Col key={1} md={4} sm={12}> 
-      <div className="productMain">   
-      <span className="productName">{this.props.product.name}</span>
-      {window.admin_state?this.renderAdminModeTrue(in_pr,out_pr):this.renderAdminModeFalse(in_pr)}
-      <button className="button button2" onClick={() => this.props.onClick(true)}><i class="fa fa-shopping-cart"></i>&nbsp;Додати в корзину</button>
-      </div> 
-      </Col>
-      </Row>
+        <Container>
+          <Row> 
+            <Col key={0} md={8} sm={12}>     
+              <img src={this.props.product.src} frameBorder="0" onClick={this.props.onClick}></img>
+            </Col>
+            <Col key={1} md={4} sm={12}> 
+              <div className="productMain">   
+                <span className="productName">{this.props.product.name}</span>
+                {window.admin_state?this.renderAdminModeTrue(in_pr,out_pr):this.renderAdminModeFalse(in_pr)}
+                <button className="button button2" onClick={() => this.props.onClick(true)}><i class="fa fa-shopping-cart"></i>&nbsp;Додати в корзину</button>
+              </div> 
+            </Col>
+          </Row>
 
-      <Row>
-      <div className="aboutProduct">
-      <span><b>Опис</b></span>
-      <span>{this.props.product.about}</span>
-      </div>
-      </Row>
+          <Row>
+            <div className="aboutProduct">
+              <span><b>Опис</b></span>
+              <span>{this.props.product.about}</span>
+            </div>
+          </Row>
         </Container>
       </div>
     );
   }
 }
 
-//component of product:
-class AProduct extends Component{
+//component of single product's container:
+class SProduct extends Component{
   clickHandler(params){
     if(params=="0"){
       var myModal = document.getElementsByClassName("editProductModal")[0];
@@ -354,7 +355,7 @@ class AProduct extends Component{
         <i className="fa fa-cog editItem" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
         <span className="productName">{this.props.name}</span>
       <br/>
-      <span>{this.props.in_price}/{this.props.out_price}</span>  
+      <span>{this.props.in_price}&nbsp;грн./{this.props.out_price}&nbsp;грн.</span>  
       </React.Fragment>
     )
     
@@ -366,15 +367,15 @@ class AProduct extends Component{
         <i className="fa fa-cog editItem displayNone" aria-hidden="true" onClick={()=>this.clickHandler('0')}></i>
         <span className="productName">{this.props.name}</span>
       <br/>
-      <span>{this.props.in_price}</span>  
+      <span>{this.props.out_price}&nbsp;грн.</span>  
       </React.Fragment>
     )
   } 
   render(){
     return(
-      <div className="aProduct">
-      <img className="productImage" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
-      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
+      <div className="sProduct">
+        <img className="productImage" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
+        {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
       </div>
     );
   }
@@ -419,7 +420,7 @@ class Category extends Component{
       <Row md={6} sm={6}>
       {curCATEGORY.map((product, index) => (
       <Col key={index} md={4} sm={6}>    
-        <AProduct className="Wrapper" src={product.src} name={product.name} in_price={product.in_price} out_price={product.out_price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
+        <SProduct className="Wrapper" src={product.src} name={product.name} in_price={product.in_price} out_price={product.out_price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
       </Col>
         ))
       }
@@ -475,6 +476,30 @@ class CategoryTitleAndCart extends Component {
     );
   }
 }
+// function that do DialogWorning component visible
+const Warning = () => {
+  var myModal = document.getElementsByClassName("warningModal")[0];
+    myModal.classList.toggle("show-modal");
+}
+
+// component for warning about unfilled checkout form 
+const DialogWarning = () => {
+  function onCloseModal(){
+    var myModal = document.getElementsByClassName("warningModal")[0];
+    myModal.classList.toggle("show-modal");
+  }
+    return (
+      <div className="warningModal my-modal">
+        <a href="#" className="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
+          <i className="fa fa-remove close-button"  onClick={()=>onCloseModal()}></i>
+        </a>
+        <div className="modal-warning-content">
+          <h4  className="modal-warning-text"><b>Будь ласка, заповніть всі поля форми!</b></h4>
+        </div>
+      </div>
+    );
+}
+
 
 // edit Product content component
 class EditProductContent extends Component{
@@ -510,20 +535,17 @@ readValues(){
       <div className="addCategoryHtml">
       <h6><b>Змінити товар</b></h6>
         <div className="infoBlock">
-  
-        <label htmlFor="fproduct_in_price">вхідна ціна товару:</label>
-        <input type="text" id="fproduct_in_price" name="fproduct_in_price" placeholder="Введіть вхідну ціну товару..."/>
+          <label htmlFor="fproduct_in_price">вхідна ціна товару:</label>
+          <input type="text" id="fproduct_in_price" name="fproduct_in_price" placeholder="Введіть вхідну ціну товару..."/>
         
-        <label htmlFor="fproduct_out_price">вихідна ціна товару:</label>
-        <input type="text" id="fproduct_out_price" name="fproduct_out_price" placeholder="Введіть вихідну ціну товару..."/>
+          <label htmlFor="fproduct_out_price">вихідна ціна товару:</label>
+          <input type="text" id="fproduct_out_price" name="fproduct_out_price" placeholder="Введіть вихідну ціну товару..."/>
         </div>
 
         <div className="infoBlock imageContainer">
-
-        <label class='timageButton button button2' htmlFor='timageFile'>вибрати зображення</label>
-        <input type="file" id='timageFile' onChange={()=>this.previewFile()}/>
-        <img src={this.props.product.src} id="timage" height="200" alt="тут має бути картинка..."/>
-        
+          <label class='timageButton button button2' htmlFor='timageFile'>вибрати зображення</label>
+          <input type="file" id='timageFile' onChange={()=>this.previewFile()}/>
+          <img src={this.props.product.src} id="timage" height="200" alt="тут має бути картинка..."/>
         </div>
 
 
@@ -539,7 +561,6 @@ readValues(){
   }
 }
 
-
 // edit product modal
 class EditProductModal extends Component {
 
@@ -550,15 +571,19 @@ class EditProductModal extends Component {
   }
   render() {
     return (
-      <div className={"editProductModal my-modal"}>
-        <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
+      <div className="editProductModal my-modal">
+        <a href="#" className="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
+          <i className="fa fa-remove close-button"  onClick={()=>this.onCloseModal()}></i>
+        </a>
         <div className="my-modal-content">
-        <EditProductContent product={this.props.product}/>
+          <EditProductContent product={this.props.product}/>
         </div>
       </div>
     );
   }
 }
+
+
 
 // add product modal
 class AddProductModal extends Component {
@@ -569,7 +594,6 @@ class AddProductModal extends Component {
   render() {
     return (
       <div className={"addCategoryModal my-modal"}>
-        <span className="close-button" onClick={()=>this.onCloseModal()}>&times;</span>
         <div className="my-modal-content">
         </div>
       </div>
@@ -621,10 +645,10 @@ handleProductClick(isOrder){
   //function for adding selected product into cart items array:
   function item_for_cart_items(product) {
     if (product==undefined){ //when cart is empty this value is undefined
-      var item = { name : "", in_price : "", src : "", quantity : 0, total : 0 };
+      var item = { name : "", in_price : "", out_price : "", src : "", quantity : 0, total : 0 };
     }else{
-      var item = { name : product.name, in_price : product.in_price, 
-         src : product.src, quantity : 1, total : product.in_price };
+      var item = { name : product.name, in_price : product.in_price, out_price : product.out_price,
+         src : product.src, quantity : 1, total : product.out_price };
     } 
     return item;
   }
@@ -708,6 +732,7 @@ renderSwitch(param){
         {this.renderSwitch(this.state.showParam)}
         <EditProductModal product={this.state.product}/>
         <AddProductModal/>
+        <DialogWarning/>
       </div>
     );}else{
       return(null);
