@@ -6,17 +6,17 @@ import './css/product.css';
 import './css/editProduct.css'
 import './css/cart.css'
 import './css/info.css'
-// import './css/warning_dialog.css'
-// import './css/style.css'
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
-import { Navbar, NavItem, Nav, Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 
-import { drawModalProduct } from './modal.js';
 import { updateProductToServer } from './products.js';
+import { addProductToServer } from './products.js';
 import { deleteProructFromServer } from './products.js';
 import { addСheckoutCustumerToServer } from './cart.js';
 import { addСheckoutProductsToServer } from './cart.js';
+import { startPicture } from './modal.js';
+
 
 import Select from 'react-select'; //выпадающий список
 
@@ -64,9 +64,7 @@ class Quantity extends React.Component {
 //component that handles the display of each individual product in cart
 class Display extends React.Component{
   //will update quantity in this component, then send values to parent (ProductDisplay) component
-  constructor(props) {
-    super(props);
-  }
+  
   //get changedQuantity from child (Quantity), then send it to parent (ProductDisplay) component
   quantityCallBack = (changedQuantity) => {
     this.props.item.quantity = changedQuantity;
@@ -75,7 +73,6 @@ class Display extends React.Component{
   }
   //render individual item
   render() {
-    var test =1;
       return (
           <div key={this.props.index} className="CartItem">
               <figure>
@@ -141,7 +138,6 @@ class ProductDisplay extends React.Component {
   }
 
   render() {
-    var test =1;
       return (
         <div className="cartList">
             {this.state.items.map((currItem, index)=> 
@@ -184,8 +180,8 @@ class Cart extends Component{
       customer_phone : window.selected_phone,
       customer_products : window.items
     };
-    if (window.selected_name==undefined || window.selected_phone==undefined ||window.selected_address==undefined 
-      || window.selected_delivery==undefined || window.selected_pay==undefined) {Warning();} 
+    if (window.selected_name===undefined || window.selected_phone===undefined ||window.selected_address===undefined 
+      || window.selected_delivery===undefined || window.selected_pay===undefined) {Warning();} 
       else{
         addСheckoutCustumerToServer(window.checkout_customer);
         addСheckoutProductsToServer(window.checkout_products);
@@ -306,7 +302,7 @@ class Product extends Component{
         <Container>
           <Row> 
             <Col key={0} md={8} sm={12}>     
-              <img src={this.props.product.src} frameBorder="0" onClick={this.props.onClick}></img>
+              <img src={this.props.product.src} alt="тут має бути картинка..." frameBorder="0" onClick={this.props.onClick}></img>
             </Col>
             <Col key={1} md={4} sm={12}> 
               <div className="productMain">   
@@ -332,7 +328,7 @@ class Product extends Component{
 //component of single product's container:
 class SProduct extends Component{
   clickHandler(params){
-    if(params=="0"){
+    if(params==="0"){
       var myModal = document.getElementsByClassName("editProductModal")[0];
       myModal.classList.toggle("show-modal");
       window.selected_product_name = this.props.name;
@@ -341,7 +337,7 @@ class SProduct extends Component{
   }
 
   deleteHandler(params){
-    if(params=="0"){
+    if(params==="0"){
     window.selected_product_name = this.props.name;
     deleteProructFromServer(window.category, window.selected_product_name);
     }
@@ -374,36 +370,14 @@ class SProduct extends Component{
   render(){
     return(
       <div className="sProduct">
-        <img className="productImage" src={this.props.src} frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
+        <img className="productImage" src={this.props.src} alt="тут має бути картинка..." frameBorder="0" onClick={()=>this.clickHandler('1')}></img>
         {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
       </div>
     );
   }
 }
 
-// component for adding product:
-class AddProduct extends Component {
-  clickHandler(){
-    drawModalProduct();
-  }
-  renderAdminModeTrue(){ 
-    return(
-      <div class="addButtonApp productImage" onClick={()=>this.clickHandler()} title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
-    )
-  } 
-  renderAdminModeFalse(){
-    return(
-      <div class="addButtonApp productImage displayNone" title="Додати новий товар"><i id="addProductButton" class="fa fa-plus "></i></div>
-    )
-  } 
-  render(){
-    return(
-      <div>
-      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
-      </div>
-    );
-  }
-}
+
 
 //component of product's container:
 class Category extends Component{
@@ -451,9 +425,9 @@ class BackButton extends Component {
 
 //components of category title and cart symbol :
 class CategoryTitleAndCart extends Component {
-  constructor(props) {
-    super(props)
-  }
+  // constructor(props) {
+  //   super(props)
+  // }
   renderAdminModeTrue(cat_tit){ 
     return(
       <b>  {cat_tit}  </b>
@@ -462,7 +436,7 @@ class CategoryTitleAndCart extends Component {
   renderAdminModeFalse(cat_tit){
     return(
       <div>
-        <b> {cat_tit} </b><div class="cd-cart" id="cart" onClick={()=>this.props.onClick(true)}><span class="cart_counter">{this.props.total_quantity}</span></div>
+        <b> {cat_tit} </b><div className="cd-cart" id="cart" onClick={()=>this.props.onClick(true)}><span class="cart_counter">{this.props.total_quantity}</span></div>
       </div>
     )
   } 
@@ -543,13 +517,13 @@ readValues(){
         </div>
 
         <div className="infoBlock imageContainer">
-          <label class='timageButton button button2' htmlFor='timageFile'>вибрати зображення</label>
+          <label className='timageButton button button2' htmlFor='timageFile'>вибрати зображення</label>
           <input type="file" id='timageFile' onChange={()=>this.previewFile()}/>
           <img src={this.props.product.src} id="timage" height="200" alt="тут має бути картинка..."/>
         </div>
 
 
-        <div class="infoBlock">
+        <div className="infoBlock">
           опис товару:
           <input type="text" id="tsummery" name="tnumber" placeholder='Введіть опис товару...'/>
         </div>
@@ -563,7 +537,6 @@ readValues(){
 
 // edit product modal
 class EditProductModal extends Component {
-
   onCloseModal(){
     var myModal = document.getElementsByClassName("editProductModal")[0];
     myModal.classList.toggle("show-modal");
@@ -583,20 +556,128 @@ class EditProductModal extends Component {
   }
 }
 
+// component for adding product:
+class AddProduct extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modal_show: false,
+    };
+  }
+  clickHandler(){
+    this.setState({modal_show: true});
+    if (document.getElementsByClassName("addProductModal")[0]!==undefined){
+      var myModal = document.getElementsByClassName("addProductModal")[0];
+      myModal.classList.toggle("show-modal");
+    }
+  }
+  renderModal(){ 
+    return(
+      <div>
+        <AddProductModal/>
+      </div>
+    )
+  } 
+  renderAdminModeTrue(){ 
+    return(
+      <div className="addButtonApp productImage" onClick={()=>this.clickHandler()} title="Додати новий товар"><i id="addProductButton" className="fa fa-plus "></i></div>
+    )
+  } 
+  renderAdminModeFalse(){
+    return(
+      <div className="addButtonApp productImage displayNone" title="Додати новий товар"><i id="addProductButton" className="fa fa-plus "></i></div>
+    )
+  } 
+  render(){
+    return(
+      <div>
+      {window.admin_state?this.renderAdminModeTrue():this.renderAdminModeFalse()}
+      {this.state.modal_show?this.renderModal():''}
+      </div>
+    );
+  }
+}
 
+// add Product content component
+class AddProductContent extends Component{
+  
+  previewFile(){
+    var preview = document.querySelector('#aimage'); //selects the query named img
+    var file    = document.querySelector('#aimageFile').files[0]; //sames as here
+    var reader  = new FileReader();
+    
+    reader.onloadend = function () {
+        preview.src = reader.result;
+    }
+
+    if (file) {
+        reader.readAsDataURL(file); //reads the data as a URL
+    } else {
+        preview.src = "";
+    }
+  }
+
+readValues(){
+  var CurrentCategory = window.category;
+  var ProductName = document.getElementById("aproduct_name").value;
+  var ProductInPrice = document.getElementById("aproduct_in_price").value;
+  var ProductOutPrice = document.getElementById("aproduct_out_price").value;
+  var ProductPhoto = document.querySelector('#aimage').getAttribute("src");
+  var ProductAbout = document.getElementById("asummery").value;
+  
+  addProductToServer(CurrentCategory, ProductName, ProductInPrice, ProductOutPrice, ProductPhoto, ProductAbout);
+  
+}
+  render(){
+    var start_img_src = startPicture(); //start image
+    return(
+      <div className="addCategoryHtml">
+      <h6><b>Додати товар</b></h6>
+        <div className="infoBlock">
+          <label htmlFor="aproduct_name">назва товару:</label>
+          <input type="text" id="aproduct_name" name="aproduct_name" placeholder="Введіть назву товару..."/>
+
+          <label htmlFor="aproduct_in_price">вхідна ціна товару:</label>
+          <input type="text" id="aproduct_in_price" name="aproduct_in_price" placeholder="Введіть вхідну ціну товару..."/>
+        
+          <label htmlFor="aproduct_out_price">вихідна ціна товару:</label>
+          <input type="text" id="aproduct_out_price" name="aproduct_out_price" placeholder="Введіть вихідну ціну товару..."/>
+        </div>
+        <div className="infoBlock imageContainer">
+          <label className='aimageButton button button2' htmlFor='aimageFile'>вибрати зображення</label>
+          <input type="file" id='aimageFile' onChange={()=>this.previewFile()}/>
+          <img src={start_img_src} id="aimage" height="200" alt="тут має бути картинка..."/>
+        </div>
+        <div className="infoBlock">
+          опис товару:
+          <input type="text" id="asummery" name="anumber" placeholder='Введіть опис товару...'/>
+        </div>
+          <button className="BackButton w3-teal button_dynamic button_back" onClick={()=>this.readValues()}>
+            <span><b>Зберегти</b></span>
+          </button>
+      </div>
+    );
+  }
+}
 
 // add product modal
 class AddProductModal extends Component {
   onCloseModal(){
-    var myModal = document.getElementsByClassName("addCategoryModal")[0];
+    // window.add_product_show = false;
+    var myModal = document.getElementsByClassName("addProductModal")[0];
     myModal.classList.toggle("show-modal");
+    document.getElementsByClassName('.addCategoryModal .my-modal-content').innerHTML = "";
   }
   render() {
     return (
-      <div className={"addCategoryModal my-modal"}>
-        <div className="my-modal-content">
-        </div>
+      <div className="addProductModal my-modal show-modal"> 
+        <a href="#" className="w3-hide-large w3-right w3-jumbo w3-padding w3-hover" title="close menu">
+          <i className="fa fa-remove close-button"  onClick={()=>this.onCloseModal()}></i>
+        </a>
+      <div className="my-modal-content">
+        <AddProductContent/>
       </div>
+    </div>
     );
   }
 }
@@ -632,7 +713,7 @@ class App extends Component {
   
 //Product button handler function:
 handleClick(product, params) {
-  if (params == '0'|| params=='1') {
+  if (params === '0'|| params==='1') {
     this.setState({
       product: product,
       showParam: params,
@@ -644,7 +725,7 @@ handleClick(product, params) {
 handleProductClick(isOrder){
   //function for adding selected product into cart items array:
   function item_for_cart_items(product) {
-    if (product==undefined){ //when cart is empty this value is undefined
+    if (product===undefined){ //when cart is empty this value is undefined
       var item = { name : "", in_price : "", out_price : "", src : "", quantity : 0, total : 0 };
     }else{
       var item = { name : product.name, in_price : product.in_price, out_price : product.out_price,
@@ -655,7 +736,7 @@ handleProductClick(isOrder){
 
   if(isOrder){
     var item = item_for_cart_items(this.state.product);
-    if (window.items==undefined) window.items=[];
+    if (window.items===undefined) window.items=[];
     window.items.push(item);
 
   this.updateQuantity();
@@ -679,7 +760,7 @@ window.switch_caregory=false;
 //"to back" button handler function:
 handleBackClick(backParam){
  
-  if(backParam=="fromProduct"){
+  if(backParam==="fromProduct"){
   this.setState({
     showParam:'0',
   });
@@ -704,7 +785,7 @@ let products=[];
   return products;
 }
 // function that returns <Cart/> tag ( cart component):
-renderInfo(){
+renderCart(){
   let products=[];
   products.push(<BackButton key={1} fromProduct={false} onClick={() => this.handleBackClick("fromInfo")} />);
   products.push(<Cart product={this.state.product}  updateTotalQuantity={(changed_total_quantity) => this.updateTotalQuantity(changed_total_quantity)}/>);
@@ -718,7 +799,7 @@ renderSwitch(param){
     case '1':
        return window.switch_caregory? this.renderCategory() : this.renderProduct();
     case '2':
-      return window.switch_caregory? this.renderCategory() : this.renderInfo();
+      return window.switch_caregory? this.renderCategory() : this.renderCart();
     default:
       return this.renderCategory();
   }
@@ -728,10 +809,9 @@ renderSwitch(param){
     if(window.isAppRender){
     return (
       <div className="App">       
-        <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam=='2' && window.switch_caregory == false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
+        <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam==='2' && window.switch_caregory === false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
         {this.renderSwitch(this.state.showParam)}
         <EditProductModal product={this.state.product}/>
-        <AddProductModal/>
         <DialogWarning/>
       </div>
     );}else{

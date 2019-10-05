@@ -13,7 +13,7 @@ getCategories();
 $('.main_photo_container').click(function(event){
 var target = event.target;
 var selectedId = $(target).attr('id');
-if(selectedId=='addCategoryButton')addCategory()
+if(selectedId==='addCategoryButton')addCategory()
 })
 
 // add category
@@ -234,7 +234,7 @@ $(".categoryIcon").click(function (){
 
 // Closure last-height/width
 var lastX = window.innerWidth
-var lastY = window.innerHeight
+// var lastY = window.innerHeight
 
 function fooOnResize() {
    var x = window.innerWidth
