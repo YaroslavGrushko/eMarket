@@ -18,11 +18,11 @@ var prev_category = null;
 window.order=[]; // value with product's order
 
 main_photo_container.addEventListener('click', function (event) {
-  if (event.target.id != 'addCategoryButton' && (!event.target.className.includes('deleteItem'))) {
+  if (event.target.id !== 'addCategoryButton' && (!event.target.className.includes('deleteItem'))) {
     window.category = event.target.id;
 
     // check is category changed
-    prev_category != window.category ? window.switch_caregory = true : window.switch_caregory = false;
+    prev_category !== window.category ? window.switch_caregory = true : window.switch_caregory = false;
 
     //  window.isAppRender = is app.js will be render
     window.isAppRender = true;
