@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import $ from 'jquery';
-import { drawModal } from './modal.js';
-import { categorymodalHtml } from './modal.js';
 import './index.js'
 
 
@@ -18,7 +16,7 @@ export function read_products(category_name) {
       success: function (data) {
         
         // check if products table is not empty
-        if (data.name_of_not_exist_table != null && window.admin_state != true) {
+        if (data.name_of_not_exist_table != null && window.admin_state !== true) {
           alert("Table: <<"+data.name_of_not_exist_table+">> dose not exist!");
         } 
         else{
@@ -67,7 +65,8 @@ export function addProductToServer(CurrentCategory, ProductName, ProductInPrice,
     success: function (data) {
       // alert(data.status); 
       read_products(data.status);
-      $(".addCategoryModal").toggleClass("show-modal");
+    var myModal = document.getElementsByClassName("addProductModal")[0];
+      $(".addProductModal").toggleClass("show-modal");
     },
     error: function (error) {
       alert("error: " + JSON.stringify(error));

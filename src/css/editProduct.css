@@ -1,4 +1,4 @@
-/* this file is about edit product modal */
+/* this file is about edit and add product modal */
 .timageButton{
     display:block;
     margin:auto;
@@ -6,6 +6,18 @@
     cursor:pointer;
 }
 #timageFile{
+    display:none;
+    opacity: 0;
+    /* position: absolute; */
+    z-index: -1;
+}
+.aimageButton{
+    display:block;
+    margin:auto;
+    margin-bottom:20px;
+    cursor:pointer;
+}
+#aimageFile{
     display:none;
     opacity: 0;
     /* position: absolute; */
