@@ -65,7 +65,6 @@ export function addProductToServer(CurrentCategory, ProductName, ProductInPrice,
     success: function (data) {
       // alert(data.status); 
       read_products(data.status);
-    var myModal = document.getElementsByClassName("addProductModal")[0];
       $(".addProductModal").toggleClass("show-modal");
     },
     error: function (error) {
