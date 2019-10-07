@@ -17,8 +17,9 @@ import { addСheckoutCustumerToServer } from './cart.js';
 import { addСheckoutProductsToServer } from './cart.js';
 import { startPicture } from './modal.js';
 
-
 import Select from 'react-select'; //выпадающий список
+
+import DashBoard from './dashboard';
 
 const PRODUCTS={};
 
@@ -394,7 +395,7 @@ class Category extends Component{
       <Row md={6} sm={6}>
       {curCATEGORY.map((product, index) => (
       <Col key={index} md={4} sm={6}>    
-        <SProduct className="Wrapper" src={product.src} name={product.name} in_price={product.in_price} out_price={product.out_price} onClick={(isEdit)=>this.clickHandler(product, isEdit)} />
+        <SProduct className="Wrapper" src={product.src} name={product.name} in_price={product.in_price} out_price={product.out_price} onClick={(isEnter)=>this.clickHandler(product, isEnter)} />
       </Col>
         ))
       }
@@ -774,7 +775,7 @@ handleBackClick(backParam){
 //function that returns <Category/> tag(component):
 renderCategory(){
   return(
-    <Category category={window.category} onClick={(product, isEdit) => this.handleClick(product, isEdit)} />
+    <Category category={window.category} onClick={(product, isEnter) => this.handleClick(product, isEnter)} />
     );
 }
 //function that returns <BackButton/> and <Product/> tag (component):
@@ -804,24 +805,44 @@ renderSwitch(param){
       return this.renderCategory();
   }
 }
+
+renderDashBoard(){
+  return(
+    <DashBoard dashboard_show = {window.dashboard_show}/>
+  );
+}
   ////////////////////////////////////////////
   render() {
-    if(window.isAppRender){
-    return (
-      <div className="App">       
-        <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam==='2' && window.switch_caregory === false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
-        {this.renderSwitch(this.state.showParam)}
-        <EditProductModal product={this.state.product}/>
-        <DialogWarning/>
+    if(window.isAppRender && window.dashboard_show){
+      return (
+        <div className="App">      
+          <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam==='2' && window.switch_caregory === false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
+          {this.renderSwitch(this.state.showParam)}
+          <EditProductModal product={this.state.product}/>
+          <DialogWarning/>
+          <DashBoard dashboard_show = {window.dashboard_show}/>
+        </div>
+      );
+    }else if(window.isAppRender===true && window.dashboard_show === false){
+      return(
+        <div className="App">      
+          <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam==='2' && window.switch_caregory === false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
+          {this.renderSwitch(this.state.showParam)}
+          <EditProductModal product={this.state.product}/>
+          <DialogWarning/>
+        </div>
+      );
+    }else if(window.isAppRender===false && window.dashboard_show === true){
+      return(
+        <div className="App"> 
+        <DashBoard dashboard_show = {window.dashboard_show}/>
       </div>
-    );}else{
+      );
+    }else{
       return(null);
     }
   }
 }
-
-
-
 
  export default App;
  

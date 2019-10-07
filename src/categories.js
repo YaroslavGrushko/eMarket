@@ -167,9 +167,8 @@ function showCategories(categories) {
 
     var images =
       '<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ' +
-      '<img src="././images/dashboard.png" alt="" title="кабінет">' ;
+      '<img id="dashboard" src="././images/dashboard.png" alt="" title="кабінет">' ;
     $('.moving-zone').find('.logo').html(images);
-
 
     // if it is not admin mode
   } else {
@@ -191,23 +190,32 @@ function showCategories(categories) {
     switchLoginStatus(false);
     //  window.isAppRender = is app.js will be render
     window.isAppRender = false;
+    window.dashboard_show=false;
     localStorage.removeItem('x-access-token');
     // reload main react app with new window.admin_state value
     ReactDOM.render( <App/> , document.getElementById('root'));
   })
 
   // for scrolling to products when categori's icon is pressed:
-$(".categoryIcon").click(function (){
-  $('html, body').animate({
-  scrollTop: $('#products').offset().top}, 'slow');})
+  $(".categoryIcon").click(function (){
+    $('html, body').animate({
+    scrollTop: $('#products').offset().top}, 'slow');})
+  
+  //at pressing on dashboard button:
+  $("#dashboard").click(function (){
+    window.dashboard_show=true;
+    window.isAppRender = false;
+    // reload main react app with new window.dashboard_show value
+    ReactDOM.render( <App/> , document.getElementById('root'));
+    $('html, body').animate({
+      scrollTop: $('#dashboard_content').offset().top}, 'slow');
+  });
+  
 }
-
   // login from back response handler
     export function switchLoginStatus(isAdmin){
       window.switch_admin_mode = false;
-  
-      // if ($("input#username").val() == "admin" && $("input#password").val() == "admin") {
-        if(isAdmin){
+      if(isAdmin){
         window.admin_state = true;
         window.switch_admin_mode = true;
         // let's load categories from Db
@@ -225,8 +233,6 @@ $(".categoryIcon").click(function (){
 // <<<<<<<<<< show categories - is a big 
 // function that is appropriate for
 // displaing categories in appropriate way
-
-
 
 
 // when window is resized, we must alter 
