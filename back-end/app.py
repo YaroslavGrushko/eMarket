@@ -8,8 +8,13 @@ import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
+
 from datetime import datetime
 from datetime import timedelta
+
+# import time
+# from datetime import date
+
 
 from functools import wraps
 
@@ -500,11 +505,18 @@ def add_сheckout_customer():
         phone VARCHAR,
         address VARCHAR,
         delivery VARCHAR,
-        pay VARCHAR)
+        pay VARCHAR,
+        date VARCHAR)
         """)
+    today = datetime.now()
+    year = str(today.year) 
+    month = str(today.month)
+    day = str(today.day)  
+    
+    today_date = year+month+day
 
-    new_customer = [( rData['customer_name'], rData['customer_phone'], rData['customer_address'], rData['customer_delivery'], rData['customer_pay'])]
-    cursor.executemany("INSERT INTO " + rData['customer_name'] +'_'+ rData['customer_phone'] +" VALUES (?,?,?,?,?)", new_customer)
+    new_customer = [( rData['customer_name'], rData['customer_phone'], rData['customer_address'], rData['customer_delivery'], rData['customer_pay'], today_date)]
+    cursor.executemany("INSERT INTO " + rData['customer_name'] +'_'+ rData['customer_phone'] +" VALUES (?,?,?,?,?,?)", new_customer)
     conn.commit()
 
     if request.method == 'GET':
@@ -528,13 +540,19 @@ def add_product_customer():
         out_price REAL,
         src VARCHAR,
         quantity INTEGER,
-        total REAL)
+        total REAL,
+        date VARCHAR)
         """)
-
+    today = datetime.now()
+    year = str(today.year) 
+    month = str(today.month)
+    day = str(today.day)  
+    
+    today_date = year+month+day
     for item in rData['customer_products']:
         new_checkout_products = []
-        new_checkout_products = [( item['name'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'])]
-        cursor.executemany("INSERT INTO " 'products'+ rData['customer_phone'] +" VALUES (?,?,?,?,?,?)", new_checkout_products)
+        new_checkout_products = [( item['name'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'],today_date)]
+        cursor.executemany("INSERT INTO " 'products'+ rData['customer_phone'] +" VALUES (?,?,?,?,?,?,?)", new_checkout_products)
     
     conn.commit()
 

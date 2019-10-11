@@ -813,7 +813,7 @@ renderDashBoard(){
 }
   ////////////////////////////////////////////
   render() {
-    if(window.isAppRender && window.dashboard_show){
+    if(window.isAppRender===true && window.dashboard_show===true){
       return (
         <div className="App">      
           <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam==='2' && window.switch_caregory === false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
@@ -823,7 +823,7 @@ renderDashBoard(){
           <DashBoard dashboard_show = {window.dashboard_show}/>
         </div>
       );
-    }else if(window.isAppRender===true && window.dashboard_show === false){
+    }else if(window.isAppRender===true && (window.dashboard_show === false || window.dashboard_show === undefined) ){
       return(
         <div className="App">      
           <CategoryTitleAndCart total_quantity={this.state.total_quantity} category_title={this.state.showParam==='2' && window.switch_caregory === false ? 'Ваш кошик' : window.category} onClick={(isCart) => this.handleCartClick(isCart)}/>
