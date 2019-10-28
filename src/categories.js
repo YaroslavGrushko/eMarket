@@ -18,7 +18,7 @@ if(selectedId==='addCategoryButton')addCategory()
 
 // add category
 function addCategory(){
-  drawModal(categorymodalHtml)
+  drawModal(categorymodalHtml);
 }
 // addCategoryToServer - is a function that is responsible
 // for POST category to Db (add new category)
