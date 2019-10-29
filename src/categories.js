@@ -18,15 +18,17 @@ if(selectedId==='addCategoryButton')addCategory()
 
 // add category
 function addCategory(){
-  drawModal(categorymodalHtml)
+  drawModal(categorymodalHtml);
 }
 // addCategoryToServer - is a function that is responsible
 // for POST category to Db (add new category)
-export function addCategoryToServer(categName, categCode, categId) {
+export function addCategoryToServer(categId, categName, categCode, managerName, managerPhoto) {
   let jsonData = {
     'category_id': categId,
     'category_name': categName, //$('#').val(),
-    'category_code': categCode
+    'category_code': categCode,
+    'manager_name' : managerName,
+    'manager_photo' : managerPhoto
   };
   let Data_order = JSON.stringify(jsonData);
 
@@ -43,7 +45,7 @@ export function addCategoryToServer(categName, categCode, categId) {
       $(".addCategoryModal").toggleClass("show-modal");
     },
     error: function (error) {
-      alert("error: " + JSON.stringify(error));
+      //alert("error: " + JSON.stringify(error));
     }
   });
 }

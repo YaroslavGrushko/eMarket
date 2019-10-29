@@ -2,20 +2,51 @@
 import $ from 'jquery';
 import { addCategoryToServer } from './categories.js';
 
+var start_img_src = startPicture(); //start image
+
+function previewFile(){
+  var preview = document.querySelector('#fmanagerPhoto'); //selects the query named img
+  var file    = document.querySelector('#mimageFile').files[0]; //sames as here
+  var reader  = new FileReader();
+  
+  reader.onloadend = function () {
+      preview.src = reader.result;
+  }
+
+  if (file) {
+      reader.readAsDataURL(file); //reads the data as a URL
+  } else {
+      preview.src = "";
+  }
+}
+
 // modal for categories : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 export var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<div class="infoBlock">'+
 '<h6><b>Додати Категорію</b></h6>'+
 
 '<label for="fid">id категорії:</label>'+
-'<input type="text" id="fid" name="fname" placeholder="Введіть id категорії"/>'+
+'<input type="text" id="fid" name="fname" placeholder="введіть id категорії"/>'+
+
 '<label for="fname">назва категорії:</label>'+
-'<input type="text" id="fname" name="fname" placeholder="Введіть назву категорії"/>'+
-'<label for="tcode">Вставте Unicode-шифр fa fa-icon_name-а:</label>'+
-'<input type="text" id="tcode" name="tnumber" placeholder="Unicode-шифр fa fa-icon-а"/>'+
+'<input type="text" id="fname" name="fname" placeholder="введіть назву категорії"/>'+
+
+'<label for="tcode"> Unicode-шифр fa fa-icon_name-а:</label>'+
+'<input type="text" id="tcode" name="tnumber" placeholder="вставте Unicode-шифр fa fa-icon-а"/>'+
 '</div>'+
+
+'<div class="infoBlock imageContainer">'+
+
+'<label htmlFor="fproduct_in_price">фамілія та ініціали менеджера:</label>'+
+'<input type="text" id="fmanagerName" name="fproduct_in_price" placeholder="введіть фамілію та ініціали менеджера..."/><br></br>'+
+
+'<label class="mimageButton button button2" for="mimageFile">виберіть фото менеджера</label>'+
+'<input type="file"  id="mimageFile" />'+
+'<img src='+start_img_src+' id="fmanagerPhoto" height="200" alt="тут має бути фото..."/>'+
+'</div>'+
+
 '<button class="BackButton w3-teal button_dynamic button_back">'+
-'<span><b>Створити</b></span>'+
+'<span><b>Додати</b></span>'+
   '</button>'+
 '</div>';
 
@@ -24,7 +55,11 @@ export function drawModal(modalHtml){
     $('.addCategoryModal .my-modal-content').html( modalHtml);
   // show modal
     $(".addCategoryModal").toggleClass("show-modal");
+    $( "#mimageFile" ).change(function() {
+      previewFile();
+    });
 }
+
 $('.addCategoryModal .close-button').click(function(){
     $(".addCategoryModal").toggleClass("show-modal");
 })
@@ -38,9 +73,12 @@ $('.addCategoryModal').click(function (event) {
     var categId = $(infoBlock).find('#fid').val();
     var categName = $(infoBlock).find('#fname').val();
     var categCode = $(infoBlock).find('#tcode').val();
-
+    var managerName = $(infoBlock).find('#fmanagerName').val();
+    var managerPhoto = $(infoBlock).find('#fmanagerPhoto').val();
+    var managerPhoto = document.querySelector('#fmanagerPhoto').getAttribute("src");
+   
     if ((categId !== '') && (categName !== '') && (categCode !== '') && (categId !== undefined) && (categName !== undefined) && (categCode !== undefined))
-      addCategoryToServer(categName, categCode, categId)
+      addCategoryToServer(categId, categName, categCode, managerName, managerPhoto)
   }
 })
 // modal for categories <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
