@@ -325,6 +325,18 @@ def read_category():
 
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
+    
+    cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
+            (
+            "category_id" VARCHAR,
+            "category_name" VARCHAR,
+            "category_code" VARCHAR,
+            "name" VARCHAR,
+            "photo" VARCHAR,
+            "time" DATETIME
+            )
+            """)
+    
     cursor.execute("select * from Categories") # This line performs query and returns json result
     rows = cursor.fetchall()
 
@@ -345,9 +357,20 @@ def save_category():
 
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
+
+    cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
+            (
+            "category_id" VARCHAR,
+            "category_name" VARCHAR,
+            "category_code" VARCHAR,
+            "name" VARCHAR,
+            "photo" VARCHAR,
+            "time" DATETIME
+            )
+            """)
     
-    new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], datetime.now()),]
-    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?)", new_category)
+    new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], rData['manager_name'], rData['manager_photo'], datetime.now()),]
+    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?,?,?)", new_category)
     conn.commit()
 
     if request.method == 'GET':

@@ -5,7 +5,7 @@ import { addCategoryToServer } from './categories.js';
 var start_img_src = startPicture(); //start image
 
 function previewFile(){
-  var preview = document.querySelector('#mimage'); //selects the query named img
+  var preview = document.querySelector('#fmanagerPhoto'); //selects the query named img
   var file    = document.querySelector('#mimageFile').files[0]; //sames as here
   var reader  = new FileReader();
   
@@ -38,11 +38,11 @@ export var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<div class="infoBlock imageContainer">'+
 
 '<label htmlFor="fproduct_in_price">фамілія та ініціали менеджера:</label>'+
-'<input type="text" id="fproduct_in_price" name="fproduct_in_price" placeholder="введіть фамілію та ініціали менеджера..."/><br></br>'+
+'<input type="text" id="fmanagerName" name="fproduct_in_price" placeholder="введіть фамілію та ініціали менеджера..."/><br></br>'+
 
 '<label class="mimageButton button button2" for="mimageFile">виберіть фото менеджера</label>'+
 '<input type="file"  id="mimageFile" />'+
-'<img src='+start_img_src+' id="mimage" height="200" alt="тут має бути фото..."/>'+
+'<img src='+start_img_src+' id="fmanagerPhoto" height="200" alt="тут має бути фото..."/>'+
 '</div>'+
 
 '<button class="BackButton w3-teal button_dynamic button_back">'+
@@ -73,9 +73,12 @@ $('.addCategoryModal').click(function (event) {
     var categId = $(infoBlock).find('#fid').val();
     var categName = $(infoBlock).find('#fname').val();
     var categCode = $(infoBlock).find('#tcode').val();
-
+    var managerName = $(infoBlock).find('#fmanagerName').val();
+    var managerPhoto = $(infoBlock).find('#fmanagerPhoto').val();
+    var managerPhoto = document.querySelector('#fmanagerPhoto').getAttribute("src");
+   
     if ((categId !== '') && (categName !== '') && (categCode !== '') && (categId !== undefined) && (categName !== undefined) && (categCode !== undefined))
-      addCategoryToServer(categName, categCode, categId)
+      addCategoryToServer(categId, categName, categCode, managerName, managerPhoto)
   }
 })
 // modal for categories <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
