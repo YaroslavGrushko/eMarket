@@ -44,11 +44,21 @@ export var categorymodalHtml = '<div class="addCategoryHtml">'+
 '<input type="file"  id="mimageFile" />'+
 '<img src='+start_img_src+' id="fmanagerPhoto" height="200" alt="тут має бути фото..."/>'+
 '</div>'+
-
+'<div class="warningModal">'+
+'</div>'+
 '<button class="BackButton w3-teal button_dynamic button_back">'+
 '<span><b>Додати</b></span>'+
   '</button>'+
 '</div>';
+
+var category_unfill_modal = 
+  '<h4  class="category_warning"><b>Будь ласка, заповніть всі поля форми!</b></h4>';
+
+function drawWarning(modalWorn){
+  $('.warningModal').html( modalWorn);
+  // show modal
+    $(".warningModal").toggleClass("show-modal");
+}
 
 // draw modal in mainpage for categories
 export function drawModal(modalHtml){
@@ -74,13 +84,17 @@ $('.addCategoryModal').click(function (event) {
     var categName = $(infoBlock).find('#fname').val();
     var categCode = $(infoBlock).find('#tcode').val();
     var managerName = $(infoBlock).find('#fmanagerName').val();
-    var managerPhoto = $(infoBlock).find('#fmanagerPhoto').val();
     var managerPhoto = document.querySelector('#fmanagerPhoto').getAttribute("src");
    
-    if ((categId !== '') && (categName !== '') && (categCode !== '') && (categId !== undefined) && (categName !== undefined) && (categCode !== undefined))
-      addCategoryToServer(categId, categName, categCode, managerName, managerPhoto)
+    if ((categId === '') || (categName === '') || (categCode === '') || (categId === undefined) || (categName === undefined) || (categCode === undefined) || (managerName === undefined) || (managerName === '') || (managerPhoto === undefined) || (managerPhoto === '')){
+      drawWarning(category_unfill_modal);
+    }else{
+      addCategoryToServer(categId, categName, categCode, managerName, managerPhoto);
+    }
+     
   }
 })
+
 // modal for categories <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 export function startPicture(){
