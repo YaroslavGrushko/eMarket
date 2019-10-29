@@ -2,6 +2,8 @@
 it is used in many purposes */
 
 /* main part od modal window */
+
+
 .my-modal {
     position: fixed;
     left: 0;
@@ -85,6 +87,9 @@ input[type=text]:focus {
     text-align: center;
 }
 
+.category_warning{
+color: red;
+}
 
 /* for desktop screen */
 @media screen and (min-width: 1200px) {
