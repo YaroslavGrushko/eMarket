@@ -8,6 +8,16 @@ class DashBoard extends Component {
         <h1>
           Dashboard Loaded!
         </h1>
+          <div class="d-flex justify-content-center">
+          <div class="card" style={{width:400+'px'}}>
+              <h4 class="card-title text-center">Загальний прибуток</h4>
+              <div class="card-body d-flex justify-content-center">
+                  <div class="card text-center" style={{width:50+'%'}}>1000</div>
+                  <div class="ml-1">грн</div>
+              </div>
+              <div class="card-footer">за вибраний проміжок часу</div>
+          </div>
+       </div>
       </div>
     );
   }
