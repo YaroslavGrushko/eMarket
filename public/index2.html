@@ -7,17 +7,27 @@
      <!-- bootstrap 4 -->
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
      <link rel="stylesheet" href="css/border.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css">
+     <link rel="stylesheet" href="css/my-charts.css">
      <!-- JQuery: -->
      <script src="js/JQuery/jquery-3.4.1.min.js"></script> 
     <title>Document</title>
 </head>
 <body>
     <div class="d-flex justify-content-center">
-        <div class="card" style="width:400px">
-            <h4 class="card-title text-center">Загальний прибуток</h4>
-            <div class="card-body d-flex justify-content-center">
-                <div class="card text-center font-weight-bold" style="width:50%">1000</div>
-                <div class="ml-1">грн</div>
+        <div class="card">
+            <div class="card-title d-flex justify-content-center">
+                <div class="d-flex flex-row">
+                    <h4>Загальні продажі</h4>
+                    <div class="card text-center font-weight-bold ml-2 p-1">80</div>
+                    <div class="ml-1">шт</div>
+                </div>
+            </div>
+            <div class="card-body p-0 d-flex justify-content-center">
+                <!-- chart: -->
+                <div class="chart-container">
+                    <canvas id="myChart" aria-label="Hello ARIA World" role="img"></canvas>
+                </div>
             </div>
             <div class="card-footer">за вибраний проміжок часу</div>
         </div>
@@ -26,5 +36,9 @@
     <!-- bootstrap 4 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <!-- <script src="js/bars.js"></script>-->
+    <script src="js/my-charts.js"></script> 
 </body>
 </html>
