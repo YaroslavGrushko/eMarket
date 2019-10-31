@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import DevVladimir from './dev_Vladimir';
 
-// component for adding product:
+
+
+
+// main component for DashBoard:
 class DashBoard extends Component {
   render(){
     return(
@@ -8,6 +12,8 @@ class DashBoard extends Component {
         <h4 class="text-center">
           <b>ДОШКА АНАЛІТИКИ</b>
         </h4>
+        <br></br>
+        <DevVladimir/>
         <br></br>
           <div class="d-flex justify-content-center">
           <div class="card" style={{width:400+'px'}}>
@@ -19,6 +25,7 @@ class DashBoard extends Component {
               <div class="card-footer">за вибраний проміжок часу</div>
           </div>
        </div>
+       
       </div>
     );
   }
