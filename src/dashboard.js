@@ -4,6 +4,26 @@ import DeveloperYaroslav from './dev_Yaroslav';
 import {InputGroup} from 'react-bootstrap';
 import {FormControl} from 'react-bootstrap';
 
+//npm install --save rc-datepicker
+import 'moment/locale/uk.js';
+import 'rc-datepicker/lib/style.css';
+import { DatePicker} from 'rc-datepicker';
+
+// component for calendar:
+class Calendar extends Component {
+  onChange = (jsDate, dateString) => {
+   // alert(jsDate);
+  }
+  render(){
+    const date = new Date();
+    return(
+      <div className="d-flex justify-content-center">
+        <DatePicker onChange={this.onChange} value={date} />
+      </div>
+    );
+  }
+}
+
 //component for setting period:
 class Period extends Component {
   render(){
@@ -15,7 +35,7 @@ class Period extends Component {
             <h4 className="card-title text-center">Заліковий період</h4>
             <div className="card-body d-flex justify-content-center">
               <div className="d-flex flex-column">
-                <div>З:</div>
+                <div>Початкова дата:</div>
                 <div className="d-flex flex-row">
                   <InputGroup className="mb-3" style={{width:30+'%'}}>
                     <InputGroup.Prepend>
@@ -51,7 +71,7 @@ class Period extends Component {
                   </InputGroup>
                 </div>
                 <br></br>
-                <div>До:</div>
+                <div>Кінцева дата:</div>
                 <div className="d-flex flex-row">
                   <InputGroup className="mb-3" style={{width:30+'%'}}>
                     <InputGroup.Prepend>
@@ -129,6 +149,7 @@ class DashBoard extends Component {
         </h4>
         <br></br>
         <DeveloperVladimir/>
+        <Calendar/>
         <Period/>
         <DeveloperYaroslav/>
         <TotalIncome/>
