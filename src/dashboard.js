@@ -9,6 +9,9 @@ import 'moment/locale/uk.js';
 import 'rc-datepicker/lib/style.css';
 import { DatePicker} from 'rc-datepicker';
 
+import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
+import { Container, Row, Col } from "react-bootstrap";
+
 // component for calendar:
 class Calendar extends Component {
   onChange = (jsDate, dateString) => {
@@ -29,7 +32,6 @@ class Period extends Component {
   render(){
     return(
       <div>
-        <br></br>
         <div className="d-flex justify-content-center">
           <div className="card" style={{width:400+'px'}}>
             <h4 className="card-title text-center">Заліковий період</h4>
@@ -70,7 +72,7 @@ class Period extends Component {
                     />
                   </InputGroup>
                 </div>
-                <br></br>
+               
                 <div>Кінцева дата:</div>
                 <div className="d-flex flex-row">
                   <InputGroup className="mb-3" style={{width:30+'%'}}>
@@ -122,12 +124,11 @@ class TotalIncome extends Component {
   render(){
     return(
       <div>
-        <br></br>
           <div className="d-flex justify-content-center">
-          <div className="card" style={{width:400+'px'}}>
+          <div className="card" style={{width:250+'px'}}>
               <h4 className="card-title text-center">Загальний прибуток</h4>
               <div className="card-body d-flex justify-content-center">
-                  <div className="card text-center" style={{width:50+'%'}}>1000</div>
+                  <div className="card text-center" style={{width:35+'%'}}>1000</div>
                   <div className="ml-1">грн</div>
               </div>
               <div className="card-footer">за вибраний проміжок часу</div>
@@ -148,11 +149,25 @@ class DashBoard extends Component {
           <b>ДОШКА АНАЛІТИКИ</b>
         </h4>
         <br></br>
-        <DeveloperVladimir/>
-        <Calendar/>
-        <Period/>
+        
+        <Container>
+          <Row>
+            <Col key={0} md={4} sm={1}>     
+              <div className="d-flex justify-content-start" style={{paddingTop: '10px'}} ><Calendar/></div>
+            </Col>
+            <Col key={1} md={4} sm={1}>     
+              <div className="d-flex justify-content-center"><Period/></div>
+            </Col>
+            <Col key={2} md={4} sm={1}>     
+              <div className="d-flex justify-content-end"><TotalIncome/></div>
+            </Col>
+          </Row>
+          </Container>
+          <br></br>
+          <br></br>
         <DeveloperYaroslav/>
-        <TotalIncome/>
+        
+        <DeveloperVladimir/>
       </div>
     );
   }
