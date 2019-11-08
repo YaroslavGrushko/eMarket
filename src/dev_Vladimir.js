@@ -10,14 +10,11 @@ import { DatePicker} from 'rc-datepicker';
 
 // component:
 class DeveloperVladimir extends Component {
-  // onChange = (jsDate, dateString) => {
-  //   alert(jsDate);
-  // }
   render(){
     const date = new Date();
     return(
       <div >
-        <h4>Under construction</h4>
+        <h4>Under construction by Vladimir</h4>
       </div>
     );
   }
