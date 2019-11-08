@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.3",
     "bootstrap": "^4.3.1",
+    "chart.js": "^2.9.2",
     "gh-pages": "^2.0.1",
     "gulp": "^4.0.2",
     "gulp-sass": "^4.0.2",

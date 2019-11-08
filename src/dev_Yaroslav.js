@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {InputGroup} from 'react-bootstrap';
 import {FormControl} from 'react-bootstrap';
 
-// component for adding product:
+// component:
 class DeveloperYaroslav extends Component {
   render(){
     return(
-      <div>
-        <h4>Загальні продажі</h4> 
+      <div >
+        <h4>under construction by Yaroslav</h4>
       </div>
     );
   }

@@ -1,7 +1,5 @@
 .chart-container{
     position: relative;
-    /* width:95vw;
-    height:60vh; */
-    width:25vw;
+    width:40vw;
     height:25vh;
 }
