@@ -7,7 +7,7 @@ class DeveloperYaroslav extends Component {
   render(){
     return(
       <div >
-        <h4>under construction by Yaroslav</h4>
+        <h4>Under construction by Yaroslav</h4>
       </div>
     );
   }
