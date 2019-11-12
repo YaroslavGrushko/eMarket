@@ -349,6 +349,28 @@ def read_category():
     else:
         return jsonify({'status' : 'success POST'})
 
+@app.route('/read_category', methods=['GET', 'POST'])
+@token_required
+def read():
+    # rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * from Categories WHERE category_id ="+"'"+str(rData)+"'")
+    
+    rows = cursor.fetchall()
+
+    if request.method == 'POST':
+        # return jsonify(cursor.fetchall())
+        return {'category_id' : [row[0] for row in rows], # column1
+                'category_name' : [row[1] for row in rows], # column2
+                'category_code' : [row[2] for row in rows], # column3
+                'name' : [row[3] for row in rows], # column4
+                'photo' : [row[4] for row in rows]} # column5
+    else:
+        return jsonify({'status' : 'success GET'})
+
 @app.route('/add_categories', methods=['GET', 'POST'])
 @token_required
 def save_category():
@@ -378,7 +400,34 @@ def save_category():
     else:
         return jsonify({'status' : 'adding successfully'})
 
+
+@app.route('/edit_categories', methods=['GET', 'POST'])
+@token_required
+def edit_categories():
+    # rData = request.data
+    rData = request.get_json()
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+
+    sql = ''' UPDATE "Categories"
+              SET category_id = ? ,
+                  category_name = ? ,
+                  category_code = ?,
+                  name = ?,
+                  photo = ?
+              WHERE category_id = ?'''
     
+    task = (rData['category_id'], rData['category_name'], rData['category_code'], rData['name'], rData['photo'], rData['category_id'])
+    cursor.execute(sql, task)
+    conn.commit()
+
+    if request.method == 'GET':
+        return jsonify({'status' : 'success GET'})
+    else:
+        return jsonify({'category_id' : rData['category_id']})
+
+
 @app.route('/delete_category', methods=['GET', 'POST'])
 @token_required
 def delete_category():
@@ -450,12 +499,6 @@ def update_product():
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
     
-    """
-    update src, in_price, out_price and end about of a """+ rData['Current_Category'] +"""
-    :param conn:
-    :param task:
-    :return: project id
-    """
     sql = ''' UPDATE ''' + rData['Current_Category'] +'''
               SET src = ? ,
                   in_price = ? ,

@@ -4,6 +4,8 @@ import App from './App';
 import $ from 'jquery';
 import { drawModal } from './modal.js';
 import { categorymodalHtml } from './modal.js';
+import {categoryEditmodalHtml} from './modal.js';
+import {drawEditModal} from './modal.js';
 import './index.js'
 
 // get categories
@@ -42,10 +44,37 @@ export function addCategoryToServer(categId, categName, categCode, managerName, 
     success: function (data) {
       // alert(data.status); 
       getCategories();
-      $(".addCategoryModal").toggleClass("show-modal");
+      $(".editCategoryModal").toggleClass("show-modal");
     },
     error: function (error) {
       //alert("error: " + JSON.stringify(error));
+    }
+  });
+}
+
+// edit category on Server
+export function editCategoryOnServer(categId, categName, categCode, managerName, managerPhoto) {
+  let jsonData = {
+    'category_id': categId,
+    'category_name': categName, //$('#').val(),
+    'category_code': categCode,
+    'name' : managerName,
+    'photo' : managerPhoto
+  };
+  let Data_order = JSON.stringify(jsonData);
+
+  $.ajax({
+    url: 'http://127.0.0.1:5000/edit_categories',
+    type: 'POST',
+    headers: {
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
+    },
+    data: Data_order,
+    success: function (data) {
+      alert('Changes in category '+data.category_id+' is saved'); 
+    },
+    error: function (error) {
+      alert("error: " + JSON.stringify(error));
     }
   });
 }
@@ -95,6 +124,31 @@ function deleteCategory(id){
     }
   })
 }
+
+// delete selected category
+function readCategory(id){
+ 
+  $.ajax({
+    url: 'http://127.0.0.1:5000/read_category',
+    type: 'POST',
+    headers: {
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
+    },
+   
+    data: JSON.stringify(id),
+   
+    success: function (data) {
+      var modalHtml = categoryEditmodalHtml(data.category_id, data.category_name, data.category_code, data.name, data.photo);
+      drawEditModal(modalHtml);
+    },
+    error: function (error) {
+      alert("error: " + JSON.stringify(error));
+      
+    }
+  })
+}
+
+
 // columnsToObjects - it is additional function
 // that is responsible for 
 // reading response data from Db in a right way
@@ -127,7 +181,7 @@ function showCategories(categories) {
   $(categories).each(function (index, category) {
     // var category = elem[0];
     main_photo_containerHTML +=
-      '<div class="categoryItem"><i class="fa fa-trash deleteItem displayNone"></i><i id="' + category.id + '" class="' + category.code + ' categoryIcon" toggle="tooltip" data-placement="bottom" title="' + category.name + '"></i></div>'
+      '<div class="categoryItem"><i class="fa fa-trash deleteItem displayNone"></i><i class="fa fa-cog editItem displayNone"></i><i id="' + category.id + '" class="' + category.code + ' categoryIcon" toggle="tooltip" data-placement="bottom" title="' + category.name + '"></i></div>'
   })
   main_photo_containerHTML +=
     '<div class="addButton displayNone"><i id="addCategoryButton" class="fa fa-plus" title="Додати нову категорію"></i></div>';
@@ -144,6 +198,13 @@ function showCategories(categories) {
     if (result) deleteCategory(selectedId);
   });
   
+  // editItem click event:
+  $('.categoryItem .editItem').click(function (event) {
+    var selectedId = $(event.target).parent().find('.categoryIcon').attr('id');
+    readCategory(selectedId);
+  });
+
+
   // let's call categoriesPhotoaAdjuster function
   // to adhast height of categories photo
   categoriesPhotoAdjuster(catCount);
@@ -163,6 +224,7 @@ function showCategories(categories) {
 
   // if it is admin mode:
   if (window.admin_state) {
+    $('.fa.fa-cog.editItem').addClass('showItem');
     $('.fa.fa-trash.deleteItem').addClass('showItem');
     $('.addButton').addClass('showItem');
     $('.productsCategoryTitle').html('');

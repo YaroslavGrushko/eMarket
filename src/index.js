@@ -14,11 +14,12 @@ var main_photo_container = document.getElementsByClassName('main_photo_container
 
 // set the category switcher outside of react
 window.switch_caregory = true;
+window.isAppRender = false;
 var prev_category = null;
 window.order=[]; // value with product's order
 
 main_photo_container.addEventListener('click', function (event) {
-  if (event.target.id !== 'addCategoryButton' && (!event.target.className.includes('deleteItem'))) {
+  if (event.target.id !== 'addCategoryButton' && (!event.target.className.includes('deleteItem')) && (!event.target.className.includes('editItem'))) {
     window.category = event.target.id;
 
     // check is category changed

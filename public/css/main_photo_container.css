@@ -8,6 +8,22 @@
 
 }
 
+.editItem{
+  color:black!important;
+}
+
+.deleteItem{
+  color:black!important;
+}
+
+.editItem:hover{
+  color: green!important;
+}
+
+.deleteItem:hover{
+  color:red!important;
+}
+
 .main_photo_container .categoryItem:hover .categoryIcon {
   color: #007bf2;
   cursor: pointer;
@@ -18,10 +34,7 @@
   cursor: pointer;
 }
 
-.main_photo_container i:active {
-  color: #bf0000;
-  cursor: pointer;
-}
+
 /* height of a row of category */
 #categoryRowHeight{
   display: none;

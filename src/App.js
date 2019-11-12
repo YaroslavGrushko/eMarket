@@ -557,7 +557,7 @@ class EditProductModal extends Component {
   }
 }
 
-// component for adding product:
+// component for adding product button:
 class AddProduct extends Component {
   constructor(props) {
     super(props);
