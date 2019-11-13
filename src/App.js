@@ -254,7 +254,7 @@ class Cart extends Component{
         <label for="fname">Ваше ім'я:</label>
         <input type="text" id="fname" name="fname" placeholder="Введіть Ваше ім'я..." value={this.state.selected_name} onChange={this.handleChangeName}/>
         <label for="tnumber">Контактний телефон:</label>
-        <input type="text" id="tnumber" name="tnumber" placeholder="0 ** *** ** **" value={this.state.selected_phone} onChange={this.handleChangePhone}/>
+        <input type="text" id="tnumber" name="tnumber" placeholder="+380 ** *** ** **" value={this.state.selected_phone} onChange={this.handleChangePhone}/>
       </div>
 
       <div className="infoBlock">
