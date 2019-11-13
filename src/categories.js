@@ -9,7 +9,7 @@ import {drawEditModal} from './modal.js';
 import './index.js'
 
 // get categories
-getCategories();
+getCategories(columnsToObjects);
 
 // categories section onclick
 $('.main_photo_container').click(function(event){
@@ -43,7 +43,7 @@ export function addCategoryToServer(categId, categName, categCode, managerName, 
     data: Data_order,
     success: function (data) {
       // alert(data.status); 
-      getCategories();
+      getCategories(columnsToObjects);
       $(".editCategoryModal").toggleClass("show-modal");
     },
     error: function (error) {
@@ -82,7 +82,7 @@ export function editCategoryOnServer(categId, categName, categCode, managerName,
 // getCategories - function that
 // is reponsable for loading all categories
 // from Db 
-function getCategories() {
+function getCategories(callback) {
   $.ajax({
     url: 'http://127.0.0.1:5000/read_categories',
     type: 'GET',
@@ -94,16 +94,19 @@ function getCategories() {
     },
     success: function (data) {
       // var categories = $.parseJSON(data);
-      var ids = data.category_id;
-      var names = data.category_name;
-      var codes = data.category_code;
-      columnsToObjects(ids, names, codes);
+      // var ids = data.category_id;
+      // var names = data.category_name;
+      // var codes = data.category_code;
+      // var names = data.category_name;
+      // var photos = data.category.photo;
+      callback(data);
     },
     error: function (error) {
       alert("error: " + JSON.stringify(error));
     }
   });
 }
+
 // delete selected category
 function deleteCategory(id){
  
@@ -117,7 +120,7 @@ function deleteCategory(id){
     data: JSON.stringify(id),
     success: function (data) {
       // alert(data.status); 
-      getCategories();
+      getCategories(columnsToObjects);
     },
     error: function (error) {
       alert("error: " + JSON.stringify(error));
@@ -152,7 +155,11 @@ function readCategory(id){
 // columnsToObjects - it is additional function
 // that is responsible for 
 // reading response data from Db in a right way
-function columnsToObjects(ids, names, codes){
+function columnsToObjects(data){
+  var ids = data.category_id;
+  var names = data.category_name;
+  var codes = data.category_code;
+
   var categories = []
   for(var i=0; i<ids.length;i++){
     var category = {};
@@ -283,13 +290,13 @@ function showCategories(categories) {
         window.admin_state = true;
         window.switch_admin_mode = true;
         // let's load categories from Db
-        getCategories();
+        getCategories(columnsToObjects);
       } 
       else {
         window.admin_state = false;
         window.switch_admin_mode = true;
         // let's load categories from Db
-        getCategories();
+        getCategories(columnsToObjects);
       }
     }
   
@@ -312,12 +319,12 @@ function fooOnResize() {
     // if previous window.width <= 768px and current > 768px
     // then let's reload categories
    if (lastX <= 768 && 768 < x) {
-      getCategories();
+      getCategories(columnsToObjects);
    }else{
       // if previous window.width > 768px and current <= 768px
       // then let's reload categories
      if(lastX > 768 && x <= 768){
-      getCategories();
+      getCategories(columnsToObjects);
      };
    }
    lastX = x
@@ -330,3 +337,4 @@ window.onresize=function(event){
 
 // when window is resized, we must alter 
 // the categories div height <<<<<<<<<<<
+// export default getCategories;

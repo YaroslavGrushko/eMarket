@@ -344,7 +344,10 @@ def read_category():
         # return jsonify(cursor.fetchall())
         return {'category_id' : [row[0] for row in rows], # column1
                 'category_name' : [row[1] for row in rows], # column2
-                'category_code' : [row[2] for row in rows]} # column3
+                'category_code' : [row[2] for row in rows], # column3
+                'name' : [row[3] for row in rows], # column4
+                'photo' : [row[4] for row in rows], # column5
+                } 
 
     else:
         return jsonify({'status' : 'success POST'})
