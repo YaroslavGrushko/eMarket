@@ -1,5 +1,13 @@
+
 .chart-container{
     position: relative;
     width:40vw;
     height:25vh;
+}
+/* for the mobile phone screen */
+@media (max-width:768px) {
+    .chart-container{
+        width:70vw;
+        height:25vh;
+    }
 }
