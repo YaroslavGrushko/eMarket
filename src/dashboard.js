@@ -115,7 +115,7 @@ class TotalIncome extends Component {
           <div className="card" style={{width:100+'%'}}>
             <h4 className="card-title text-center">Загальний прибуток</h4>
             <div className="card-body d-flex justify-content-center">
-              <div className="card text-center" style={{width:35+'%'}}>1000</div>
+              <div className="card text-center" style={{width:35+'%'}}>{this.props.total_income}</div>
               <div className="ml-1">грн</div>
             </div>
               {/* <div className="card-footer">за вибраний проміжок часу</div> */}
@@ -327,8 +327,12 @@ class DashBoard extends Component {
     this.state={
       categories:[]
     }
+    this.state={
+      total_income:0
+    }
   }
   componentDidMount()  {
+    // draw the manager's cards:
     fetch("http://127.0.0.1:5000/read_categories",{
       method: 'get',
       headers: {
@@ -363,6 +367,30 @@ class DashBoard extends Component {
           categories: categories,
         })
         });
+
+    // draw the total income value:
+    let jsonData = {'period': '20191101'};
+    let period = JSON.stringify(jsonData);
+     fetch("http://127.0.0.1:5000/total_income",{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: period,
+    })
+    .then(res => res.json())
+    .then(
+      (data)=>{
+        let total_income_value = data.total;
+        // alert('total_income_value= '+total_income_value);
+        this.setState({
+          total_income: total_income_value,
+        });
+      },
+      err => {
+        console.log(err);
+      }
+    )
   }
 
   render(){
@@ -382,7 +410,7 @@ class DashBoard extends Component {
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period/></div>
             </Col>
             <Col key={2} md={4} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome/></div>
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_income}/></div>
             </Col>
           </Row>
           <Row>

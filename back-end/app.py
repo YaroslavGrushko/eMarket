@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-
+from flask_cors import CORS, cross_origin
 
 from datetime import datetime
 from datetime import timedelta
@@ -628,9 +628,40 @@ def add_product_customer():
     if request.method == 'GET':
         return jsonify({'status' : 'success GET'})
     else:
-        return jsonify({'status' : rData['customer_phone']})   
+        return jsonify({'status' : rData['customer_phone']}) 
+
+@app.route('/total_income', methods=['GET', 'POST'])
+def total_income():
+
+    rData = request.get_json()
+    period = rData['period']
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    # before reading check if the table exists:
+    cursor.execute("""SELECT products01.total, products011.total, products0111.total
+                        FROM products01 
+                        JOIN products011 ON (products011.date = products01.date)
+                        JOIN products0111 ON (products0111.date = products011.date)
+                    WHERE products01.date='"""+period+"""'""")
+    # to get a tuple with one element, the value of COUNT(*):
+    result_of_query=cursor.fetchone()
+    # to find the value of count(*) (0 if data no exist and 1 if  table exist):
+    value_of_count=result_of_query[0]
+    if value_of_count==0:
+        return jsonify({'total' : 'data is not exist'})
+    else: 
+        total = 0
+        for val in result_of_query:
+            total = total + val
+        return jsonify({'total' : total})   
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':
      app.run(debug = True)
+
+# SELECT products01.total, products011.total, products0111.total
+#   FROM products01 
+#   JOIN products011 ON (products011.date = products01.date)
+#   JOIN products0111 ON (products0111.date = products011.date)
+#  WHERE products01.date='20191101'
