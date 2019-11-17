@@ -340,7 +340,7 @@ class SProduct extends Component{
   deleteHandler(params){
     if(params==="0"){
     window.selected_product_name = this.props.name;
-    deleteProructFromServer(window.category, window.selected_product_name);
+    deleteProructFromServer(window.selected_product_name);
     }
     this.props.onClick(params);
   }

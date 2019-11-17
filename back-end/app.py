@@ -101,11 +101,12 @@ api = Api(app)
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# # creating default table Зошити>>>>>>>>>>>>>>>>>>>>>>>
+# # creating default table Products>>>>>>>>>>>>>>>>>>>>>>>
 # conn = create_connection("eMarket.db") # или :memory: чтобы сохранить в RAM
 # cursor = conn.cursor()
-# cursor.execute("""CREATE TABLE IF NOT EXISTS "Зошити" 
+# cursor.execute("""CREATE TABLE IF NOT EXISTS "Products" 
 # (
+# "category_id" VARCHAR,
 # "name" VARCHAR,
 # "src" VARCHAR,
 # "in_price" VARCHAR,
@@ -115,139 +116,37 @@ api = Api(app)
 #             """)
 
 # new_products = [
-# ('Зошит 1', 'images/copybooks/cb1.png', '₴20',  '₴30', 'Елегантний зошит у лінійку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),
-# ('Зошит 2', 'images/copybooks/cb2.png', '₴25',  '₴30', 'Елегантний зошит у лінійку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),
-# ('Зошит 3', 'images/copybooks/cb3.png', '₴30',  '₴30', 'Практичний та приємний на дотик зошит у клітинку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),
-# ('Зошит 4', 'images/copybooks/cb4.png', '₴20',  '₴30', 'Практичний та приємний на дотик зошит у клітинку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),               
+# ('Зошити', 'Зошит 1', 'images/copybooks/cb1.png', '20',  '30', 'Елегантний зошит у лінійку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),
+# ('Зошити', 'Зошит 2', 'images/copybooks/cb2.png', '25',  '30', 'Елегантний зошит у лінійку (96 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),
+# ('Зошити', 'Зошит 3', 'images/copybooks/cb3.png', '30',  '30', 'Практичний та приємний на дотик зошит у клітинку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),
+# ('Зошити', 'Зошит 4', 'images/copybooks/cb4.png', '20',  '30', 'Практичний та приємний на дотик зошит у клітинку (48 аркушів) з якісного біосумісного паперу, виготовленого за сучасними еко-технологіями. Висока адгезійна здатність пареру для усіх видів пишучих приладів (олівці, ручки, фламастери). Висока стійкість до фламастерів та стирачок.'),               
+# ('Калькулятори', 'Калькулятор 1', 'images/calculators/calc1.png', '20', '30', 'Сучасний ергономічний калькулятор з функцією голосового набору'),
+# ('Калькулятори', 'Калькулятор 2', 'images/calculators/calc2.png', '250', '300', 'Сучасний ергономічний калькулятор з функцією голосового набору та сонячними елементами живлення.'),
+# ('Калькулятори', 'Калькулятор 3', 'images/calculators/calc3.png', '200', '300', 'Сучасний ергономічний калькулятор з функцією голосового набору та сонячними елементами живлення.'),
+# ('Калькулятори', 'Калькулятор 4', 'images/calculators/calc4.png', '200', '300', 'Практичний та зручний калькулятор з функцією з сонячними елементами живлення.'),                              
+# ('Папір', 'Папір 1', 'images/paper/paper1.png', '50', '1000', 'Високоякісний папір для лазерних принтерів.'),
+# ('Папір', 'Папір 2', 'images/paper/paper2.png', '50', '100', 'Приємний на дотик високоякісний папір для струйних принтерів.'),
+# ('Папір', 'Папір 3', 'images/paper/paper3.png', '50', '100', 'Високоякісний папір для лазерних та струйних принтерів.'),                              
+# ('Карандаші', 'Карандаші 1', 'images/pencils/penc1.png', '20', '30', 'Твердогрифельні прості карандаші для креслення.'),
+# ('Карандаші', 'Карандаші 2', 'images/pencils/penc2.png', '20', '30', 'Високоякісні карандаші з різноманітною твердістю гифеля для графіки та креслення.'),
+# ('Карандаші', 'Карандаші 3', 'images/pencils/penc3.png', '20', '30', 'Кольорові олівці для малювання з біосумісного грифелю.'), 
+# ('Карандаші', 'Ручки 1', 'images/pencils/penc4.png', '20', '30', 'Високоякісні автоматичні кулькові ручки.'),
+# ('Карандаші', 'Ручки 2', 'images/pencils/penc5.png', '15', '30', 'Стильні ергономічні ручки для ділових людей.'),
+# ('Карандаші', 'Ручки 3', 'images/pencils/penc6.png', '20', '30', 'Високоякісні автоматичні кулькові ручки з підвищеною адгезією чернил до бумаги.'),
+# ('Карандаші', 'Стержень 1', 'images/pencils/penc7.png', '20', '30', 'Високоякісні стрижні з стійкими чорнилами.'),
+# ('Карандаші', 'Стержень 2', 'images/pencils/penc8.png', '20', '30', 'Високоякісні стрижні з стійкими чорнилами та підвищеною адгезією до бумаги.'),                            
+# ('Дрібниці', 'Дрібниці 1', 'images/nothingness/noth1.png', '20', '30', 'Біосумісні коректори та канцелярські клеї з високою склеючою здатністю.'),
+# ('Дрібниці', 'Дрібниці 2', 'images/nothingness/noth2.png', '20', '30', 'Приємні на вигляд та пружні скріпки для пареру та файлів.'),
+# ('Дрібниці', 'Дрібниці 3', 'images/nothingness/noth3.png', '20', '30', 'Комбіновані гнучки та практичні лінійки'),
+# ('Дрібниці', 'Дрібниці 4', 'images/nothingness/noth4.png', '20', '30', 'Скоби для степлерів з високоякісної сталі'),
+# ('Дрібниці', 'Дрібниці 5', 'images/nothingness/noth5.png', '20', '30', 'Стильні бейджеки зі зручним кріпленням'),                
+# ('ДляШколи', 'ДляШколи 1', 'images/school/sch1.png', '200', '300', 'Біосумісні ортопедичні стильні дівочі ранці.'),
+# ('ДляШколи', 'ДляШколи 2', 'images/school/sch2.png', '200', '300', 'Біосумісні отропедичні чоловічі ранці підвищеної міцності.'),
+# ('ДляШколи', 'ДляШколи 3', 'images/school/sch3.png', '200', '300', 'Спортивні ергономічні сумки з біосумісних матеріалів.'),
+# ('ДляШколи', 'ДляШколи 4', 'images/school/sch4.png', '20', '30', 'Обкладенки для книжок та зошитів з екологічного поліетилену'),
+# ('ДляШколи', 'ДляШколи 5', 'images/school/sch5.png', '20', '30', 'Обкладенки для паперів з екологічного поліетилену'),                
 #                 ]
-# cursor.executemany("INSERT INTO Зошити VALUES (?,?,?,?,?)", new_products)
-# conn.commit()
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-# # creating default table Калькулятори>>>>>>>>>>>>>>>>>>>>>>>
-# conn = create_connection("eMarket.db") # или :memory: чтобы сохранить в RAM
-# cursor = conn.cursor()
-# cursor.execute("""CREATE TABLE IF NOT EXISTS "Калькулятори" 
-# (
-# "name" VARCHAR,
-# "src" VARCHAR,
-# "in_price" VARCHAR,
-# "out_price" VARCHAR,
-# "about" VARCHAR
-# )
-#             """)
-            
-# new_products = [
-# ('Калькулятор 1', 'images/calculators/calc1.png', '₴20', '₴30', 'Сучасний ергономічний калькулятор з функцією голосового набору'),
-# ('Калькулятор 2', 'images/calculators/calc2.png', '₴25', '₴30', 'Сучасний ергономічний калькулятор з функцією голосового набору та сонячними елементами живлення.'),
-# ('Калькулятор 3', 'images/calculators/calc3.png', '₴20', '₴30', 'Сучасний ергономічний калькулятор з функцією голосового набору та сонячними елементами живлення.'),
-# ('Калькулятор 4', 'images/calculators/calc4.png', '₴20', '₴30', 'Практичний та зручний калькулятор з функцією з сонячними елементами живлення.'),               
-#                 ]
-# cursor.executemany("INSERT INTO Калькулятори VALUES (?,?,?,?,?)", new_products)
-# conn.commit()
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-# # creating default table Папір>>>>>>>>>>>>>>>>>>>>>>>
-# conn = create_connection("eMarket.db") # или :memory: чтобы сохранить в RAM
-# cursor = conn.cursor()
-# cursor.execute("""CREATE TABLE IF NOT EXISTS "Папір" 
-# (
-# "name" VARCHAR,
-# "src" VARCHAR,
-# "in_price" VARCHAR,
-# "out_price" VARCHAR,
-# "about" VARCHAR
-# )
-#             """)
-            
-# new_products = [
-# ('Папір 1', 'images/paper/paper1.png', '₴5', '₴10', 'Високоякісний папір для лазерних принтерів.'),
-# ('Папір 2', 'images/paper/paper2.png', '₴5', '₴10', 'Приємний на дотик високоякісний папір для струйних принтерів.'),
-# ('Папір 3', 'images/paper/paper3.png', '₴5', '₴10', 'Високоякісний папір для лазерних та струйних принтерів.'),               
-#                 ]
-# cursor.executemany("INSERT INTO Папір VALUES (?,?,?,?,?)", new_products)
-# conn.commit()
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-# # creating default table Карандаші>>>>>>>>>>>>>>>>>>>>>>>
-# conn = create_connection("eMarket.db") # или :memory: чтобы сохранить в RAM
-# cursor = conn.cursor()
-# cursor.execute("""CREATE TABLE IF NOT EXISTS "Карандаші" 
-# (
-# "name" VARCHAR,
-# "src" VARCHAR,
-# "in_price" VARCHAR,
-# "out_price" VARCHAR,
-# "about" VARCHAR
-# )
-#             """)
-            
-# new_products = [
-# ('Карандаші 1', 'images/pencils/penc1.png', '₴20', '₴30', 'Твердогрифельні прості карандаші для креслення.'),
-# ('Карандаші 2', 'images/pencils/penc2.png', '₴20', '₴30', 'Високоякісні карандаші з різноманітною твердістю гифеля для графіки та креслення.'),
-# ('Карандаші 3', 'images/pencils/penc3.png', '₴20', '₴30', 'Кольорові олівці для малювання з біосумісного грифелю.'), 
-# ('Ручки 1', 'images/pencils/penc4.png', '₴20', '₴30', 'Високоякісні автоматичні кулькові ручки.'),
-# ('Ручки 2', 'images/pencils/penc5.png', '₴15', '₴30', 'Стильні ергономічні ручки для ділових людей.'),
-# ('Ручки 3', 'images/pencils/penc6.png', '₴20', '₴30', 'Високоякісні автоматичні кулькові ручки з підвищеною адгезією чернил до бумаги.'),
-# ('Стержень 1', 'images/pencils/penc7.png', '₴20', '₴30', 'Високоякісні стрижні з стійкими чорнилами.'),
-# ('Стержень 2', 'images/pencils/penc8.png', '₴20', '₴30', 'Високоякісні стрижні з стійкими чорнилами та підвищеною адгезією до бумаги.'),            
-#                 ]
-# cursor.executemany("INSERT INTO Карандаші VALUES (?,?,?,?,?)", new_products)
-# conn.commit()
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-# # creating default table Дрібниці>>>>>>>>>>>>>>>>>>>>>>>
-# conn = create_connection("eMarket.db") # или :memory: чтобы сохранить в RAM
-# cursor = conn.cursor()
-# cursor.execute("""CREATE TABLE IF NOT EXISTS "Дрібниці" 
-# (
-# "name" VARCHAR,
-# "src" VARCHAR,
-# "in_price" VARCHAR,
-# "out_price" VARCHAR,
-# "about" VARCHAR
-# )
-#             """)
-
-# new_products = [
-# ('Дрібниці 1', 'images/nothingness/noth1.png', '₴20', '₴30', 'Біосумісні коректори та канцелярські клеї з високою склеючою здатністю.'),
-# ('Дрібниці 2', 'images/nothingness/noth2.png', '₴20', '₴30', 'Приємні на вигляд та пружні скріпки для пареру та файлів.'),
-# ('Дрібниці 3', 'images/nothingness/noth3.png', '₴20', '₴30', 'Комбіновані гнучки та практичні лінійки'),
-# ('Дрібниці 4', 'images/nothingness/noth4.png', '₴20', '₴30', 'Скоби для степлерів з високоякісної сталі'),
-# ('Дрібниці 5', 'images/nothingness/noth5.png', '₴20', '₴30', 'Стильні бейджеки зі зручним кріпленням'),
-#                 ]
-# cursor.executemany("INSERT INTO Дрібниці VALUES (?,?,?,?,?)", new_products)
-# conn.commit()
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-# # creating default table ДляШколи>>>>>>>>>>>>>>>>>>>>>>>
-# conn = create_connection("eMarket.db") # или :memory: чтобы сохранить в RAM
-# cursor = conn.cursor()
-# cursor.execute("""CREATE TABLE IF NOT EXISTS "ДляШколи" 
-# (
-# "name" VARCHAR,
-# "src" VARCHAR,
-# "in_price" VARCHAR,
-# "out_price" VARCHAR,
-# "about" VARCHAR
-# )
-#             """)
-
-# new_products = [
-# ('ДляШколи 1', 'images/school/sch1.png', '₴20', '₴30', 'Біосумісні ортопедичні стильні дівочі ранці.'),
-# ('ДляШколи 2', 'images/school/sch2.png', '₴20', '₴30', 'Біосумісні отропедичні чоловічі ранці підвищеної міцності.'),
-# ('ДляШколи 3', 'images/school/sch3.png', '₴20', '₴30', 'Спортивні ергономічні сумки з біосумісних матеріалів.'),
-# ('ДляШколи 4', 'images/school/sch4.png', '₴20', '₴30', 'Обкладенки для книжок та зошитів з екологічного поліетилену'),
-# ('ДляШколи 5', 'images/school/sch5.png', '₴20', '₴30', 'Обкладенки для паперів з екологічного поліетилену'),
-#                 ]
-# cursor.executemany("INSERT INTO ДляШколи VALUES (?,?,?,?,?)", new_products)
+# cursor.executemany("INSERT INTO Products VALUES (?,?,?,?,?,?)", new_products)
 # conn.commit()
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -447,21 +346,22 @@ def delete_category():
 @app.route('/read_product', methods=['GET', 'POST'])
 
 def read_products():
-    rData = request.data
+    # rData = request.data
     rData = request.get_json()
 
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
     # before reading check if the table exists:
-    cursor.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='"+rData+"'")
+    # cursor.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='"+rData+"'")
+    cursor.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='Products'")
     # to get a tuple with one element, the value of COUNT(*):
     result_of_query=cursor.fetchone()
     # to find the value of count(*) (0 if table no exist and 1 if  table exist):
     value_of_count=result_of_query[0]
     if value_of_count==0:
-        return jsonify({'name_of_not_exist_table' : rData})
+        return jsonify({'name_of_not_exist_table' : 'Products'})
     else: 
-        cursor.execute("select * from "+ rData) # This line performs query and returns json result
+        cursor.execute("select * from Products WHERE category_id ="+"'"+str(rData)+"'") # This line performs query and returns json result
         rows = cursor.fetchall()
         return jsonify(rows) 
 
@@ -474,11 +374,9 @@ def add_product():
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
     
-    # cursor.execute('create table if not exists ' + rData['Product_Name'] + 
-    # '(name VARCHAR, src VARCHAR, in_price VARCHAR, out_price VARCHAR, about VARCHAR)')
-    
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS """ + rData['Current_Category'] +"""(
+        CREATE TABLE IF NOT EXISTS Products(
+        name_of_category VARCHAR
         name VARCHAR,
         src VARCHAR,
         in_price VARCHAR,
@@ -486,8 +384,8 @@ def add_product():
         about VARCHAR)
         """)
 
-    new_product = [( rData['Product_Name'], rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'])]
-    cursor.executemany("INSERT INTO " + rData['Current_Category'] +" VALUES (?,?,?,?,?)", new_product)
+    new_product = [(rData['Current_Category'], rData['Product_Name'], rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'])]
+    cursor.executemany("INSERT INTO " + rData['Current_Category'] +" VALUES (?,?,?,?,?,?)", new_product)
     conn.commit()
 
     if request.method == 'GET':
@@ -502,7 +400,7 @@ def update_product():
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
     
-    sql = ''' UPDATE ''' + rData['Current_Category'] +'''
+    sql = ''' UPDATE Products
               SET src = ? ,
                   in_price = ? ,
                   out_price = ?,
@@ -525,7 +423,7 @@ def delete_product():
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
     
-    sql = ''' DELETE FROM ''' + rData['Current_Category'] +'''
+    sql = ''' DELETE FROM Products
               WHERE name = \"''' + rData['Product_Name'] +'''\"  '''
     
     cursor.execute(sql)
@@ -569,7 +467,7 @@ def add_сheckout_customer():
     cursor = conn.cursor()
     
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS """ + rData['customer_name'] +'_'+ rData['customer_phone'] +"""(
+        CREATE TABLE IF NOT EXISTS Customers(
         name VARCHAR,
         phone VARCHAR,
         address VARCHAR,
@@ -577,6 +475,7 @@ def add_сheckout_customer():
         pay VARCHAR,
         date VARCHAR)
         """)
+
     today = datetime.now()
     year = str(today.year) 
     month = str(today.month)
@@ -585,7 +484,7 @@ def add_сheckout_customer():
     today_date = year+month+day
 
     new_customer = [( rData['customer_name'], rData['customer_phone'], rData['customer_address'], rData['customer_delivery'], rData['customer_pay'], today_date)]
-    cursor.executemany("INSERT INTO " + rData['customer_name'] +'_'+ rData['customer_phone'] +" VALUES (?,?,?,?,?,?)", new_customer)
+    cursor.executemany("INSERT INTO Customers VALUES (?,?,?,?,?,?)", new_customer)
     conn.commit()
 
     if request.method == 'GET':
@@ -603,7 +502,8 @@ def add_product_customer():
     cursor = conn.cursor()
     
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS """ 'products'+ rData['customer_phone'] +"""(
+        CREATE TABLE IF NOT EXISTS Orders(
+        customer_phone VARCHAR,
         name VARCHAR,
         in_price REAL,
         out_price REAL,
@@ -612,6 +512,7 @@ def add_product_customer():
         total REAL,
         date VARCHAR)
         """)
+
     today = datetime.now()
     year = str(today.year) 
     month = str(today.month)
@@ -620,8 +521,8 @@ def add_product_customer():
     today_date = year+month+day
     for item in rData['customer_products']:
         new_checkout_products = []
-        new_checkout_products = [( item['name'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'],today_date)]
-        cursor.executemany("INSERT INTO " 'products'+ rData['customer_phone'] +" VALUES (?,?,?,?,?,?,?)", new_checkout_products)
+        new_checkout_products = [(rData['customer_phone'], item['name'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'],today_date)]
+        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?)", new_checkout_products)
     
     conn.commit()
 
@@ -634,25 +535,23 @@ def add_product_customer():
 def total_income():
 
     rData = request.get_json()
-    period = rData['period']
+    from_period = rData['from_period']
+    to_period = rData['to_period']
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
-    # before reading check if the table exists:
-    cursor.execute("""SELECT products01.total, products011.total, products0111.total
-                        FROM products01 
-                        JOIN products011 ON (products011.date = products01.date)
-                        JOIN products0111 ON (products0111.date = products011.date)
-                    WHERE products01.date='"""+period+"""'""")
-    # to get a tuple with one element, the value of COUNT(*):
-    result_of_query=cursor.fetchone()
-    # to find the value of count(*) (0 if data no exist and 1 if  table exist):
-    value_of_count=result_of_query[0]
-    if value_of_count==0:
-        return jsonify({'total' : 'data is not exist'})
+    
+    cursor.execute("""SELECT *
+                        FROM Orders                       
+                    WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
+
+    # before reading check if the data exists:
+    result_of_query=cursor.fetchall()
+    if result_of_query==None:
+        return jsonify({'total' : '0'})
     else: 
         total = 0
         for val in result_of_query:
-            total = total + val
+            total = total + int(val[6])
         return jsonify({'total' : total})   
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

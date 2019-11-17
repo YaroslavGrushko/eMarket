@@ -38,6 +38,39 @@ class Calendar extends Component {
 
 //component for setting period:
 class Period extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      from_day : '01',
+      from_month : '01',
+      from_year : 2019,
+      to_day : '01',
+      to_month : '01',
+      to_year : 2019,
+    }
+  }
+  
+  
+  updatePeriod = ( ) => {
+    var from_period = this.state.from_year + this.state.from_month + this.state.from_day;
+    var to_period = this.state.to_year + this.state.to_month + this.state.to_day;
+    
+    this.props.periodCallBack(from_period, to_period);
+  };
+
+  handleChangeFromDay = async (e) => {
+    const userInput = e.target.value;
+    await this.setState({from_day: userInput});
+    this.updatePeriod();
+  }
+
+  handleChangeToDay = async (e) => {
+    const userInput = e.target.value;
+    await this.setState({to_day: userInput});
+    this.updatePeriod();
+  }
+
   render(){
     return(
       <div>
@@ -56,6 +89,7 @@ class Period extends Component {
                     placeholder="01"
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
+                    value={this.state.from_day} onChange={this.handleChangeFromDay}
                   />
                   <FormControl
                     placeholder="01"
@@ -82,6 +116,7 @@ class Period extends Component {
                     placeholder="01"
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
+                    value={this.state.to_day} onChange={this.handleChangeToDay}
                   />
                   <FormControl
                     placeholder="01"
@@ -325,13 +360,23 @@ class DashBoard extends Component {
   constructor(props){
     super(props);
     this.state={
-      categories:[]
+      categories:[],
+      total_income:0,
+      from_period : '20190101',
+      to_period : '20190101'
     }
-    this.state={
-      total_income:0
-    }
+    
   }
-  componentDidMount()  {
+
+  periodCallBack = (from, to) => {
+    this.setState({
+      from_period : from,
+      to_period : to
+    });
+    this.readTotalIncomeValue();
+  }
+
+  readManagersCards = () => {
     // draw the manager's cards:
     fetch("http://127.0.0.1:5000/read_categories",{
       method: 'get',
@@ -367,9 +412,14 @@ class DashBoard extends Component {
           categories: categories,
         })
         });
+  }
 
+  readTotalIncomeValue = () => {
     // draw the total income value:
-    let jsonData = {'period': '20191101'};
+    let jsonData = {
+      'from_period': this.state.from_period,
+      'to_period': this.state.to_period
+    };
     let period = JSON.stringify(jsonData);
      fetch("http://127.0.0.1:5000/total_income",{
       method: 'POST',
@@ -391,6 +441,12 @@ class DashBoard extends Component {
         console.log(err);
       }
     )
+
+  }
+
+  componentDidMount()  {
+    this.readManagersCards();
+    this.readTotalIncomeValue();
   }
 
   render(){
@@ -407,7 +463,7 @@ class DashBoard extends Component {
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Calendar/></div>
             </Col>
             <Col key={1} md={5} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period/></div>
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack}/></div>
             </Col>
             <Col key={2} md={4} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_income}/></div>

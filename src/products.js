@@ -23,11 +23,11 @@ export function read_products(category_name) {
           var PRODUCTS = [];
         for (var i = 0; i < data.length; i++) {
           var rData_row = {
-            name: data[i][0],
-            src: data[i][1],
-            in_price: data[i][2],
-            out_price: data[i][3],
-            about: data[i][4]
+            name: data[i][1],
+            src: data[i][2],
+            in_price: data[i][3],
+            out_price: data[i][4],
+            about: data[i][5]
           };
           PRODUCTS.push(rData_row);
         }
@@ -109,9 +109,9 @@ export function updateProductToServer(CurrentCategory, ProductName, ProductInPri
 
 // deleteProructFromServer - is a function that is responsible
 // for POST delete product from Db 
-export function deleteProructFromServer(CurrentCategory, ProductName) {
+export function deleteProructFromServer(ProductName) {
   let jsonData = {
-    'Current_Category': CurrentCategory,
+    // 'Current_Category': CurrentCategory,
     'Product_Name': ProductName
   };
   let Data_order = JSON.stringify(jsonData);
