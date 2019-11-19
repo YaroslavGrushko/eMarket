@@ -236,9 +236,13 @@ function showCategories(categories) {
     $('.addButton').addClass('showItem');
     $('.productsCategoryTitle').html('');
 
-    var images =
-      '<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ' +
+    var images ='';
+    if (window.sm_state){
+      images='<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ';
+    }else{
+      images='<img id="logout" src="././images/log-out.png" alt="" title="вийти"> '+
       '<img id="dashboard" src="././images/dashboard.png" alt="" title="кабінет">' ;
+    }
     $('.moving-zone').find('.logo').html(images);
 
     // if it is not admin mode
@@ -294,6 +298,7 @@ function showCategories(categories) {
       } 
       else {
         window.admin_state = false;
+        window.sm_state = false;
         window.switch_admin_mode = true;
         // let's load categories from Db
         getCategories(columnsToObjects);

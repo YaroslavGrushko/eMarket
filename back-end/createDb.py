@@ -3,9 +3,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # for creating unique user id
 import uuid
 
-from api import app
-from api import db
-from api import User
+# from api import app
+# from api import db
+# from api import User
+from app import app
+from app import db
+from app import User
 # creating default admin user >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def signup_admin():
     # let's inicizlize db
@@ -13,9 +16,12 @@ def signup_admin():
     # let's create db
     with app.app_context():
         db.create_all()
-
-        name = 'admin'
-        password = 'admin'
+        ## admin 
+        # name = 'admin'
+        # password = 'admin'
+        # sales_manager (sm)
+        name = 'sm'
+        password = 'sm'
         user = User.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
 
         if user: # if a user is found, we want to redirect back to signup page so user can try again
