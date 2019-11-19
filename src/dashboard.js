@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 
 import DeveloperVladimir from './dev_Vladimir';
 import DeveloperYaroslav from './dev_Yaroslav';
-import {InputGroup} from 'react-bootstrap';
+// import {InputGroup} from 'react-bootstrap';
+import InputGroup from 'react-bootstrap/InputGroup';
 import {FormControl} from 'react-bootstrap';
 
 //npm install --save rc-datepicker
@@ -71,6 +72,30 @@ class Period extends Component {
     this.updatePeriod();
   }
 
+  handleChangeFromMonth = async (e) => {
+    const userInput = e.target.value;
+    await this.setState({from_month: userInput});
+    this.updatePeriod();
+  }
+
+  handleChangeToMonth = async (e) => {
+    const userInput = e.target.value;
+    await this.setState({to_month: userInput});
+    this.updatePeriod();
+  }
+
+  handleChangeFromYear = async (e) => {
+    const userInput = e.target.value;
+    await this.setState({from_year: userInput});
+    this.updatePeriod();
+  }
+
+  handleChangeToYear = async (e) => {
+    const userInput = e.target.value;
+    await this.setState({to_year: userInput});
+    this.updatePeriod();
+  }
+
   render(){
     return(
       <div>
@@ -86,20 +111,22 @@ class Period extends Component {
                     <InputGroup.Text id="inputGroup-sizing-sm">день/місяць/рік:</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="01"
+                    placeholder={this.state.from_day}
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
                     value={this.state.from_day} onChange={this.handleChangeFromDay}
                   />
                   <FormControl
-                    placeholder="01"
+                    placeholder={this.state.from_month}
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
+                    value={this.state.from_month} onChange={this.handleChangeFromMonth}
                   />
                   <FormControl
-                    placeholder="2019"
+                    placeholder={this.state.from_year}
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
+                    value={this.state.from_year} onChange={this.handleChangeFromYear}
                   />
                 </InputGroup>
               </div>
@@ -113,20 +140,22 @@ class Period extends Component {
                     <InputGroup.Text id="inputGroup-sizing-sm">день/місяць/рік:</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="01"
+                    placeholder={this.state.to_day}
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
                     value={this.state.to_day} onChange={this.handleChangeToDay}
                   />
                   <FormControl
-                    placeholder="01"
+                    placeholder={this.state.to_month}
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
+                    value={this.state.to_month} onChange={this.handleChangeToMonth}
                   />
                   <FormControl
-                    placeholder="2019"
+                    placeholder={this.state.to_year}
                     aria-label="Small"
                     aria-describedby="inputGroup-sizing-sm"
+                    value={this.state.to_year} onChange={this.handleChangeToYear}
                   />
                 </InputGroup>
               </div>
@@ -490,7 +519,7 @@ class DashBoard extends Component {
           <br></br>
 
           <Row>
-          {this.state.categories}
+            {this.state.categories}
           </Row>
           </Container>
 
