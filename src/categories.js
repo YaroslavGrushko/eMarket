@@ -195,8 +195,12 @@ function showCategories(categories) {
   // adding additional display:none categories row
   // this is for read categories row height from css file
   main_photo_containerHTML += '<div id="categoryRowHeight"></div>';
-
-  $('.main_photo_container').html(main_photo_containerHTML);
+  if (window.sm_state!=true){
+    $('.main_photo_container').html(main_photo_containerHTML);
+    $('.main_photo_container').show();
+  }else{
+    $('.main_photo_container').hide();
+  }
 
   // delteItem click event:
   $('.categoryItem .deleteItem').click(function (event) {
