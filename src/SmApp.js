@@ -120,10 +120,10 @@ render() {
               <tr>
                 <td>1</td>
                 <td>
-                  <button className="button button2 text-center" onClick={()=>this.openOrdersTable()}><i class="fa fa-times"></i>&nbsp;3</button>
+                  <button className="button button2 text-center small-paddings" onClick={()=>this.openOrdersTable()}><i class="fa fa-times"></i>&nbsp;3</button>
                 </td>
                 <td>
-                  <button class="button button2" onClick={()=>this.openClientTable()}>&nbsp;Петренко</button>
+                  <button class="button button2 small-paddings" onClick={()=>this.openClientTable()}>&nbsp;Петренко</button>
                 </td>
                 <td>
                 <MyDropDown mainText="нове" textItem="прийняти"/>
@@ -133,10 +133,10 @@ render() {
               <tr>
                 <td>2</td>
                 <td>
-                  <button class="button button2"><i class="fa fa-times"></i>&nbsp;1</button>
+                  <button class="button button2 small-paddings"><i class="fa fa-times"></i>&nbsp;1</button>
                 </td>
                 <td>
-                  <button class="button button2">&nbsp;Іваненко</button>            
+                  <button class="button button2 small-paddings">&nbsp;Іваненко</button>            
                 </td>
                 <td>
                   <MyDropDown mainText="нове" textItem="прийняти"/>
@@ -157,21 +157,37 @@ class SmApp extends Component {
     this.state={
       showOrdersTable:false,
       showClientTable:false,
+      isAnyAnotherTable:false,
     };
   }
   MainTableClickHandler(tableToShow){
     switch(tableToShow){
       case 'orders':
-        this.setState({
-          showOrdersTable:true,
-          showClientTable:false,
-        });
+        if(!this.state.showOrdersTable){
+          this.setState({
+            showOrdersTable:true,
+            showClientTable:false,
+            isAnyAnotherTable:true,
+          });}else{
+            this.setState({
+            isAnyAnotherTable:false,
+            showOrdersTable:false,
+            });
+          }
         return null;
       case 'client':
-        this.setState({
-          showClientTable:true,
-          showOrdersTable:false,
-         });
+        if(!this.state.showClientTable){
+          this.setState({
+            showClientTable:true,
+            showOrdersTable:false,
+            isAnyAnotherTable:true,
+          });
+          }else{
+            this.setState({
+              isAnyAnotherTable:false,
+              showClientTable:false,
+              });
+          }
          return null;
       default:
         return null;
@@ -180,19 +196,23 @@ class SmApp extends Component {
   render() {
       return( 
               <div>
-                <div className='d-flex flex-row'>
+                <div className='d-flex flex-row pb-4'>
                     <img className='avatar_img mr-4' src='images/manager-flat.jpg' alt='менеджер' />
                     <div>
                       <h2>Ярослав Грушко</h2>
                       <h3>менеджер-продавець</h3>
                     </div>
                  </div>
-                  <div className='d-flex flex-row'>
+                  <div >
 
-                    <MainTable  onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
-                  
-                    {this.state.showOrdersTable ? <OrdersTable/> : null}
-                    {this.state.showClientTable ? <ClientTable/> : null}
+                    <div className={this.state.isAnyAnotherTable ? 'col-4 pull-left transition' : 'transition'}>
+                      <MainTable onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
+                    </div>
+
+                    <div className={this.state.isAnyAnotherTable ? 'col-8 pull-right transition' : 'transition'}>                
+                      {this.state.showOrdersTable ? <OrdersTable/> : null}
+                      {this.state.showClientTable ? <ClientTable/> : null}
+                    </div>
                   </div>
                </div>
             );

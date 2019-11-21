@@ -895,6 +895,8 @@ a {
     .w3-modal {
         padding-top: 50px
     }
+  
+
 }
 
 @media (max-width:993px) {
@@ -1727,6 +1729,13 @@ a {
     cursor: pointer;
 }
 
+  /* button in sales manager page */
+  .small-paddings{
+    padding-left:1px !important;
+    padding-right:1px !important;
+    width:auto !important;
+}
+
 .button2 {
     background-color: white;
     color: black;
@@ -1738,4 +1747,9 @@ a {
     color: white;
 }
 
-
+/* in sales manager page */
+.transition{
+    -webkit-transition-duration: 1s;
+    /* Safari */
+    transition-duration: 1s;
+}
