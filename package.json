@@ -10,6 +10,7 @@
     "gulp": "^4.0.2",
     "gulp-sass": "^4.0.2",
     "jquery": "^3.4.1",
+    "mdbreact": "^4.22.1",
     "rc-datepicker": "^5.0.14",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.14",

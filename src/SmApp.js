@@ -5,6 +5,8 @@ import './css/images.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Container, Row, Col, Table, Dropdown } from "react-bootstrap";
+// for react width sizing
+import { MDBContainer } from 'mdbreact'
 
 
 class MyDropDown extends Component {
@@ -61,9 +63,46 @@ class OrdersTable extends Component{
     )
   }
 }
+
+class ClientTable extends Component{
+  render() {
+    return(
+      <div>
+      <h3>Все про замовника</h3>
+      <Table striped responsive className="text-center">
+       <thead>
+         <tr>
+           <th>ім'я</th>
+           <th>фамілія</th>
+           <th>телефон</th>
+           <th>e-mail</th>
+           <th>№ відділу Нової Пошти</th>
+           <th>Спосіб оплати</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr>
+           <td>Ігор</td>
+           <td>Грушко</td>
+           <td>+38097...</td>
+           <td>...@gmail.com</td>
+           <td>135</td>
+           <td>накладений платіж</td>
+         </tr>       
+       </tbody>
+      </Table>
+     </div>
+    )
+  }
+}
 //main table component where are stored all orders:
 class MainTable extends Component {
-  ////////////////////////////////////////////
+  openOrdersTable(){
+    this.props.onClick('orders');
+  }
+  openClientTable(){
+    this.props.onClick('client');
+  }
 render() {
     return(<div>
            <h3>Список замовлень</h3>
@@ -81,10 +120,10 @@ render() {
               <tr>
                 <td>1</td>
                 <td>
-                  <button class="button button2"><i class="fa fa-times"></i>&nbsp;3</button>
+                  <button className="button button2 text-center" onClick={()=>this.openOrdersTable()}><i class="fa fa-times"></i>&nbsp;3</button>
                 </td>
                 <td>
-                  <button class="button button2">&nbsp;Петренко</button>
+                  <button class="button button2" onClick={()=>this.openClientTable()}>&nbsp;Петренко</button>
                 </td>
                 <td>
                 <MyDropDown mainText="нове" textItem="прийняти"/>
@@ -108,12 +147,36 @@ render() {
            </Table>
           </div>);
 }
-  ////////////////////////////////////////////
 }
 
 //main component of whole SmApp:
 class SmApp extends Component {
     ////////////////////////////////////////////
+  constructor(props){
+    super(props);
+    this.state={
+      showOrdersTable:false,
+      showClientTable:false,
+    };
+  }
+  MainTableClickHandler(tableToShow){
+    switch(tableToShow){
+      case 'orders':
+        this.setState({
+          showOrdersTable:true,
+          showClientTable:false,
+        });
+        return null;
+      case 'client':
+        this.setState({
+          showClientTable:true,
+          showOrdersTable:false,
+         });
+         return null;
+      default:
+        return null;
+    }
+  }
   render() {
       return( 
               <div>
@@ -124,7 +187,13 @@ class SmApp extends Component {
                       <h3>менеджер-продавець</h3>
                     </div>
                  </div>
-                 <MainTable/>
+                  <div className='d-flex flex-row'>
+
+                    <MainTable  onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
+                  
+                    {this.state.showOrdersTable ? <OrdersTable/> : null}
+                    {this.state.showClientTable ? <ClientTable/> : null}
+                  </div>
                </div>
             );
   }
