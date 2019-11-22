@@ -43,19 +43,28 @@ class Period extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      from_day : '01',
-      from_month : '01',
+      from_day : '1',
+      from_month : '1',
       from_year : 2019,
-      to_day : '01',
-      to_month : '01',
+      to_day : '1',
+      to_month : '1',
       to_year : 2019,
     }
   }
   
   
   updatePeriod = ( ) => {
-    var from_period = this.state.from_year + this.state.from_month + this.state.from_day;
-    var to_period = this.state.to_year + this.state.to_month + this.state.to_day;
+
+    // if(this.state.from_year=='') this.state.from_year='0';
+    // if(this.state.from_month=='') this.state.from_month='0';
+    // if(this.state.from_day=='') this.state.from_day='0';
+
+    // if(this.state.to_year=='') this.state.to_year='0';
+    // if(this.state.to_month=='') this.state.to_month='0';
+    // if(this.state.to_day=='') this.state.to_day='0';
+
+    var from_period = this.state.from_year + ','+ this.state.from_month + ',' + this.state.from_day;
+    var to_period = this.state.to_year + ','+ this.state.to_month + ',' + this.state.to_day;
     
     this.props.periodCallBack(from_period, to_period);
   };
@@ -210,13 +219,29 @@ class TotalSales extends Component {
 initializeChart =()=> {
     let el = document.getElementById('ChartSales');
     let ctx = el.getContext("2d");
+    let labels_and_dataArr = this.props.labels_and_data;//array of Objects
+        let i = 0;
+        var labelsArr = [];
+        var dataArr = [];
+        if (labels_and_dataArr === null || labels_and_dataArr === '') {
+          labelsArr = 0;
+          dataArr = 0;
+        } else{
+          labels_and_dataArr.forEach(obj => {
+            let label = Object.keys(obj); //  Object's keys array
+            let value = obj[label[0]]; //  Object's value
+            alert('label= '+label+' value= '+value);
+            labelsArr[i] = label;
+            dataArr[i] = value;
+          });
+        }
+        
     var myChart = new Chart(ctx, {
       type: 'line',
       data: {
-  
-          labels: ['January', 'February', 'March', 'April', 'May'],
+          labels: labelsArr,
           datasets: [{
-              data: [2000, 1000, 1000, 2000, 2000],
+              data: dataArr,
               cubicInterpolationMode: 'monotone'
           }]
       },
@@ -244,7 +269,7 @@ initializeChart =()=> {
             <div className="card-title d-flex justify-content-center">
                 <div className="d-flex flex-row">
                     <h4>Загальні продажі</h4>
-                    <div className="card text-center font-weight-bold ml-2 p-1">8000</div>
+                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total_income}</div>
                     <div className="ml-1">грн.</div>
                 </div>
             </div>
@@ -391,18 +416,24 @@ class DashBoard extends Component {
     this.state={
       categories:[],
       total_income:0,
-      from_period : '20190101',
-      to_period : '20190101'
+      labels_and_data: null,
+      from_period : '2019,1,1',
+      to_period : '2019,1,1',
     }
-    
   }
-
+  
+  componentDidMount()  {
+    this.readManagersCards();
+    this.readTotalIncomeValue();
+    this.readTotalSalesValues();
+  }
   periodCallBack = (from, to) => {
     this.setState({
       from_period : from,
       to_period : to
     });
     this.readTotalIncomeValue();
+    this.readTotalSalesValues();
   }
 
   readManagersCards = () => {
@@ -473,10 +504,40 @@ class DashBoard extends Component {
 
   }
 
-  componentDidMount()  {
-    this.readManagersCards();
-    this.readTotalIncomeValue();
+  readTotalSalesValues = () => {
+
+    // draw the total income value:
+    let jsonData = {
+      'from_period': this.state.from_period,
+      'to_period': this.state.to_period
+    };
+    let period = JSON.stringify(jsonData);
+     fetch("http://127.0.0.1:5000/total_sales",{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: period,
+    })
+    .then(
+      res => 
+      res.json()
+      )
+    .then(
+      (data)=>{
+        this.setState({
+          labels_and_data: data,
+        });
+      },
+      err => {
+        console.log(err);
+      }
+    )
+
   }
+
+
+
 
   render(){
     return(
@@ -492,7 +553,7 @@ class DashBoard extends Component {
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Calendar/></div>
             </Col>
             <Col key={1} md={5} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack}/></div>
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack} /></div>
             </Col>
             <Col key={2} md={4} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_income}/></div>
@@ -502,7 +563,7 @@ class DashBoard extends Component {
             <Col key={0} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalSales/></div>
+                  <div><TotalSales total_income={this.state.total_income} labels_and_data={this.state.labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>

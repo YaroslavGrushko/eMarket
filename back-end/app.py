@@ -12,6 +12,8 @@ from flask_cors import CORS, cross_origin
 from datetime import datetime
 from datetime import timedelta
 
+
+
 # import time
 # from datetime import date
 
@@ -518,7 +520,7 @@ def add_product_customer():
     month = str(today.month)
     day = str(today.day)  
     
-    today_date = year+month+day
+    today_date = year + ',' + month + ',' + day
     for item in rData['customer_products']:
         new_checkout_products = []
         new_checkout_products = [(rData['customer_phone'], item['name'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'],today_date)]
@@ -530,6 +532,66 @@ def add_product_customer():
         return jsonify({'status' : 'success GET'})
     else:
         return jsonify({'status' : rData['customer_phone']}) 
+
+#function for calculation the amount value for some period (from result of query):
+def amount_for_the_period(sampling_for_the_period):
+    total = 0
+    for val in sampling_for_the_period:
+        total = total + int(val[6]) #val[6] is the Total column of the Orders table
+    return total
+
+#function for transfering table date value into date format:
+def table_date_to_date(table_date_format):
+    table_date_list = table_date_format.split(",")
+    date_format = datetime(int(table_date_list[0]), int(table_date_list[1]), int(table_date_list[2]))
+    return date_format
+
+#function for calculation the labels and the sales values for some period (from result of query):
+def sales_labels_for_the_period(sampling_for_the_period, from_date, to_date):
+    
+    fd = table_date_to_date(from_date)
+    td = table_date_to_date(to_date)
+    period_duration_date = td - fd
+    period_duration = period_duration_date.days # number of days
+    number_of_labels = 7
+    if period_duration>7:
+        delta = period_duration // number_of_labels # // get divisor only integer value
+        reminder = period_duration % number_of_labels # remainder of a division
+    else:
+        delta = 1
+        reminder = 0
+        number_of_labels = period_duration + 1
+
+    print(delta)
+    # date = datetime(2019, 1, 1)
+    full_labels = []
+    labels = []
+    labels_in_data_format = []
+
+    # create an array of labels to the time axis
+    for i in range(number_of_labels + 1):
+        labels.append(str(fd.day) + '.' + str(fd.month) + '.' + str(fd.year))
+        labels_in_data_format.append(fd)
+        if i<number_of_labels:
+             fd += timedelta(days=delta)
+        else:
+            fd += timedelta(days=reminder)  
+
+    for i in range(number_of_labels): 
+        for j in range(delta): 
+            total_for_delta = 0
+            for val in sampling_for_the_period:
+                # val[7] is a time column
+                if(table_date_to_date(val[7]) >= labels_in_data_format[i] and table_date_to_date(val[7]) < labels_in_data_format[i+1]):
+                    total_for_delta = total_for_delta + val[6] #val[6] is the Total column of the Orders table
+            full_labels.append({labels[i]:total_for_delta}) 
+            j = j + 1
+            fd += timedelta(days=1)
+        i = i +1
+    
+    return full_labels
+    
+    
 
 @app.route('/total_income', methods=['GET', 'POST'])
 def total_income():
@@ -549,10 +611,32 @@ def total_income():
     if result_of_query==None:
         return jsonify({'total' : '0'})
     else: 
-        total = 0
-        for val in result_of_query:
-            total = total + int(val[6])
-        return jsonify({'total' : total})   
+        return jsonify({'total' : amount_for_the_period(result_of_query)})   
+
+
+@app.route('/total_sales', methods=['GET', 'POST'])
+def total_sales():
+    rData = request.get_json()
+    from_period = rData['from_period']
+    to_period = rData['to_period']
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    
+    # check if data exists:
+    count = cursor.execute("""SELECT COUNT(*) FROM Orders WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""").fetchone()[0]
+    print (count)
+    
+    if count == 0:
+        
+        full_labels = [{'0':0},{'0':0},{'0':0},{'0':0},{'0':0},{'0':0},{'0':0}]
+        return full_labels
+    else: 
+        cursor.execute("""SELECT *
+                        FROM Orders                       
+                    WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
+        result_of_query=cursor.fetchall()
+        return jsonify(sales_labels_for_the_period(result_of_query, from_period, to_period)) 
+
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
