@@ -205,11 +205,11 @@ class SmApp extends Component {
                  </div>
                   <div >
 
-                    <div className={this.state.isAnyAnotherTable ? 'col-4 pull-left transition' : 'transition'}>
+                    <div className={this.state.isAnyAnotherTable ? 'col-6 pull-left transition' : 'transition'}>
                       <MainTable onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
                     </div>
 
-                    <div className={this.state.isAnyAnotherTable ? 'col-8 pull-right transition' : 'transition'}>                
+                    <div className={this.state.isAnyAnotherTable ? 'col-6 pull-right transition' : 'transition'}>                
                       {this.state.showOrdersTable ? <OrdersTable/> : null}
                       {this.state.showClientTable ? <ClientTable/> : null}
                     </div>
