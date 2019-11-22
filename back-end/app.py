@@ -629,7 +629,7 @@ def total_sales():
     if count == 0:
         
         full_labels = [{'0':0},{'0':0},{'0':0},{'0':0},{'0':0},{'0':0},{'0':0}]
-        return full_labels
+        return jsonify(full_labels)
     else: 
         cursor.execute("""SELECT *
                         FROM Orders                       

@@ -215,7 +215,9 @@ class TotalSales extends Component {
   componentDidMount() {
     this.initializeChart(this.props.config);
 }
-
+  componentDidUpdate(){
+    this.initializeChart(this.props.config);
+  }
 initializeChart =()=> {
     let el = document.getElementById('ChartSales');
     let ctx = el.getContext("2d");
@@ -230,10 +232,12 @@ initializeChart =()=> {
           labels_and_dataArr.forEach(obj => {
             let label = Object.keys(obj); //  Object's keys array
             let value = obj[label[0]]; //  Object's value
-            alert('label= '+label+' value= '+value);
+            // alert('label= '+label+' value= '+value);
             labelsArr[i] = label;
             dataArr[i] = value;
+            
           });
+          var test = 1;
         }
         
     var myChart = new Chart(ctx, {
@@ -520,8 +524,10 @@ class DashBoard extends Component {
       body: period,
     })
     .then(
-      res => 
+      res => {
       res.json()
+      var test = 2;
+    }
       )
     .then(
       (data)=>{
