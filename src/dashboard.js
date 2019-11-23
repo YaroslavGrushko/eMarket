@@ -46,7 +46,7 @@ class Period extends Component {
       from_day : '1',
       from_month : '1',
       from_year : 2019,
-      to_day : '1',
+      to_day : '2',
       to_month : '1',
       to_year : 2019,
     }
@@ -235,9 +235,8 @@ initializeChart =()=> {
             // alert('label= '+label+' value= '+value);
             labelsArr[i] = label;
             dataArr[i] = value;
-            
+            i++;
           });
-          var test = 1;
         }
         
     var myChart = new Chart(ctx, {
@@ -422,7 +421,7 @@ class DashBoard extends Component {
       total_income:0,
       labels_and_data: null,
       from_period : '2019,1,1',
-      to_period : '2019,1,1',
+      to_period : '2019,1,2',
     }
   }
   
@@ -523,12 +522,8 @@ class DashBoard extends Component {
       },
       body: period,
     })
-    .then(
-      res => {
-      res.json()
-      var test = 2;
-    }
-      )
+    .then(res => 
+      res.json())
     .then(
       (data)=>{
         this.setState({
