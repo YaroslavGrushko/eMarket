@@ -536,9 +536,11 @@ def add_product_customer():
 #function for calculation the amount value for some period (from result of query):
 def amount_for_the_period(sampling_for_the_period):
     total = 0
+    exp_total = 0
     for val in sampling_for_the_period:
         total = total + int(val[6]) #val[6] is the Total column of the Orders table
-    return total
+        exp_total =exp_total + int(val[2]) #val[2] is the in_price column of the Orders table
+    return total, exp_total
 
 #function for transfering table date value into date format:
 def table_date_to_date(table_date_format):
@@ -547,7 +549,7 @@ def table_date_to_date(table_date_format):
     return date_format
 
 #function for calculation the labels and the sales values for some period (from result of query):
-def sales_labels_for_the_period(sampling_for_the_period, from_date, to_date):
+def labels_for_the_period(sampling_for_the_period, from_date, to_date):
     
     fd = table_date_to_date(from_date)
     td = table_date_to_date(to_date)
@@ -564,7 +566,8 @@ def sales_labels_for_the_period(sampling_for_the_period, from_date, to_date):
 
     print(delta)
     # date = datetime(2019, 1, 1)
-    full_labels = []
+    full_labels = [] # array of total sales
+    exp_full_labels = [] # array of expenses
     labels = []
     labels_in_data_format = []
 
@@ -580,41 +583,44 @@ def sales_labels_for_the_period(sampling_for_the_period, from_date, to_date):
     for i in range(number_of_labels): 
         for j in range(delta): 
             total_for_delta = 0
+            exp_total_for_delta=0
             for val in sampling_for_the_period:
                 # val[7] is a time column
                 if(table_date_to_date(val[7]) >= labels_in_data_format[i] and table_date_to_date(val[7]) < labels_in_data_format[i+1]):
                     total_for_delta = total_for_delta + val[6] #val[6] is the Total column of the Orders table
+                    exp_total_for_delta = exp_total_for_delta + val[2] # val[2] is the in_price column
             full_labels.append({labels[i]:total_for_delta}) 
+            exp_full_labels.append({labels[i]:exp_total_for_delta}) 
             j = j + 1
             fd += timedelta(days=1)
         i = i +1
     
-    return full_labels
+    return full_labels, exp_full_labels
     
     
 
-@app.route('/total_income', methods=['GET', 'POST'])
-def total_income():
+# @app.route('/total_sales_value', methods=['GET', 'POST'])
+# def total_income():
 
-    rData = request.get_json()
-    from_period = rData['from_period']
-    to_period = rData['to_period']
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
+#     rData = request.get_json()
+#     from_period = rData['from_period']
+#     to_period = rData['to_period']
+#     conn = create_connection("eMarket.db")
+#     cursor = conn.cursor()
     
-    cursor.execute("""SELECT *
-                        FROM Orders                       
-                    WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
+#     cursor.execute("""SELECT *
+#                         FROM Orders                       
+#                     WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
 
-    # before reading check if the data exists:
-    result_of_query=cursor.fetchall()
-    if result_of_query==None:
-        return jsonify({'total' : '0'})
-    else: 
-        return jsonify({'total' : amount_for_the_period(result_of_query)})   
+#     # before reading check if the data exists:
+#     result_of_query=cursor.fetchall()
+#     if result_of_query==None:
+#         return jsonify({'total' : '0'})
+#     else: 
+#         return jsonify({'total' : amount_for_the_period(result_of_query)})   
 
 
-@app.route('/total_sales', methods=['GET', 'POST'])
+@app.route('/total_graph', methods=['GET', 'POST'])
 def total_sales():
     rData = request.get_json()
     from_period = rData['from_period']
@@ -635,7 +641,9 @@ def total_sales():
                         FROM Orders                       
                     WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
         result_of_query=cursor.fetchall()
-        return jsonify(sales_labels_for_the_period(result_of_query, from_period, to_period)) 
+        sales_labels, expenses_labels = labels_for_the_period(result_of_query, from_period, to_period)
+        total_sales, total_expenses = amount_for_the_period(result_of_query)
+        return jsonify({'sales_labels':sales_labels,'expenses_labels':expenses_labels, 'total_sales' : total_sales,'total_expenses':total_expenses}) 
 
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

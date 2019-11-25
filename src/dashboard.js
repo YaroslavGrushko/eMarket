@@ -219,13 +219,13 @@ class TotalSales extends Component {
     this.initializeChart(this.props.config);
   }
 initializeChart =()=> {
-    let el = document.getElementById('ChartSales');
+    let el = document.getElementById(this.props.chartId);
     let ctx = el.getContext("2d");
     let labels_and_dataArr = this.props.labels_and_data;//array of Objects
         let i = 0;
         var labelsArr = [];
         var dataArr = [];
-        if (labels_and_dataArr === null || labels_and_dataArr === '') {
+        if (labels_and_dataArr === null || labels_and_dataArr === '' || labels_and_dataArr === undefined) {
           labelsArr = 0;
           dataArr = 0;
         } else{
@@ -272,13 +272,13 @@ initializeChart =()=> {
             <div className="card-title d-flex justify-content-center">
                 <div className="d-flex flex-row">
                     <h4>Загальні продажі</h4>
-                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total_income}</div>
+                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total_sales}</div>
                     <div className="ml-1">грн.</div>
                 </div>
             </div>
             <div className="card-body p-0 d-flex justify-content-center">
                 <div className="chart-container">
-                    <canvas id="ChartSales" ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
+                    <canvas id={this.props.chartId} ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
                 </div>
             </div>
             <div className="card-footer">за вибраний проміжок часу</div>
@@ -293,17 +293,36 @@ class TotalExpenses extends Component {
   componentDidMount() {
     this.initializeChart(this.props.config);
 }
-
+  componentDidUpdate(){
+    this.initializeChart(this.props.config);
+  }
 initializeChart =()=> {
-    let el = document.getElementById('ChartExpenses');
+    let el = document.getElementById('ChartSales');
     let ctx = el.getContext("2d");
+    let labels_and_dataArr = this.props.exp_labels_and_data;//array of Objects
+        let i = 0;
+        var labelsArr = [];
+        var dataArr = [];
+        if (labels_and_dataArr === null || labels_and_dataArr === '' || labels_and_dataArr === undefined) {
+          labelsArr = 0;
+          dataArr = 0;
+        } else{
+          labels_and_dataArr.forEach(obj => {
+            let label = Object.keys(obj); //  Object's keys array
+            let value = obj[label[0]]; //  Object's value
+            // alert('label= '+label+' value= '+value);
+            labelsArr[i] = label;
+            dataArr[i] = value;
+            i++;
+          });
+        }
+        
     var myChart = new Chart(ctx, {
       type: 'line',
       data: {
-  
-          labels: ['January', 'February', 'March', 'April', 'May'],
+          labels: labelsArr,
           datasets: [{
-              data: [500, 1000, 500, 500, 1000],
+              data: dataArr,
               cubicInterpolationMode: 'monotone'
           }]
       },
@@ -331,13 +350,13 @@ initializeChart =()=> {
             <div className="card-title d-flex justify-content-center">
                 <div className="d-flex flex-row">
                     <h4>Загальні витрати</h4>
-                    <div className="card text-center font-weight-bold ml-2 p-1">3500</div>
+                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total_expenses}</div>
                     <div className="ml-1">грн.</div>
                 </div>
             </div>
             <div className="card-body p-0 d-flex justify-content-center">
                 <div className="chart-container">
-                    <canvas id="ChartExpenses" ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
+                    <canvas id="ChartSales" ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
                 </div>
             </div>
             <div className="card-footer">за вибраний проміжок часу</div>
@@ -347,7 +366,7 @@ initializeChart =()=> {
   }
 }
 
-// component Total Expenses:
+// component Total Department Sales:
 class TotalDepartmentSales extends Component {
   initializeChart =()=> {
       let el = document.getElementById(this.props.chartId);
@@ -418,8 +437,10 @@ class DashBoard extends Component {
     super(props);
     this.state={
       categories:[],
-      total_income:0,
-      labels_and_data: null,
+      total_sales : 0,
+      total_expenses : 0,
+      labels_and_data : null,
+      exp_labels_and_data : null,
       from_period : '2019,1,1',
       to_period : '2019,1,2',
     }
@@ -427,16 +448,16 @@ class DashBoard extends Component {
   
   componentDidMount()  {
     this.readManagersCards();
-    this.readTotalIncomeValue();
-    this.readTotalSalesValues();
+    // this.readTotalSalesValue();
+    this.readTotalSalesGraph();
   }
   periodCallBack = (from, to) => {
     this.setState({
       from_period : from,
       to_period : to
     });
-    this.readTotalIncomeValue();
-    this.readTotalSalesValues();
+    // this.readTotalSalesValue();
+    this.readTotalSalesGraph();
   }
 
   readManagersCards = () => {
@@ -477,45 +498,45 @@ class DashBoard extends Component {
         });
   }
 
-  readTotalIncomeValue = () => {
-    // draw the total income value:
+  // readTotalSalesValue = () => {
+  //   // draw the total sales value:
+  //   let jsonData = {
+  //     'from_period': this.state.from_period,
+  //     'to_period': this.state.to_period
+  //   };
+  //   let period = JSON.stringify(jsonData);
+  //    fetch("http://127.0.0.1:5000/total_sales_value",{
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: period,
+  //   })
+  //   .then(res => res.json())
+  //   .then(
+  //     (data)=>{
+  //       let total_sales_value = data.total;
+  //       // alert('total_sales_value= '+total_sales_value);
+  //       this.setState({
+  //         total_sales: total_sales_value,
+  //       });
+  //     },
+  //     err => {
+  //       console.log(err);
+  //     }
+  //   )
+
+  // }
+
+  readTotalSalesGraph = () => {
+
+    // draw the total sales graph:
     let jsonData = {
       'from_period': this.state.from_period,
       'to_period': this.state.to_period
     };
     let period = JSON.stringify(jsonData);
-     fetch("http://127.0.0.1:5000/total_income",{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: period,
-    })
-    .then(res => res.json())
-    .then(
-      (data)=>{
-        let total_income_value = data.total;
-        // alert('total_income_value= '+total_income_value);
-        this.setState({
-          total_income: total_income_value,
-        });
-      },
-      err => {
-        console.log(err);
-      }
-    )
-
-  }
-
-  readTotalSalesValues = () => {
-
-    // draw the total income value:
-    let jsonData = {
-      'from_period': this.state.from_period,
-      'to_period': this.state.to_period
-    };
-    let period = JSON.stringify(jsonData);
-     fetch("http://127.0.0.1:5000/total_sales",{
+     fetch("http://127.0.0.1:5000/total_graph",{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -527,7 +548,10 @@ class DashBoard extends Component {
     .then(
       (data)=>{
         this.setState({
-          labels_and_data: data,
+          labels_and_data: data.sales_labels,
+          exp_labels_and_data: data.expenses_labels,
+          total_sales: data.total_sales,
+          total_expenses: data.total_expenses,
         });
       },
       err => {
@@ -536,6 +560,37 @@ class DashBoard extends Component {
     )
 
   }
+
+
+  // readTotalExpensesValues = () => {
+
+  //   // draw the total sales graph:
+  //   let jsonData = {
+  //     'from_period': this.state.from_period,
+  //     'to_period': this.state.to_period
+  //   };
+  //   let period = JSON.stringify(jsonData);
+  //    fetch("http://127.0.0.1:5000/total_sales",{
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: period,
+  //   })
+  //   .then(res => 
+  //     res.json())
+  //   .then(
+  //     (data)=>{
+  //       this.setState({
+  //         labels_and_data: data,
+  //       });
+  //     },
+  //     err => {
+  //       console.log(err);
+  //     }
+  //   )
+
+  // }
 
 
 
@@ -557,21 +612,21 @@ class DashBoard extends Component {
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack} /></div>
             </Col>
             <Col key={2} md={4} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_income}/></div>
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_sales-this.state.total_expenses}/></div>
             </Col>
           </Row>
           <Row>
             <Col key={0} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalSales total_income={this.state.total_income} labels_and_data={this.state.labels_and_data} /></div>
+                  <div><TotalSales chartId = 'ChartSales' total_sales={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>
             <Col key={1} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalExpenses/></div>
+                  <div><TotalSales chartId = 'ChartExpenses' total_sales = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>
