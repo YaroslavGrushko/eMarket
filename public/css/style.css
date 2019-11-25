@@ -1746,6 +1746,10 @@ a {
     background-color: #555555;
     color: white;
 }
+.selectedButton{
+    background-color: red !important;  
+    /* opacity:0.6; */
+}
 
 /* in sales manager page */
 .transition{
