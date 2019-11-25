@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './css/main_App.css';
-import './css/images.css';
+// import './css/images.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Container, Row, Col, Table, Dropdown } from "react-bootstrap";
@@ -17,6 +17,8 @@ import Chart from 'chart.js';
 import './css/my-charts.css';
 import './css/board_styles/css/board_main.css';
 import './css/board_styles/css/card_styles.css';
+import './css/board_styles/css/images.css';
+
 class MyDropDown extends Component {
   render(){
     return(
@@ -477,11 +479,11 @@ componentDidMount(){
                   <div className="pb-5">
                     <Row>
                       <Col sm={12}>
-                      <div className={this.state.isAnyAnotherTable ? 'col-6 pull-left transition' : 'transition'}>
+                      <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
                         <MainTable onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
                       </div>
 
-                      <div className={this.state.isAnyAnotherTable ? 'col-6 pull-right transition' : 'transition'}>                
+                      <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
                         {this.state.showOrdersTable ? <OrdersTable/> : null}
                         {this.state.showClientTable ? <ClientTable/> : null}
                       </div>
@@ -490,20 +492,22 @@ componentDidMount(){
                   </div>
                   <hr/>
                   <div className='pt-5'>
+                    <div>
+                      <h3>Статистика</h3>
+                    </div>
                     <Row>
                         <Col sm={2}>
-                          <div className='card-height-100'>
+                          <div className='pt-4 card-height-100'>
                             <Calendar/>
                           </div>
                         </Col>
                         <Col sm={4}>
-                          <div className='card-height-100'>
+                          <div className='pt-4 card-height-100'>
                               <Period/>
                           </div>
                         </Col>
-                      <Col sm={6}>
+                      <Col sm={6} className='pt-4'>
                           {this.state.managerSales}
-                       
                       </Col>
                     </Row>
                   </div>
