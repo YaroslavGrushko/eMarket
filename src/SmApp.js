@@ -16,7 +16,7 @@ import {FormControl} from 'react-bootstrap';
 import Chart from 'chart.js';
 import './css/my-charts.css';
 import './css/board_styles/css/board_main.css';
-
+import './css/board_styles/css/card_styles.css';
 class MyDropDown extends Component {
   render(){
     return(
@@ -103,14 +103,34 @@ class ClientTable extends Component{
     )
   }
 }
+
+// for switching color of selected button
+function buttonsColorSwitcher(e){
+ // get all buttons
+ var buttons = document.getElementsByClassName('selectedButton');
+    
+ // add/remove .selectedButton to current Button
+ if(e.currentTarget.classList.contains('selectedButton')){
+   e.currentTarget.classList.remove('selectedButton');
+ }else{
+   // remove .selectedButton from all buttons
+   if(buttons.length!=0){
+     for(var i=0;i<buttons.length;i++)
+       buttons[i].classList.remove('selectedButton');
+   }
+   e.currentTarget.classList.add('selectedButton');
+ }
+}
 //main table component where are stored all orders:
 class MainTable extends Component {
   openOrdersTable(e){
-    // e.currentTarget.classList.add('selectedButton');
+
+    buttonsColorSwitcher(e);
+    
     this.props.onClick('orders');
   }
   openClientTable(e){
-    // e.target.classList.add('selectedButton');
+    buttonsColorSwitcher(e);
     this.props.onClick('client');
   }
 render() {
@@ -168,7 +188,7 @@ class Calendar extends Component {
   render(){
     const date = new Date();
     return(
-      <div className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center card-height-100">
         <DatePicker onChange={this.onChange} value={date} />
       </div>
     );
@@ -236,8 +256,8 @@ class Period extends Component {
 
   render(){
     return(
-      <div>
-        <div className="card" style={{width:100+'%', height:185+'px'}}>
+      <div className="card-height-100">
+        <div className="card card-height-100" style={{width:100+'%'}}>
           <h4 className="card-title text-center">Заліковий період</h4>
           <div className="card-body">
             
@@ -341,31 +361,23 @@ class TotalDepartmentSales extends Component {
   }
     render(){
       return(
-        <div className="d-flex justify-content-center">
-          <div className="card mb-2">
-              <div className="card-title text-center">                                   
-                      <h4>Продажі відділу "{this.props.category_name}"</h4>                                         
-              </div>
+        <div className="d-flex justify-content-center card-height-100">
+          <div className="card mb-2 card-height-100">
+              <div className="card-title d-flex justify-content-center"> 
+                <div className="d-flex flex-row">                                  
+                      <h4>Продажі менеджера {this.props.name}</h4> 
+                      <div className="card text-center font-weight-bold ml-2 p-1">3500</div>
+                      <div className="ml-1">грн.</div>                                        
+                </div>
+                      </div>
               <div className="card-body p-0 d-flex justify-content-center flex-column">
   
-                    <div className="d-flex flex-row">
-                      <img src={this.props.photo}  style={{height:80+'px'}} className="m-2"></img>
-                        <div className="mt-4">
-                          <span className="text-center">менеджер {this.props.name}</span>
-                          <div className="d-flex flex-row text-center">
-                            <span>всього:</span>
-                            <div className="card text-center font-weight-bold ml-2 p-1">3500</div>
-                            <div className="ml-1">грн.</div>
-                          </div>
-                        </div> 
-                    </div>
                   <div className="p-0 d-flex justify-content-center">
                     <div className="chart-container">
                         <canvas id={this.props.chartId} ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
                     </div>
                   </div>
               </div>
-              <div className="card-footer">за вибраний проміжок часу</div>
           </div>
       </div>
       );
@@ -479,16 +491,19 @@ componentDidMount(){
                   <hr/>
                   <div className='pt-5'>
                     <Row>
+                        <Col sm={2}>
+                          <div className='card-height-100'>
+                            <Calendar/>
+                          </div>
+                        </Col>
+                        <Col sm={4}>
+                          <div className='card-height-100'>
+                              <Period/>
+                          </div>
+                        </Col>
                       <Col sm={6}>
-                        <div className="mt-n2 pb-4">
-                          <Calendar/>
-                        </div>
-                        <Period/>
-                      </Col>
-                      <Col sm={6}>
-                        <div className="mt-5">
                           {this.state.managerSales}
-                        </div>
+                       
                       </Col>
                     </Row>
                   </div>
