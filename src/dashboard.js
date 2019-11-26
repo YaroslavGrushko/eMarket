@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-
 import DeveloperVladimir from './dev_Vladimir';
 import DeveloperYaroslav from './dev_Yaroslav';
-// import {InputGroup} from 'react-bootstrap';
+
 import InputGroup from 'react-bootstrap/InputGroup';
 import {FormControl} from 'react-bootstrap';
 
@@ -13,7 +11,7 @@ import './css/board_styles/css/rc-datepicker_style.css';
 
 import { DatePicker} from 'rc-datepicker';
 
-import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
+import "bootstrap/dist/css/bootstrap.css"; 
 import { Container, Row, Col } from "react-bootstrap";
 
 import Chart from 'chart.js';
@@ -52,20 +50,9 @@ class Period extends Component {
     }
   }
   
-  
   updatePeriod = ( ) => {
-
-    // if(this.state.from_year=='') this.state.from_year='0';
-    // if(this.state.from_month=='') this.state.from_month='0';
-    // if(this.state.from_day=='') this.state.from_day='0';
-
-    // if(this.state.to_year=='') this.state.to_year='0';
-    // if(this.state.to_month=='') this.state.to_month='0';
-    // if(this.state.to_day=='') this.state.to_day='0';
-
     var from_period = this.state.from_year + ','+ this.state.from_month + ',' + this.state.from_day;
     var to_period = this.state.to_year + ','+ this.state.to_month + ',' + this.state.to_day;
-    
     this.props.periodCallBack(from_period, to_period);
   };
 
@@ -210,8 +197,8 @@ class TotalIncome extends Component {
   }
 }
 
-// component Total Sales:
-class TotalSales extends Component {
+// component Total Graph for total sales and total expenses graphs:
+class TotalGraph extends Component {
   componentDidMount() {
     this.initializeChart(this.props.config);
 }
@@ -279,84 +266,6 @@ initializeChart =()=> {
             <div className="card-body p-0 d-flex justify-content-center">
                 <div className="chart-container">
                     <canvas id={this.props.chartId} ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
-                </div>
-            </div>
-            <div className="card-footer">за вибраний проміжок часу</div>
-        </div>
-    </div>
-    );
-  }
-}
-
-// component Total Expenses:
-class TotalExpenses extends Component {
-  componentDidMount() {
-    this.initializeChart(this.props.config);
-}
-  componentDidUpdate(){
-    this.initializeChart(this.props.config);
-  }
-initializeChart =()=> {
-    let el = document.getElementById('ChartSales');
-    let ctx = el.getContext("2d");
-    let labels_and_dataArr = this.props.exp_labels_and_data;//array of Objects
-        let i = 0;
-        var labelsArr = [];
-        var dataArr = [];
-        if (labels_and_dataArr === null || labels_and_dataArr === '' || labels_and_dataArr === undefined) {
-          labelsArr = 0;
-          dataArr = 0;
-        } else{
-          labels_and_dataArr.forEach(obj => {
-            let label = Object.keys(obj); //  Object's keys array
-            let value = obj[label[0]]; //  Object's value
-            // alert('label= '+label+' value= '+value);
-            labelsArr[i] = label;
-            dataArr[i] = value;
-            i++;
-          });
-        }
-        
-    var myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-          labels: labelsArr,
-          datasets: [{
-              data: dataArr,
-              cubicInterpolationMode: 'monotone'
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero: true
-                  }
-              }]
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          legend:{
-              display:false
-          }
-      }
-  });
-  return myChart;
-}
-  render(){
-    return(
-      <div className="d-flex justify-content-center">
-        <div className="card" style={{width:100+'%'}}>
-            <div className="card-title d-flex justify-content-center">
-                <div className="d-flex flex-row">
-                    <h4>Загальні витрати</h4>
-                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total_expenses}</div>
-                    <div className="ml-1">грн.</div>
-                </div>
-            </div>
-            <div className="card-body p-0 d-flex justify-content-center">
-                <div className="chart-container">
-                    <canvas id="ChartSales" ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
                 </div>
             </div>
             <div className="card-footer">за вибраний проміжок часу</div>
@@ -440,7 +349,6 @@ class DashBoard extends Component {
       total_sales : 0,
       total_expenses : 0,
       labels_and_data : null,
-      exp_labels_and_data : null,
       from_period : '2019,1,1',
       to_period : '2019,1,2',
     }
@@ -448,16 +356,15 @@ class DashBoard extends Component {
   
   componentDidMount()  {
     this.readManagersCards();
-    // this.readTotalSalesValue();
-    this.readTotalSalesGraph();
+    this.readTotalGraph();
   }
+
   periodCallBack = (from, to) => {
     this.setState({
       from_period : from,
       to_period : to
     });
-    // this.readTotalSalesValue();
-    this.readTotalSalesGraph();
+    this.readTotalGraph();
   }
 
   readManagersCards = () => {
@@ -498,39 +405,9 @@ class DashBoard extends Component {
         });
   }
 
-  // readTotalSalesValue = () => {
-  //   // draw the total sales value:
-  //   let jsonData = {
-  //     'from_period': this.state.from_period,
-  //     'to_period': this.state.to_period
-  //   };
-  //   let period = JSON.stringify(jsonData);
-  //    fetch("http://127.0.0.1:5000/total_sales_value",{
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: period,
-  //   })
-  //   .then(res => res.json())
-  //   .then(
-  //     (data)=>{
-  //       let total_sales_value = data.total;
-  //       // alert('total_sales_value= '+total_sales_value);
-  //       this.setState({
-  //         total_sales: total_sales_value,
-  //       });
-  //     },
-  //     err => {
-  //       console.log(err);
-  //     }
-  //   )
+  readTotalGraph = () => {
 
-  // }
-
-  readTotalSalesGraph = () => {
-
-    // draw the total sales graph:
+    // draw the total sales and total expenses graphs:
     let jsonData = {
       'from_period': this.state.from_period,
       'to_period': this.state.to_period
@@ -562,39 +439,6 @@ class DashBoard extends Component {
   }
 
 
-  // readTotalExpensesValues = () => {
-
-  //   // draw the total sales graph:
-  //   let jsonData = {
-  //     'from_period': this.state.from_period,
-  //     'to_period': this.state.to_period
-  //   };
-  //   let period = JSON.stringify(jsonData);
-  //    fetch("http://127.0.0.1:5000/total_sales",{
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: period,
-  //   })
-  //   .then(res => 
-  //     res.json())
-  //   .then(
-  //     (data)=>{
-  //       this.setState({
-  //         labels_and_data: data,
-  //       });
-  //     },
-  //     err => {
-  //       console.log(err);
-  //     }
-  //   )
-
-  // }
-
-
-
-
   render(){
     return(
       <div id = "dashboard_content">
@@ -619,14 +463,14 @@ class DashBoard extends Component {
             <Col key={0} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalSales chartId = 'ChartSales' total_sales={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
+                  <div><TotalGraph chartId = 'ChartSales' total_sales={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>
             <Col key={1} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalSales chartId = 'ChartExpenses' total_sales = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
+                  <div><TotalGraph chartId = 'ChartExpenses' total_sales = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>

@@ -1,5 +1,5 @@
 
-from flask import Flask, request, Response
+from flask import Response
 from flask_restful import Resource, Api
 
 from flask import Flask, request, jsonify, make_response
@@ -12,16 +12,8 @@ from flask_cors import CORS, cross_origin
 from datetime import datetime
 from datetime import timedelta
 
-
-
-# import time
-# from datetime import date
-
-
 from functools import wraps
 
-
-# from json import dumps
 import json
 # for has been blocked by CORS policy: Cross origin requests are only error
 from flask_cors import CORS, cross_origin
@@ -58,11 +50,6 @@ db.init_app(app)
 
 
 def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by the db_file
-    :param db_file: database file
-    :return: Connection object or None
-    """
     try:
         conn = sqlite3.connect(db_file)
         return conn
@@ -564,8 +551,6 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
         reminder = 0
         number_of_labels = period_duration + 1
 
-    print(delta)
-    # date = datetime(2019, 1, 1)
     full_labels = [] # array of total sales
     exp_full_labels = [] # array of expenses
     labels = []
@@ -588,7 +573,7 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
                 # val[7] is a time column
                 if(table_date_to_date(val[7]) >= labels_in_data_format[i] and table_date_to_date(val[7]) < labels_in_data_format[i+1]):
                     total_for_delta = total_for_delta + val[6] #val[6] is the Total column of the Orders table
-                    exp_total_for_delta = exp_total_for_delta + val[2] # val[2] is the in_price column
+                    exp_total_for_delta = exp_total_for_delta + val[2]*val[5] # val[2] is the in_price column, val[5] - quantity
             full_labels.append({labels[i]:total_for_delta}) 
             exp_full_labels.append({labels[i]:exp_total_for_delta}) 
             j = j + 1
@@ -597,28 +582,6 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
     
     return full_labels, exp_full_labels
     
-    
-
-# @app.route('/total_sales_value', methods=['GET', 'POST'])
-# def total_income():
-
-#     rData = request.get_json()
-#     from_period = rData['from_period']
-#     to_period = rData['to_period']
-#     conn = create_connection("eMarket.db")
-#     cursor = conn.cursor()
-    
-#     cursor.execute("""SELECT *
-#                         FROM Orders                       
-#                     WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
-
-#     # before reading check if the data exists:
-#     result_of_query=cursor.fetchall()
-#     if result_of_query==None:
-#         return jsonify({'total' : '0'})
-#     else: 
-#         return jsonify({'total' : amount_for_the_period(result_of_query)})   
-
 
 @app.route('/total_graph', methods=['GET', 'POST'])
 def total_sales():
