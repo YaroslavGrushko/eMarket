@@ -516,6 +516,7 @@ def add_product_customer():
         CREATE TABLE IF NOT EXISTS Orders(
         customer_phone VARCHAR,
         name VARCHAR,
+        category_id VARCHAR,
         in_price REAL,
         out_price REAL,
         src VARCHAR,
@@ -532,8 +533,8 @@ def add_product_customer():
     today_date = year + ',' + month + ',' + day
     for item in rData['customer_products']:
         new_checkout_products = []
-        new_checkout_products = [(rData['customer_phone'], item['name'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'],today_date)]
-        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?)", new_checkout_products)
+        new_checkout_products = [(rData['customer_phone'], item['name'], item['category_id'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'], today_date)]
+        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?)", new_checkout_products)
     
     conn.commit()
 
@@ -592,10 +593,10 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
             total_for_delta = 0
             exp_total_for_delta=0
             for val in sampling_for_the_period:
-                # val[7] is a time column
-                if(table_date_to_date(val[7]) >= labels_in_data_format[i] and table_date_to_date(val[7]) < labels_in_data_format[i+1]):
-                    total_for_delta = total_for_delta + val[6] #val[6] is the Total column of the Orders table
-                    exp_total_for_delta = exp_total_for_delta + val[2]*val[5] # val[2] is the in_price column, val[5] - quantity
+                # val[8] is a time column
+                if(table_date_to_date(val[8]) >= labels_in_data_format[i] and table_date_to_date(val[8]) < labels_in_data_format[i+1]):
+                    total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
+                    exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
             full_labels.append({labels[i]:total_for_delta}) 
             exp_full_labels.append({labels[i]:exp_total_for_delta}) 
             j = j + 1

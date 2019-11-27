@@ -181,7 +181,7 @@ class Cart extends Component{
       customer_phone : window.selected_phone,
       customer_products : window.items
     };
-    if (window.selected_name===undefined || window.selected_phone===undefined ||window.selected_address===undefined 
+    if (window.selected_name===undefined || window.selected_phone===undefined || window.selected_address===undefined 
       || window.selected_delivery===undefined || window.selected_pay===undefined) {Warning();} 
       else{
         addСheckoutCustumerToServer(window.checkout_customer);
@@ -289,9 +289,9 @@ class Product extends Component{
       <span>{inp.replace("₴","")} грн./{outp.replace("₴","")} грн.</span>
     )
   } 
-  renderAdminModeFalse(inp){
+  renderAdminModeFalse(outp){
     return(
-      <span>{inp.replace("₴","")} грн</span>
+      <span>{outp.replace("₴","")} грн</span>
     )
   } 
   render(){
@@ -308,7 +308,7 @@ class Product extends Component{
             <Col key={1} md={4} sm={12}> 
               <div className="productMain">   
                 <span className="productName">{this.props.product.name}</span>
-                {window.admin_state?this.renderAdminModeTrue(in_pr,out_pr):this.renderAdminModeFalse(in_pr)}
+                {window.admin_state?this.renderAdminModeTrue(in_pr,out_pr):this.renderAdminModeFalse(out_pr)}
                 <button className="button button2" onClick={() => this.props.onClick(true)}><i class="fa fa-shopping-cart"></i>&nbsp;Додати в корзину</button>
               </div> 
             </Col>
@@ -727,9 +727,9 @@ handleProductClick(isOrder){
   //function for adding selected product into cart items array:
   function item_for_cart_items(product) {
     if (product===undefined){ //when cart is empty this value is undefined
-      var item = { name : "", in_price : "", out_price : "", src : "", quantity : 0, total : 0 };
+      var item = { name : "", category_id : "", in_price : "", out_price : "", src : "", quantity : 0, total : 0 };
     }else{
-      var item = { name : product.name, in_price : product.in_price, out_price : product.out_price,
+      var item = { name : product.name, category_id : window.category, in_price : product.in_price, out_price : product.out_price,
          src : product.src, quantity : 1, total : product.out_price };
     } 
     return item;
