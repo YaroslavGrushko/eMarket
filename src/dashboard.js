@@ -258,8 +258,8 @@ initializeChart =()=> {
         <div className="card" style={{width:100+'%'}}>
             <div className="card-title d-flex justify-content-center">
                 <div className="d-flex flex-row">
-                    <h4>Загальні продажі</h4>
-                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total_sales}</div>
+                    <h4>{this.props.graph_name}</h4>
+                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total}</div>
                     <div className="ml-1">грн.</div>
                 </div>
             </div>
@@ -464,14 +464,14 @@ class DashBoard extends Component {
             <Col key={0} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalGraph chartId = 'ChartSales' total_sales={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
+                  <div><TotalGraph chartId = 'ChartSales' graph_name='Загальні продажі' total={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>
             <Col key={1} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalGraph chartId = 'ChartExpenses' total_sales = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
+                  <div><TotalGraph chartId = 'ChartExpenses' graph_name='Загальні витрати' total = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>
