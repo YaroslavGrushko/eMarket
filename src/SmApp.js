@@ -125,6 +125,12 @@ function buttonsColorSwitcher(e){
 }
 //main table component where are stored all orders:
 class MainTable extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      content:null,
+    }
+  }
   openOrdersTable(e){
 
     buttonsColorSwitcher(e);
@@ -135,6 +141,46 @@ class MainTable extends Component {
     buttonsColorSwitcher(e);
     this.props.onClick('client');
   }
+  static getDerivedStateFromProps(props, state){
+    var content=[]
+    var orders=props.orders;
+    if(orders!=undefined){
+      for(var i=0;i<orders.length;i++){
+        var order = orders[i];
+        // let's calculate total cost of order
+        var total_cost = 0;
+        for(var c=0;c<order.order.length;c++){
+          var product = order.order[c];
+          total_cost+= product.count * product.price;
+        }
+        content.push(<tr>
+
+          <td>{i}</td>
+
+          <td>
+          <button className="button button2 text-center small-paddings" onClick={(e)=>this.openOrdersTable(e)}><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
+          </td>
+
+          <td>
+            <button class="button button2 small-paddings" onClick={(e)=>this.openClientTable(e)}>&nbsp;{order.customer.name}</button>
+          </td>
+
+          <td>
+          <MyDropDown mainText="нове" textItem="прийняти"/>
+          </td>
+
+          <td>
+            {total_cost}
+          </td>
+
+        </tr>);
+      }
+    }
+   return{
+     content:content,
+   };
+  }
+ 
 render() {
     return(<div>
            <h3>Список замовлень</h3>
@@ -162,19 +208,7 @@ render() {
                 </td>
                 <td>150 грн</td>
               </tr>
-              <tr>
-                <td>2</td>
-                <td>
-                  <button class="button button2 small-paddings"><i class="fa fa-times"></i>&nbsp;1</button>
-                </td>
-                <td>
-                  <button class="button button2 small-paddings">&nbsp;Іваненко</button>            
-                </td>
-                <td>
-                  <MyDropDown mainText="нове" textItem="прийняти"/>
-                </td>
-                <td>30 грн</td>
-              </tr>
+             {this.state.content}
             </tbody>
            </Table>
           </div>);
@@ -457,9 +491,27 @@ class SmApp extends Component {
         // for(let i=0; i<category_names.length;i++){
           categories.push(<TotalDepartmentSales chartId="chart0" receivedData={chartData[0]} category_name={category_names[0]} name={names[0]} photo={photos[0]}/>);
         // }
-      
+        var orders = [];
+        var order1 ={'order':[
+          {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 50},
+          {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 50},
+          {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 50},
+                ], 'customer':
+          {'name':'Ігор', 'surname':'Столяр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
+        };
+        var order2 ={'order':[
+          {'product_name':'зошит_зелена', 'article':1225, 'count':3, 'price': 50},
+          {'product_name':'зошит_синя', 'article':1226, 'count':2, 'price': 50},
+          {'product_name':'зошит_жовта', 'article':1227, 'count':2, 'price': 50},
+                ], 'customer':
+          {'name':'Василь', 'surname':'Маляр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
+        };
+        orders.push(order1);
+        orders.push(order2);
+
         this.setState({
           managerSales: categories,
+          orders: orders,
         })
         });
   }
@@ -480,7 +532,7 @@ componentDidMount(){
                     <Row>
                       <Col sm={12}>
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
-                        <MainTable onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
+                        <MainTable orders={this.state.orders} onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
                       </div>
 
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
