@@ -1,0 +1,13 @@
+/* import only the necessary Bootstrap files */
+@import "node_modules/bootstrap/scss/functions"; 
+@import "node_modules/bootstrap/scss/variables";
+
+.avatar_img{
+    width:10%;
+}
+@media (max-width:600px){
+    .avatar_img{
+        width:40%;
+        padding-left:($spacer * .5) !important;
+    } 
+}

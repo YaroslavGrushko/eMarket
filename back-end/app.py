@@ -1,5 +1,7 @@
 
-from flask import Response
+
+from flask import Flask, request, Response, abort
+
 from flask_restful import Resource, Api
 
 from flask import Flask, request, jsonify, make_response
@@ -165,6 +167,7 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
+        test_role = ''
 
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
@@ -175,10 +178,11 @@ def token_required(f):
         try: 
             data = jwt.decode(token, app.config['SECRET_KEY'])
             current_user = User.query.filter_by(public_id=data['public_id']).first()
+            username = current_user.name
         except:
             return jsonify({'message' : 'Token is invalid!'}), 401
 
-        return f(*args, **kwargs)
+        return f(username, *args, **kwargs)
 
     return decorated
 
@@ -242,98 +246,106 @@ def read_category():
 
 @app.route('/read_category', methods=['GET', 'POST'])
 @token_required
-def read():
-    # rData = request.data
-    rData = request.get_json()
+def read(username):
+    if username=='admin':
+        # rData = request.data
+        rData = request.get_json()
 
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * from Categories WHERE category_id ="+"'"+str(rData)+"'")
-    
-    rows = cursor.fetchall()
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * from Categories WHERE category_id ="+"'"+str(rData)+"'")
+        
+        rows = cursor.fetchall()
 
-    if request.method == 'POST':
-        # return jsonify(cursor.fetchall())
-        return {'category_id' : [row[0] for row in rows], # column1
-                'category_name' : [row[1] for row in rows], # column2
-                'category_code' : [row[2] for row in rows], # column3
-                'name' : [row[3] for row in rows], # column4
-                'photo' : [row[4] for row in rows]} # column5
+        if request.method == 'POST':
+            # return jsonify(cursor.fetchall())
+            return {'category_id' : [row[0] for row in rows], # column1
+                    'category_name' : [row[1] for row in rows], # column2
+                    'category_code' : [row[2] for row in rows], # column3
+                    'name' : [row[3] for row in rows], # column4
+                    'photo' : [row[4] for row in rows]} # column5
+        else:
+            return jsonify({'status' : 'success GET'})
     else:
-        return jsonify({'status' : 'success GET'})
+        abort(403)
 
 @app.route('/add_categories', methods=['GET', 'POST'])
 @token_required
-def save_category():
-    # rData = request.data
-    rData = request.get_json()
+def save_category(username):
+    if username == 'admin':
+        # rData = request.data
+        rData = request.get_json()
 
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
 
-    cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
-            (
-            "category_id" VARCHAR,
-            "category_name" VARCHAR,
-            "category_code" VARCHAR,
-            "name" VARCHAR,
-            "photo" VARCHAR,
-            "time" DATETIME
-            )
-            """)
-    
-    new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], rData['manager_name'], rData['manager_photo'], datetime.now()),]
-    cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?,?,?)", new_category)
-    conn.commit()
+        cursor.execute("""CREATE TABLE IF NOT EXISTS "Categories" 
+                (
+                "category_id" VARCHAR,
+                "category_name" VARCHAR,
+                "category_code" VARCHAR,
+                "name" VARCHAR,
+                "photo" VARCHAR,
+                "time" DATETIME
+                )
+                """)
+        
+        new_category = [( rData['category_id'], rData['category_name'], rData['category_code'], rData['manager_name'], rData['manager_photo'], datetime.now()),]
+        cursor.executemany("INSERT INTO Categories VALUES (?,?,?,?,?,?)", new_category)
+        conn.commit()
 
-    if request.method == 'GET':
-        return jsonify({'status' : 'success GET'})
+        if request.method == 'GET':
+            return jsonify({'status' : 'success GET'})
+        else:
+            return jsonify({'status' : 'adding successfully'})
     else:
-        return jsonify({'status' : 'adding successfully'})
-
+        abort(403)
 
 @app.route('/edit_categories', methods=['GET', 'POST'])
 @token_required
-def edit_categories():
-    # rData = request.data
-    rData = request.get_json()
+def edit_categories(username):
+    if username == 'admin':
+        # rData = request.data
+        rData = request.get_json()
 
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
 
-    sql = ''' UPDATE "Categories"
-              SET category_id = ? ,
-                  category_name = ? ,
-                  category_code = ?,
-                  name = ?,
-                  photo = ?
-              WHERE category_id = ?'''
-    
-    task = (rData['category_id'], rData['category_name'], rData['category_code'], rData['name'], rData['photo'], rData['category_id'])
-    cursor.execute(sql, task)
-    conn.commit()
+        sql = ''' UPDATE "Categories"
+                SET category_id = ? ,
+                    category_name = ? ,
+                    category_code = ?,
+                    name = ?,
+                    photo = ?
+                WHERE category_id = ?'''
+        
+        task = (rData['category_id'], rData['category_name'], rData['category_code'], rData['name'], rData['photo'], rData['category_id'])
+        cursor.execute(sql, task)
+        conn.commit()
 
-    if request.method == 'GET':
-        return jsonify({'status' : 'success GET'})
+        if request.method == 'GET':
+            return jsonify({'status' : 'success GET'})
+        else:
+            return jsonify({'category_id' : rData['category_id']})
     else:
-        return jsonify({'category_id' : rData['category_id']})
-
+        abort(403)
 
 @app.route('/delete_category', methods=['GET', 'POST'])
 @token_required
-def delete_category():
-
-    rData = request.get_json()
-    # data = json.loads(rData)
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM Categories WHERE category_id ="+"'"+str(rData)+"'")
-    cursor.execute("DROP TABLE"+"'"+str(rData)+"'")
-    conn.commit()
-    return 'Ok'
+def delete_category(username):
+    if (username == 'admin'):
+        rData = request.get_json()
+        # data = json.loads(rData)
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM Categories WHERE category_id ="+"'"+str(rData)+"'")
+        cursor.execute("DROP TABLE"+"'"+str(rData)+"'")
+        conn.commit()
+        return 'Ok'
+    else:
+        abort(403)
 
 @app.route('/read_product', methods=['GET', 'POST'])
-
 def read_products():
     # rData = request.data
     rData = request.get_json()
@@ -356,95 +368,105 @@ def read_products():
 
 @app.route('/add_product', methods=['GET', 'POST'])
 @token_required
-def add_product():
-    # rData = request.data
-    rData = request.get_json()
+def add_product(username):
+    if(username == 'admin'):
+        # rData = request.data
+        rData = request.get_json()
 
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Products(
-        name_of_category VARCHAR
-        name VARCHAR,
-        src VARCHAR,
-        in_price VARCHAR,
-        out_price VARCHAR,
-        about VARCHAR)
-        """)
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Products(
+            name_of_category VARCHAR
+            name VARCHAR,
+            src VARCHAR,
+            in_price VARCHAR,
+            out_price VARCHAR,
+            about VARCHAR)
+            """)
 
-    new_product = [(rData['Current_Category'], rData['Product_Name'], rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'])]
-    cursor.executemany("INSERT INTO " + rData['Current_Category'] +" VALUES (?,?,?,?,?,?)", new_product)
-    conn.commit()
+        new_product = [(rData['Current_Category'], rData['Product_Name'], rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'])]
+        cursor.executemany("INSERT INTO " + rData['Current_Category'] +" VALUES (?,?,?,?,?,?)", new_product)
+        conn.commit()
 
-    if request.method == 'GET':
-        return jsonify({'status' : 'success GET'})
+        if request.method == 'GET':
+            return jsonify({'status' : 'success GET'})
+        else:
+            return jsonify({'status' : rData['Current_Category']})
     else:
-        return jsonify({'status' : rData['Current_Category']})
+        abort(403)
 
 @app.route('/update_product', methods=['GET', 'POST'])
 @token_required
-def update_product():
-    rData = request.get_json()
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    
-    sql = ''' UPDATE Products
-              SET src = ? ,
-                  in_price = ? ,
-                  out_price = ?,
-                  about = ?
-              WHERE name = ?'''
-    
-    task = (rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'], rData['Product_Name'])
-    cursor.execute(sql, task)
-    conn.commit()
+def update_product(username):
+    if(username=='admin'):
+        rData = request.get_json()
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
+        
+        sql = ''' UPDATE Products
+                SET src = ? ,
+                    in_price = ? ,
+                    out_price = ?,
+                    about = ?
+                WHERE name = ?'''
+        
+        task = (rData['Product_Photo'], rData['Product_In_Price'], rData['Product_Out_Price'], rData['Product_About'], rData['Product_Name'])
+        cursor.execute(sql, task)
+        conn.commit()
 
-    if request.method == 'GET':
-        return jsonify({'status' : 'success GET'})
+        if request.method == 'GET':
+            return jsonify({'status' : 'success GET'})
+        else:
+            return jsonify({'status' : rData['Current_Category']})
     else:
-        return jsonify({'status' : rData['Current_Category']})
+        abort(403)
 
 @app.route('/delete_product', methods=['GET', 'POST'])
 @token_required
-def delete_product():
-    rData = request.get_json()
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    
-    sql = ''' DELETE FROM Products
-              WHERE name = \"''' + rData['Product_Name'] +'''\"  '''
-    
-    cursor.execute(sql)
-    conn.commit()
+def delete_product(username):
+    if(username=='admin'):
+        rData = request.get_json()
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
+        
+        sql = ''' DELETE FROM Products
+                WHERE name = \"''' + rData['Product_Name'] +'''\"  '''
+        
+        cursor.execute(sql)
+        conn.commit()
 
-    if request.method == 'GET':
-        return jsonify({'status' : 'success GET'})
+        if request.method == 'GET':
+            return jsonify({'status' : 'success GET'})
+        else:
+            return jsonify({'status' : rData['Current_Category']})
     else:
-        return jsonify({'status' : rData['Current_Category']})
+        abort(403)
 
 @app.route('/user', methods=['GET'])
 @token_required
 # def get_all_users(current_user):
-def get_all_users():   
+def get_all_users(username):   
+    if username=='admin':
+        # if not current_user.admin:
+        #     return jsonify({'message' : 'Cannot perform that function!'})
 
-    # if not current_user.admin:
-    #     return jsonify({'message' : 'Cannot perform that function!'})
+        users = User.query.all()
 
-    users = User.query.all()
+        output = []
 
-    output = []
+        for user in users:
+            user_data = {}
+            user_data['public_id'] = user.public_id
+            user_data['name'] = user.name
+            user_data['password'] = user.password
+            user_data['admin'] = user.admin
+            output.append(user_data)
 
-    for user in users:
-        user_data = {}
-        user_data['public_id'] = user.public_id
-        user_data['name'] = user.name
-        user_data['password'] = user.password
-        user_data['admin'] = user.admin
-        output.append(user_data)
-
-    return jsonify({'users' : output})
-
+        return jsonify({'users' : output})
+    else:
+        abort(403)
 
 @app.route('/add_сheckout_customer', methods=['GET', 'POST'])
 # @token_required

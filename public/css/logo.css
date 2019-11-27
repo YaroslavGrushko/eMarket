@@ -16,3 +16,8 @@ flex-direction: row;
 .key-position {
     margin-left: 10rem;
 }
+@media (max-width:600px){
+    .key-position {
+        margin-left: 3rem;
+    }
+}

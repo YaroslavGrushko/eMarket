@@ -195,8 +195,12 @@ function showCategories(categories) {
   // adding additional display:none categories row
   // this is for read categories row height from css file
   main_photo_containerHTML += '<div id="categoryRowHeight"></div>';
-
-  $('.main_photo_container').html(main_photo_containerHTML);
+  if (window.sm_state!=true){
+    $('.main_photo_container').html(main_photo_containerHTML);
+    $('.main_photo_container').show();
+  }else{
+    $('.main_photo_container').hide();
+  }
 
   // delteItem click event:
   $('.categoryItem .deleteItem').click(function (event) {
@@ -236,9 +240,13 @@ function showCategories(categories) {
     $('.addButton').addClass('showItem');
     $('.productsCategoryTitle').html('');
 
-    var images =
-      '<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ' +
+    var images ='';
+    if (window.sm_state){
+      images='<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ';
+    }else{
+      images='<img id="logout" src="././images/log-out.png" alt="" title="вийти"> '+
       '<img id="dashboard" src="././images/dashboard.png" alt="" title="кабінет">' ;
+    }
     $('.moving-zone').find('.logo').html(images);
 
     // if it is not admin mode
@@ -294,6 +302,7 @@ function showCategories(categories) {
       } 
       else {
         window.admin_state = false;
+        window.sm_state = false;
         window.switch_admin_mode = true;
         // let's load categories from Db
         getCategories(columnsToObjects);

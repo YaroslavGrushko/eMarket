@@ -1,0 +1,8 @@
+.avatar_img{
+    width:10%;
+}
+@media (max-width:600px){
+    .avatar_img{
+        width:40%;
+    } 
+}

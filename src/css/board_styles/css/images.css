@@ -1,0 +1,8 @@
+/* import only the necessary Bootstrap files */
+.avatar_img {
+  width: 10%; }
+
+@media (max-width: 600px) {
+  .avatar_img {
+    width: 40%;
+    padding-left: 0.5rem !important; } }

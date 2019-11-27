@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.css';
 import App from './App';
+import SmApp from './SmApp';
 import * as serviceWorker from './serviceWorker';
 import $ from 'jquery';
 import { switchLoginStatus } from './categories.js';
@@ -63,8 +64,15 @@ function LoginToServer() {
        localStorage.setItem('x-access-token', data.token);
       //  window.isAppRender = is app.js will be render
         window.isAppRender = false;
-      // reload main react app with new window.admin_state value
-        ReactDOM.render( <App/> , document.getElementById('root'));
+        if(username=="admin"){
+          // reload main react app with new window.admin_state value
+          ReactDOM.render( <App/> , document.getElementById('root'));
+        }else{
+          // if username == sm
+          window.sm_state = true;
+          // reload main react app with new window.admin_state value
+          ReactDOM.render( <SmApp/> , document.getElementById('root'));
+        }
     },
     error: function (error) {
       // alert("error: " + JSON.stringify(error));
