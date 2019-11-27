@@ -35,6 +35,35 @@ class MyDropDown extends Component {
   }
 }
 class OrdersTable extends Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      content:null,
+    }
+  }
+  static getDerivedStateFromProps(props, state){
+    var content=[]
+    var products=props.data;
+    if(products!=undefined){
+      //////////
+      for(var i=0;i<products.length;i++){
+        var product = products[i];
+        // let's calculate total cost of order
+        var total_cost = product.count * product.price;
+        
+        content.push(<tr>
+
+         
+
+        </tr>);
+      }
+    }
+    ////////
+   return{
+     content:content,
+   };
+  }
+
   render() {
     return(
       <div>
@@ -59,14 +88,7 @@ class OrdersTable extends Component{
            <td>20 грн</td>
            <td>40 грн</td>
          </tr>
-         <tr>
-          <td>2</td>
-          <td>зошит</td>
-          <td>0201</td>
-          <td>1</td>
-          <td>40 грн</td>
-          <td>40 грн</td>
-        </tr>
+         {this.state.content}
        </tbody>
       </Table>
      </div>
@@ -131,11 +153,11 @@ class MainTable extends Component {
       content:null,
     }
   }
-  openOrdersTable(e){
+  openOrdersTable(e, order){
 
     buttonsColorSwitcher(e);
     
-    this.props.onClick('orders');
+    this.props.onClick('orders', order);
   }
   openClientTable(e){
     buttonsColorSwitcher(e);
@@ -158,7 +180,7 @@ class MainTable extends Component {
           <td>{i}</td>
 
           <td>
-          <button className="button button2 text-center small-paddings" onClick={(e)=>this.openOrdersTable(e)}><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
+          <button className="button button2 text-center small-paddings" onClick={(e)=>this.openOrdersTable(e, order.order)}><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
           </td>
 
           <td>
@@ -431,7 +453,7 @@ class SmApp extends Component {
       managerSales:[],
     };
   }
-  MainTableClickHandler(tableToShow){
+  MainTableClickHandler(tableToShow, data){
     switch(tableToShow){
       case 'orders':
         if(!this.state.showOrdersTable){
@@ -439,6 +461,7 @@ class SmApp extends Component {
             showOrdersTable:true,
             showClientTable:false,
             isAnyAnotherTable:true,
+            OrdersTableData: data,
           });}else{
             this.setState({
             isAnyAnotherTable:false,
@@ -532,11 +555,11 @@ componentDidMount(){
                     <Row>
                       <Col sm={12}>
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
-                        <MainTable orders={this.state.orders} onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
+                        <MainTable orders={this.state.orders} onClick={(tableToShow, data)=>this.MainTableClickHandler(tableToShow, data)}/>
                       </div>
 
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
-                        {this.state.showOrdersTable ? <OrdersTable/> : null}
+                        {this.state.showOrdersTable ? <OrdersTable data={this.state.OrdersTableData}/> : null}
                         {this.state.showClientTable ? <ClientTable/> : null}
                       </div>
                       </Col>
