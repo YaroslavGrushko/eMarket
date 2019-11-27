@@ -275,8 +275,8 @@ initializeChart =()=> {
   }
 }
 
-// component Total Department Sales:
-class TotalDepartmentSales extends Component {
+// component Total Category Sales:
+class TotalCategorySales extends Component {
   initializeChart =()=> {
       let el = document.getElementById(this.props.chartId);
       let ctx = el.getContext("2d");
@@ -385,18 +385,19 @@ class DashBoard extends Component {
         let category_names = data.category_name;
         let names = data.name;
         let photos = data.photo;
-  
-        let chartData =[]
-        chartData.push([500, 1000, 500, 500, 1000]);
-        chartData.push([600, 8000, 400, 400, 600]);
-        chartData.push([700, 2000, 500, 500, 5000]);
-        chartData.push([100, 200, 300, 500, 700]);
-        chartData.push([100, 200, 400, 500, 900]);
+        // let CategoryChartData = data.CategoryChartData;
+
+        let CategoryChartData =[]
+        CategoryChartData.push([500, 1000, 500, 500, 1000]);
+        CategoryChartData.push([600, 8000, 400, 400, 600]);
+        CategoryChartData.push([700, 2000, 500, 500, 5000]);
+        CategoryChartData.push([100, 200, 300, 500, 700]);
+        CategoryChartData.push([100, 200, 400, 500, 900]);
   
         var categories = []
         
         for(let i=0; i<category_names.length;i++){
-          categories.push(<Col xs={12} md={6}><TotalDepartmentSales chartId={"chart"+i} receivedData={chartData[i]} category_name={category_names[i]} name={names[i]} photo={photos[i]}/></Col>);
+          categories.push(<Col xs={12} md={6}><TotalCategorySales chartId={"chart"+i} receivedData={CategoryChartData[i]} category_name={category_names[i]} name={names[i]} photo={photos[i]}/></Col>);
         }
       
         this.setState({
