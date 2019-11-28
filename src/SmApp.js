@@ -145,24 +145,69 @@ function buttonsColorSwitcher(e){
    e.currentTarget.classList.add('selectedButton');
  }
 }
+// openOrdersTable component-function aim of which dynamically save data
+// from getDerivedStateFromProps (MainTable table component)
+class OrdersButtonComp extends Component{
+  handleClick = (e)=>{
+    this.props.onHandleClick(e, this.props.order_table);
+  }
+render(){
+  return(
+    <button className="button button2 text-center small-paddings" onClick={(e)=>this.handleClick(e)}><i class="fa fa-times"></i>&nbsp;{this.props.order_length}</button>
+  );
+}
+}
+// mainTable content
+class MainTableRow extends Component{
+  openOrdersTable(e, data){
+
+    buttonsColorSwitcher(e);
+    
+    this.props.onClick('orders', data);
+  }
+render(){
+  return(<tr>
+
+    <td>{this.props.i}</td>
+
+    <td>
+    <OrdersButtonComp order_table={this.props.order_table} order_length={this.props.order_length} onHandleClick={this.openOrdersTable}/>
+    </td>
+
+    <td>
+      <button class="button button2 small-paddings" onClick={(e)=>this.openClientTable(e)}>&nbsp;{this.props.order_customer_name}</button>
+    </td>
+
+    <td>
+    <MyDropDown mainText="нове" textItem="прийняти"/>
+    </td>
+
+    <td>
+      {this.props.total_cost}
+    </td>
+
+  </tr>);
+}
+}
 //main table component where are stored all orders:
 class MainTable extends Component {
   constructor(props) {
     super(props)
     this.state = {
       content:null,
+      mounted:false,
     }
   }
-  openOrdersTable(e, order){
 
-    buttonsColorSwitcher(e);
-    
-    this.props.onClick('orders', order);
-  }
   openClientTable(e){
     buttonsColorSwitcher(e);
     this.props.onClick('client');
   }
+ componentDidMount(){
+   this.setState({
+      mounted:true,
+   })
+ }
   static getDerivedStateFromProps(props, state){
     var content=[]
     var orders=props.orders;
@@ -175,27 +220,8 @@ class MainTable extends Component {
           var product = order.order[c];
           total_cost+= product.count * product.price;
         }
-        content.push(<tr>
-
-          <td>{i}</td>
-
-          <td>
-          <button className="button button2 text-center small-paddings" onClick={(e)=>this.openOrdersTable(e, order.order)}><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
-          </td>
-
-          <td>
-            <button class="button button2 small-paddings" onClick={(e)=>this.openClientTable(e)}>&nbsp;{order.customer.name}</button>
-          </td>
-
-          <td>
-          <MyDropDown mainText="нове" textItem="прийняти"/>
-          </td>
-
-          <td>
-            {total_cost}
-          </td>
-
-        </tr>);
+        var order_table = order.order;
+        content.push(<MainTableRow onClick={(tableToShow, data)=>{this.props.onClick(tableToShow, data)}} i={i} order_table={order_table} order_length={order.order.length} order_customer_name={order.customer.name} total_cost={total_cost}/>);
       }
     }
    return{
@@ -220,7 +246,7 @@ render() {
               <tr>
                 <td>1</td>
                 <td>
-                  <button className="button button2 text-center small-paddings" onClick={(e)=>this.openOrdersTable(e)}><i class="fa fa-times"></i>&nbsp;3</button>
+                  <button className="button button2 text-center small-paddings"><i class="fa fa-times"></i>&nbsp;3</button>
                 </td>
                 <td>
                   <button class="button button2 small-paddings" onClick={(e)=>this.openClientTable(e)}>&nbsp;Петренко</button>
