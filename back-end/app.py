@@ -548,8 +548,8 @@ def amount_for_the_period(sampling_for_the_period):
     total = 0
     exp_total = 0
     for val in sampling_for_the_period:
-        total = total + int(val[6]) #val[6] is the Total column of the Orders table
-        exp_total =exp_total + int(val[2]) #val[2] is the in_price column of the Orders table
+        total = total + int(val[7]) #val[7] is the Total column of the Orders table
+        exp_total =exp_total + int(val[3]*val[6]) #val[3] is the in_price column of the Orders table
     return total, exp_total
 
 #function for transfering table date value into date format:
@@ -558,7 +558,7 @@ def table_date_to_date(table_date_format):
     date_format = datetime(int(table_date_list[0]), int(table_date_list[1]), int(table_date_list[2]))
     return date_format
 
-#function for calculation the labels and the sales values for some period (from result of query):
+#function for calculation the labels and the total values for some period (from result of query):
 def labels_for_the_period(sampling_for_the_period, from_date, to_date):
     
     fd = table_date_to_date(from_date)
@@ -579,7 +579,7 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
     labels = []
     labels_in_data_format = []
 
-    # create an array of labels to the time axis
+    # create an array of labels at the time axis
     for i in range(number_of_labels + 1):
         labels.append(str(fd.day) + '.' + str(fd.month) + '.' + str(fd.year))
         labels_in_data_format.append(fd)
@@ -602,7 +602,6 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
             j = j + 1
             fd += timedelta(days=1)
         i = i +1
-    
     return full_labels, exp_full_labels
     
 
@@ -623,13 +622,53 @@ def total_sales():
         full_labels = [{'0':0},{'0':0},{'0':0},{'0':0},{'0':0},{'0':0},{'0':0}]
         return jsonify(full_labels)
     else: 
+        # get data for total graphs:
         cursor.execute("""SELECT *
                         FROM Orders                       
                     WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
-        result_of_query=cursor.fetchall()
+        
+        result_of_query=cursor.fetchall() # total sales values of all categories
         sales_labels, expenses_labels = labels_for_the_period(result_of_query, from_period, to_period)
         total_sales, total_expenses = amount_for_the_period(result_of_query)
-        return jsonify({'sales_labels':sales_labels,'expenses_labels':expenses_labels, 'total_sales' : total_sales,'total_expenses':total_expenses}) 
+        
+        # get data for graphs in each category:
+        cursor.execute("SELECT category_id FROM Categories") # get all category_id
+        
+        result_of_query_category_id=cursor.fetchall() 
+        
+        # cursor.execute("""SELECT category_id, SUM(total), date
+        #                 FROM Orders                       
+        #             WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'
+        #             GROUP BY category_id""")
+        
+        sales_labels_categories = [] # list of sales_labels for each category
+        total_sales_categories = [] # list of total_sales for each category
+        
+        for val in result_of_query_category_id:
+            cursor.execute("""SELECT * FROM Orders                       
+                    WHERE Orders.date>='"""+from_period+"""' 
+                    AND Orders.date<='"""+to_period+"""'
+                    AND Orders.category_id ='"""+val[0]+"""' """)
+            
+            result_of_query=cursor.fetchall() # total sales values of selected category
+            sales_labels_category, expenses_labels_category = labels_for_the_period(result_of_query, from_period, to_period)
+            total_sales_category, total_expenses_category = amount_for_the_period(result_of_query)
+            
+            sales_labels_categories.append(sales_labels_category)
+            total_sales_categories.append(total_sales_category)
+                 
+            cursor.execute("select * from Categories") 
+            rows = cursor.fetchall()
+
+        return jsonify({'sales_labels' : sales_labels, 'expenses_labels' : expenses_labels, 
+        'sales_labels_categories': sales_labels_categories, 'total_sales' : total_sales,
+        'total_sales_categories': total_sales_categories, 'total_expenses' : total_expenses,
+        'category_id' : [row[0] for row in rows], # column1
+        'category_name' : [row[1] for row in rows], # column2
+        'category_code' : [row[2] for row in rows], # column3
+        'name' : [row[3] for row in rows], # column4
+        'photo' : [row[4] for row in rows], # column5
+        }) 
 
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

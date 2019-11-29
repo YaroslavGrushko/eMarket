@@ -280,16 +280,33 @@ class TotalCategorySales extends Component {
   initializeChart =()=> {
       let el = document.getElementById(this.props.chartId);
       let ctx = el.getContext("2d");
-      var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-    
-            labels: ['January', 'February', 'March', 'April', 'May'],
-            datasets: [{
-                data: this.props.receivedData,
-                cubicInterpolationMode: 'monotone'
-            }]
-        },
+      let labels_and_dataArr = this.props.labels_and_data;//array of Objects
+        let i = 0;
+        var labelsArr = [];
+        var dataArr = [];
+        if (labels_and_dataArr === null || labels_and_dataArr === '' || labels_and_dataArr === undefined) {
+          labelsArr = 0;
+          dataArr = 0;
+        } else{
+          labels_and_dataArr.forEach(obj => {
+            let label = Object.keys(obj); //  Object's keys array
+            let value = obj[label[0]]; //  Object's value
+            // alert('label= '+label+' value= '+value);
+            labelsArr[i] = label;
+            dataArr[i] = value;
+            i++;
+          });
+        }
+        
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: labelsArr,
+          datasets: [{
+              data: dataArr,
+              cubicInterpolationMode: 'monotone'
+          }]
+      },
         options: {
             scales: {
                 yAxes: [{
@@ -322,7 +339,7 @@ class TotalCategorySales extends Component {
                           <span className="text-center">менеджер {this.props.name}</span>
                           <div className="d-flex flex-row text-center">
                             <span>всього:</span>
-                            <div className="card text-center font-weight-bold ml-2 p-1">3500</div>
+                            <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total_sales_category}</div>
                             <div className="ml-1">грн.</div>
                           </div>
                         </div> 
@@ -355,7 +372,7 @@ class DashBoard extends Component {
   }
   
   componentDidMount()  {
-    this.readManagersCards();
+    // this.readManagersCards();
     this.readTotalGraph();
   }
 
@@ -365,45 +382,6 @@ class DashBoard extends Component {
       to_period : to
     });
     this.readTotalGraph();
-  }
-
-  readManagersCards = () => {
-    // draw the manager's cards:
-    fetch("http://127.0.0.1:5000/read_categories",{
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: {
-        get_param: 'value'
-      }
-    })
-    .then(res => res.json())
-    .then((data)=>{
-      // let data = getAllCategoriesData();
-        // let's foreach every category
-        let category_names = data.category_name;
-        let names = data.name;
-        let photos = data.photo;
-        // let CategoryChartData = data.CategoryChartData;
-
-        let CategoryChartData =[]
-        CategoryChartData.push([500, 1000, 500, 500, 1000]);
-        CategoryChartData.push([600, 8000, 400, 400, 600]);
-        CategoryChartData.push([700, 2000, 500, 500, 5000]);
-        CategoryChartData.push([100, 200, 300, 500, 700]);
-        CategoryChartData.push([100, 200, 400, 500, 900]);
-  
-        var categories = []
-        
-        for(let i=0; i<category_names.length;i++){
-          categories.push(<Col xs={12} md={6}><TotalCategorySales chartId={"chart"+i} receivedData={CategoryChartData[i]} category_name={category_names[i]} name={names[i]} photo={photos[i]}/></Col>);
-        }
-      
-        this.setState({
-          categories: categories,
-        })
-        });
   }
 
   readTotalGraph = () => {
@@ -431,6 +409,33 @@ class DashBoard extends Component {
           total_sales: data.total_sales,
           total_expenses: data.total_expenses,
         });
+
+        let category_names = data.category_name;
+        let category_id = data.category_id;
+        let names = data.name;
+        let photos = data.photo;
+        let sales_labels_categories = data.sales_labels_categories;
+        let total_sales_categories = data.total_sales_categories;
+
+        let num_of_categories = 0
+        if (category_id != undefined) num_of_categories = category_id.length;
+        
+        var categories = []
+        
+        for(let i=0; i<num_of_categories; i++){
+          categories.push(<Col xs={12} md={6}><TotalCategorySales chartId={"chart"+i} 
+          labels_and_data={sales_labels_categories[i]}  
+          category_name={category_names[i]} 
+          name={names[i]} 
+          total_sales_category = {total_sales_categories[i]} 
+          photo={photos[i]}/></Col>);
+        }
+      
+        this.setState({
+          categories: categories,
+        })
+
+
       },
       err => {
         console.log(err);
