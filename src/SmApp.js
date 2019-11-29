@@ -153,12 +153,6 @@ class MainTable extends Component {
     }
   }
 
-openOrdersTable(e, data){
-
-  buttonsColorSwitcher(e);
-  
-  this.props.onClick('orders', data);
-}
   openClientTable(e){
     buttonsColorSwitcher(e);
     this.props.onClick('client');
@@ -172,6 +166,7 @@ openOrdersTable(e, data){
     var content=[]
     var orders=props.orders;
     if(orders!=undefined){
+    
       for(var i=0;i<orders.length;i++){
         var order = orders[i];
         // let's calculate total cost of order
@@ -180,18 +175,22 @@ openOrdersTable(e, data){
           var product = order.order[c];
           total_cost+= product.count * product.price;
         }
-        var order_table = order.order;
         content.push(
-          
           <tr>
 
-          <td>{props.i}</td>
+          <td>{i}</td>
 
           <td>
          
           <button className="button button2 text-center small-paddings" onClick={
             (e)=>{
             buttonsColorSwitcher(e);
+            var mytd = e.currentTarget.parentElement;
+            var mytr=mytd.parentElement;
+            var target_td=mytr.firstChild;
+            var current_i_str = target_td.innerHTML;
+            var current_i = parseInt(current_i_str, 10);
+            var order =  orders[current_i];
             props.onClick('orders', order.order);}
           }><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
 
