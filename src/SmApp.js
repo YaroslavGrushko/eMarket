@@ -129,9 +129,10 @@ class ClientTable extends Component{
 function buttonsColorSwitcher(e){
  // get all buttons
  var buttons = document.getElementsByClassName('selectedButton');
-    
+
+ var highlitedButtonSelected = e.currentTarget.classList.contains('selectedButton');
  // add/remove .selectedButton to current Button
- if(e.currentTarget.classList.contains('selectedButton')){
+ if(highlitedButtonSelected){
    e.currentTarget.classList.remove('selectedButton');
  }else{
    // remove .selectedButton from all buttons
@@ -141,6 +142,8 @@ function buttonsColorSwitcher(e){
    }
    e.currentTarget.classList.add('selectedButton');
  }
+ var showCurrTable = !highlitedButtonSelected;
+ return showCurrTable;
 }
 
 //main table component where are stored all orders:
@@ -184,14 +187,15 @@ class MainTable extends Component {
          
           <button className="button button2 text-center small-paddings" onClick={
             (e)=>{
-            buttonsColorSwitcher(e);
+            var showCurrTable=buttonsColorSwitcher(e);
             var mytd = e.currentTarget.parentElement;
             var mytr=mytd.parentElement;
             var target_td=mytr.firstChild;
             var current_i_str = target_td.innerHTML;
             var current_i = parseInt(current_i_str, 10);
             var order =  orders[current_i];
-            props.onClick('orders', order.order);}
+            var currentOrder = order.order;
+            props.onClick(showCurrTable, 'orders', currentOrder);}
           }><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
 
           </td>
@@ -205,7 +209,7 @@ class MainTable extends Component {
           </td>
 
           <td>
-            {props.total_cost}
+            {total_cost}
           </td>
 
         </tr>
@@ -454,10 +458,10 @@ class SmApp extends Component {
       managerSales:[],
     };
   }
-  MainTableClickHandler(tableToShow, data){
+  MainTableClickHandler(showCurrTable, tableToShow, data){
     switch(tableToShow){
       case 'orders':
-        if(!this.state.showOrdersTable){
+        if(!this.state.showOrdersTable||showCurrTable){
           this.setState({
             showOrdersTable:true,
             showClientTable:false,
@@ -517,9 +521,9 @@ class SmApp extends Component {
         // }
         var orders = [];
         var order1 ={'order':[
-          {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 50},
-          {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 50},
-          {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 50},
+          {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 30},
+          {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 30},
+          {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 30},
                 ], 'customer':
           {'name':'Ігор', 'surname':'Столяр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
         };
@@ -556,7 +560,7 @@ componentDidMount(){
                     <Row>
                       <Col sm={12}>
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
-                        <MainTable orders={this.state.orders} onClick={(tableToShow, data)=>this.MainTableClickHandler(tableToShow, data)}/>
+                        <MainTable orders={this.state.orders} onClick={(showCurrTable, tableToShow, data)=>this.MainTableClickHandler(showCurrTable, tableToShow, data)}/>
                       </div>
 
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
