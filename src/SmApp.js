@@ -94,6 +94,27 @@ class OrdersTable extends Component{
 }
 
 class ClientTable extends Component{
+  static getDerivedStateFromProps(props, state){
+    var content=[]
+    var client=props.data;
+    if(client!=undefined){
+      ////////// 
+      
+        content.push(<tr>
+          <td>{client.name}</td>
+          <td>{client.surname}</td>
+          <td>{client.phone}</td>
+          <td>{client.email}</td>
+          <td>{client.nova_poshta_number}</td>
+          <td>{client.payment_method}</td>
+        </tr>);
+      
+    }
+    ////////
+   return{
+     content:content,
+   };
+  }
   render() {
     return(
       <div>
@@ -110,14 +131,7 @@ class ClientTable extends Component{
          </tr>
        </thead>
        <tbody>
-         <tr>
-           <td>Ігор</td>
-           <td>Грушко</td>
-           <td>+38097...</td>
-           <td>...@gmail.com</td>
-           <td>135</td>
-           <td>накладений платіж</td>
-         </tr>       
+         {this.state.content}     
        </tbody>
       </Table>
      </div>
@@ -201,7 +215,22 @@ class MainTable extends Component {
           </td>
 
           <td>
-            <button class="button button2 small-paddings" onClick={(e)=>this.openClientTable(e)}>&nbsp;{order.customer.name}</button>
+            <button class="button button2 small-paddings" onClick={
+              (e)=>{
+                var showCurrTable=buttonsColorSwitcher(e);
+                var mytd = e.currentTarget.parentElement;
+                var mytr=mytd.parentElement;
+                var target_td=mytr.firstChild;
+                var current_i_str = target_td.innerHTML;
+                var current_i = parseInt(current_i_str, 10);
+                var order =  orders[current_i];
+                var currentCustomer = order.customer;
+                props.onClick(showCurrTable, 'client', currentCustomer);
+              }
+            }>
+
+
+              &nbsp;{order.customer.name}</button>
           </td>
 
           <td>
@@ -475,11 +504,12 @@ class SmApp extends Component {
           }
         return null;
       case 'client':
-        if(!this.state.showClientTable){
+        if(!this.state.showClientTable||showCurrTable){
           this.setState({
             showClientTable:true,
             showOrdersTable:false,
             isAnyAnotherTable:true,
+            ClientTableData: data,
           });
           }else{
             this.setState({
@@ -565,7 +595,7 @@ componentDidMount(){
 
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
                         {this.state.showOrdersTable ? <OrdersTable data={this.state.OrdersTableData}/> : null}
-                        {this.state.showClientTable ? <ClientTable/> : null}
+                        {this.state.showClientTable ? <ClientTable data={this.state.ClientTableData}/> : null}
                       </div>
                       </Col>
                     </Row>
