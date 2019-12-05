@@ -522,7 +522,8 @@ def add_product_customer():
         src VARCHAR,
         quantity INTEGER,
         total REAL,
-        date VARCHAR)
+        date VARCHAR,
+        status VARCHAR)
         """)
 
     today = datetime.now()
@@ -533,8 +534,8 @@ def add_product_customer():
     today_date = year + ',' + month + ',' + day
     for item in rData['customer_products']:
         new_checkout_products = []
-        new_checkout_products = [(rData['customer_phone'], item['name'], item['category_id'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'], today_date)]
-        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?)", new_checkout_products)
+        new_checkout_products = [(rData['customer_phone'], item['name'], item['category_id'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'], today_date, "new")]
+        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?)", new_checkout_products)
     
     conn.commit()
 
