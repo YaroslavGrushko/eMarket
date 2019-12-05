@@ -35,6 +35,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager
 from flask_login import login_required, current_user
 
+
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
@@ -482,20 +483,11 @@ def add_сheckout_customer():
         name VARCHAR,
         phone VARCHAR,
         address VARCHAR,
-        delivery VARCHAR,
-        pay VARCHAR,
-        date VARCHAR)
+        UNIQUE(phone))
         """)
 
-    today = datetime.now()
-    year = str(today.year) 
-    month = str(today.month)
-    day = str(today.day)  
-    
-    today_date = year+month+day
-
-    new_customer = [( rData['customer_name'], rData['customer_phone'], rData['customer_address'], rData['customer_delivery'], rData['customer_pay'], today_date)]
-    cursor.executemany("INSERT INTO Customers VALUES (?,?,?,?,?,?)", new_customer)
+    new_customer = [( rData['customer_name'], rData['customer_phone'], rData['customer_address'])]
+    cursor.executemany("INSERT OR IGNORE INTO Customers VALUES (?,?,?)", new_customer)
     conn.commit()
 
     if request.method == 'GET':
@@ -522,8 +514,10 @@ def add_product_customer():
         src VARCHAR,
         quantity INTEGER,
         total REAL,
-        date VARCHAR,
-        status VARCHAR)
+        delivery VARCHAR,
+        pay VARCHAR,
+        status VARCHAR,
+        date VARCHAR)
         """)
 
     today = datetime.now()
@@ -534,8 +528,8 @@ def add_product_customer():
     today_date = year + ',' + month + ',' + day
     for item in rData['customer_products']:
         new_checkout_products = []
-        new_checkout_products = [(rData['customer_phone'], item['name'], item['category_id'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'], today_date, "new")]
-        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?)", new_checkout_products)
+        new_checkout_products = [(rData['customer_phone'], item['name'], item['category_id'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'], rData['customer_delivery'], rData['customer_pay'], "new", today_date)]
+        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products)
     
     conn.commit()
 
@@ -550,7 +544,7 @@ def amount_for_the_period(sampling_for_the_period):
     exp_total = 0
     for val in sampling_for_the_period:
         total = total + int(val[7]) #val[7] is the Total column of the Orders table
-        exp_total =exp_total + int(val[3]*val[6]) #val[3] is the in_price column of the Orders table
+        exp_total =exp_total + int(val[3]*val[6]) #val[3] is the in_price column of the Orders table, val[6] - quantity
     return total, exp_total
 
 #function for transfering table date value into date format:
@@ -594,8 +588,8 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
             total_for_delta = 0
             exp_total_for_delta=0
             for val in sampling_for_the_period:
-                # val[8] is a time column
-                if(table_date_to_date(val[8]) >= labels_in_data_format[i] and table_date_to_date(val[8]) < labels_in_data_format[i+1]):
+                # val[11] is a time column
+                if(table_date_to_date(val[11]) >= labels_in_data_format[i] and table_date_to_date(val[11]) < labels_in_data_format[i+1]):
                     total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
                     exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
             full_labels.append({labels[i]:total_for_delta}) 

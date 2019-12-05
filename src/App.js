@@ -172,13 +172,13 @@ class Cart extends Component{
     window.checkout_customer = {
       customer_name : window.selected_name,
       customer_phone : window.selected_phone,
-      customer_address : window.selected_address,
-      customer_delivery : window.selected_delivery,
-      customer_pay : window.selected_pay
+      customer_address : window.selected_address
     };
     window.checkout_products = {};
     window.checkout_products = {
       customer_phone : window.selected_phone,
+      customer_delivery : window.selected_delivery,
+      customer_pay : window.selected_pay,
       customer_products : window.items
     };
     if (window.selected_name===undefined || window.selected_phone===undefined || window.selected_address===undefined 
@@ -208,8 +208,9 @@ class Cart extends Component{
 
   handleChangePhone(event) {
     this.setState({selected_phone: event.target.value});
-    // console.log(`selected_phone:`, event.target.value);
-    window.selected_phone = event.target.value;
+    // window.selected_phone = event.target.value;
+    var d = new Date();
+    window.selected_phone = d.getTime()-1575559000000;// current time in ms
   }
 
   handleChangeAddress(event) {
