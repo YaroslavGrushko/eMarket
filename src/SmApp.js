@@ -35,6 +35,40 @@ class MyDropDown extends Component {
   }
 }
 class OrdersTable extends Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      content:null,
+    }
+  }
+  static getDerivedStateFromProps(props, state){
+    var content=[]
+    var products=props.data;
+    if(products!=undefined){
+      //////////
+      for(var i=0;i<products.length;i++){
+        var product = products[i];
+        // let's calculate total cost of order
+        var total_cost = product.count * product.price;
+        
+        content.push(<tr>
+          <td>{i}</td>
+          <td>{product.product_name}</td>
+          <td>{product.article}</td>
+          <td>{product.count}</td>
+          <td>{product.price}</td>
+          <td>{product.price*product.count}</td>
+         
+
+        </tr>);
+      }
+    }
+    ////////
+   return{
+     content:content,
+   };
+  }
+
   render() {
     return(
       <div>
@@ -51,22 +85,7 @@ class OrdersTable extends Component{
          </tr>
        </thead>
        <tbody>
-         <tr>
-           <td>1</td>
-           <td>ручка</td>
-           <td>0307</td>
-           <td>2</td>
-           <td>20 грн</td>
-           <td>40 грн</td>
-         </tr>
-         <tr>
-          <td>2</td>
-          <td>зошит</td>
-          <td>0201</td>
-          <td>1</td>
-          <td>40 грн</td>
-          <td>40 грн</td>
-        </tr>
+         {this.state.content}
        </tbody>
       </Table>
      </div>
@@ -75,6 +94,27 @@ class OrdersTable extends Component{
 }
 
 class ClientTable extends Component{
+  static getDerivedStateFromProps(props, state){
+    var content=[]
+    var client=props.data;
+    if(client!=undefined){
+      ////////// 
+      
+        content.push(<tr>
+          <td>{client.name}</td>
+          <td>{client.surname}</td>
+          <td>{client.phone}</td>
+          <td>{client.email}</td>
+          <td>{client.nova_poshta_number}</td>
+          <td>{client.payment_method}</td>
+        </tr>);
+      
+    }
+    ////////
+   return{
+     content:content,
+   };
+  }
   render() {
     return(
       <div>
@@ -91,14 +131,7 @@ class ClientTable extends Component{
          </tr>
        </thead>
        <tbody>
-         <tr>
-           <td>Ігор</td>
-           <td>Грушко</td>
-           <td>+38097...</td>
-           <td>...@gmail.com</td>
-           <td>135</td>
-           <td>накладений платіж</td>
-         </tr>       
+         {this.state.content}     
        </tbody>
       </Table>
      </div>
@@ -110,9 +143,10 @@ class ClientTable extends Component{
 function buttonsColorSwitcher(e){
  // get all buttons
  var buttons = document.getElementsByClassName('selectedButton');
-    
+
+ var highlitedButtonSelected = e.currentTarget.classList.contains('selectedButton');
  // add/remove .selectedButton to current Button
- if(e.currentTarget.classList.contains('selectedButton')){
+ if(highlitedButtonSelected){
    e.currentTarget.classList.remove('selectedButton');
  }else{
    // remove .selectedButton from all buttons
@@ -122,29 +156,34 @@ function buttonsColorSwitcher(e){
    }
    e.currentTarget.classList.add('selectedButton');
  }
+ var showCurrTable = !highlitedButtonSelected;
+ return showCurrTable;
 }
+
 //main table component where are stored all orders:
 class MainTable extends Component {
   constructor(props) {
     super(props)
     this.state = {
       content:null,
+      mounted:false,
     }
   }
-  openOrdersTable(e){
 
-    buttonsColorSwitcher(e);
-    
-    this.props.onClick('orders');
-  }
   openClientTable(e){
     buttonsColorSwitcher(e);
     this.props.onClick('client');
   }
+ componentDidMount(){
+   this.setState({
+      mounted:true,
+   })
+ }
   static getDerivedStateFromProps(props, state){
     var content=[]
     var orders=props.orders;
     if(orders!=undefined){
+    
       for(var i=0;i<orders.length;i++){
         var order = orders[i];
         // let's calculate total cost of order
@@ -153,16 +192,45 @@ class MainTable extends Component {
           var product = order.order[c];
           total_cost+= product.count * product.price;
         }
-        content.push(<tr>
+        content.push(
+          <tr>
 
           <td>{i}</td>
 
           <td>
-          <button className="button button2 text-center small-paddings" onClick={(e)=>this.openOrdersTable(e)}><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
+         
+          <button className="button button2 text-center small-paddings" onClick={
+            (e)=>{
+            var showCurrTable=buttonsColorSwitcher(e);
+            var mytd = e.currentTarget.parentElement;
+            var mytr=mytd.parentElement;
+            var target_td=mytr.firstChild;
+            var current_i_str = target_td.innerHTML;
+            var current_i = parseInt(current_i_str, 10);
+            var order =  orders[current_i];
+            var currentOrder = order.order;
+            props.onClick(showCurrTable, 'orders', currentOrder);}
+          }><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
+
           </td>
 
           <td>
-            <button class="button button2 small-paddings" onClick={(e)=>this.openClientTable(e)}>&nbsp;{order.customer.name}</button>
+            <button class="button button2 small-paddings" onClick={
+              (e)=>{
+                var showCurrTable=buttonsColorSwitcher(e);
+                var mytd = e.currentTarget.parentElement;
+                var mytr=mytd.parentElement;
+                var target_td=mytr.firstChild;
+                var current_i_str = target_td.innerHTML;
+                var current_i = parseInt(current_i_str, 10);
+                var order =  orders[current_i];
+                var currentCustomer = order.customer;
+                props.onClick(showCurrTable, 'client', currentCustomer);
+              }
+            }>
+
+
+              &nbsp;{order.customer.name}</button>
           </td>
 
           <td>
@@ -173,7 +241,8 @@ class MainTable extends Component {
             {total_cost}
           </td>
 
-        </tr>);
+        </tr>
+          );
       }
     }
    return{
@@ -195,19 +264,6 @@ render() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>
-                  <button className="button button2 text-center small-paddings" onClick={(e)=>this.openOrdersTable(e)}><i class="fa fa-times"></i>&nbsp;3</button>
-                </td>
-                <td>
-                  <button class="button button2 small-paddings" onClick={(e)=>this.openClientTable(e)}>&nbsp;Петренко</button>
-                </td>
-                <td>
-                <MyDropDown mainText="нове" textItem="прийняти"/>
-                </td>
-                <td>150 грн</td>
-              </tr>
              {this.state.content}
             </tbody>
            </Table>
@@ -431,14 +487,15 @@ class SmApp extends Component {
       managerSales:[],
     };
   }
-  MainTableClickHandler(tableToShow){
+  MainTableClickHandler(showCurrTable, tableToShow, data){
     switch(tableToShow){
       case 'orders':
-        if(!this.state.showOrdersTable){
+        if(!this.state.showOrdersTable||showCurrTable){
           this.setState({
             showOrdersTable:true,
             showClientTable:false,
             isAnyAnotherTable:true,
+            OrdersTableData: data,
           });}else{
             this.setState({
             isAnyAnotherTable:false,
@@ -447,11 +504,12 @@ class SmApp extends Component {
           }
         return null;
       case 'client':
-        if(!this.state.showClientTable){
+        if(!this.state.showClientTable||showCurrTable){
           this.setState({
             showClientTable:true,
             showOrdersTable:false,
             isAnyAnotherTable:true,
+            ClientTableData: data,
           });
           }else{
             this.setState({
@@ -493,9 +551,9 @@ class SmApp extends Component {
         // }
         var orders = [];
         var order1 ={'order':[
-          {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 50},
-          {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 50},
-          {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 50},
+          {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 30},
+          {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 30},
+          {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 30},
                 ], 'customer':
           {'name':'Ігор', 'surname':'Столяр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
         };
@@ -532,12 +590,12 @@ componentDidMount(){
                     <Row>
                       <Col sm={12}>
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
-                        <MainTable orders={this.state.orders} onClick={(tableToShow)=>this.MainTableClickHandler(tableToShow)}/>
+                        <MainTable orders={this.state.orders} onClick={(showCurrTable, tableToShow, data)=>this.MainTableClickHandler(showCurrTable, tableToShow, data)}/>
                       </div>
 
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
-                        {this.state.showOrdersTable ? <OrdersTable/> : null}
-                        {this.state.showClientTable ? <ClientTable/> : null}
+                        {this.state.showOrdersTable ? <OrdersTable data={this.state.OrdersTableData}/> : null}
+                        {this.state.showClientTable ? <ClientTable data={this.state.ClientTableData}/> : null}
                       </div>
                       </Col>
                     </Row>
