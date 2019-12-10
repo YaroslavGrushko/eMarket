@@ -1766,3 +1766,11 @@ a {
     padding-top:1rem;
     padding-bottom: 1rem;
 }
+.middleStaticButton{
+    width:20rem !important;
+    margin-left:0px !important;
+    margin-right:0px !important;
+    padding:0px !important;
+    padding-top:1rem;
+    padding-bottom: 1rem;
+}
