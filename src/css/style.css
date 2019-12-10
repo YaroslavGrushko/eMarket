@@ -898,11 +898,11 @@ a {
 }
 
 @media (max-width:993px) {
-    .button {
+    /* .button {
         margin-left: 10%!important;
         margin-right: 10%!important;
         width: 80%!important;
-    }
+    } */
 }
 
 @media (min-width:993px) {
@@ -1738,4 +1738,14 @@ a {
     color: white;
 }
 
+/* static button
+.staticButton{
+    width:1rem !important;
+}
+@media (min-width:1024px){
+/* static button */
+.staticButton{
+    width:1rem !important;
+}
+} */
 

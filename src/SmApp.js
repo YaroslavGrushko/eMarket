@@ -199,7 +199,7 @@ class MainTable extends Component {
 
           <td>
          
-          <button className="button button2 text-center small-paddings" onClick={
+          <button className="button button2 staticButton text-center" onClick={
             (e)=>{
             var showCurrTable=buttonsColorSwitcher(e);
             var mytd = e.currentTarget.parentElement;

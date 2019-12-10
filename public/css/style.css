@@ -900,11 +900,11 @@ a {
 }
 
 @media (max-width:993px) {
-    .button {
+    /* .button {
         margin-left: 10%!important;
         margin-right: 10%!important;
         width: 80%!important;
-    }
+    } */
 }
 
 @media (min-width:993px) {
@@ -1756,4 +1756,13 @@ a {
     -webkit-transition-duration: 1s;
     /* Safari */
     transition-duration: 1s;
+}
+/* static button */
+.staticButton{
+    width:3rem !important;
+    margin-left:0px !important;
+    margin-right:0px !important;
+    padding:0px !important;
+    padding-top:1rem;
+    padding-bottom: 1rem;
 }
