@@ -43,26 +43,28 @@ class OrdersTable extends Component{
   }
   static getDerivedStateFromProps(props, state){
     var content=[]
-    var products=props.data;
-    if(products!=undefined){
+    // var products=props.data;
+    var product = props.data;
+    // if(products!=undefined){
       //////////
-      for(var i=0;i<products.length;i++){
-        var product = products[i];
+      // if products are multiple
+      // for(var i=0;i<products.length;i++){
+        // var product = products[i];
         // let's calculate total cost of order
-        var total_cost = product.count * product.price;
+        var total_cost = product[7];
         
         content.push(<tr>
-          <td>{i}</td>
-          <td>{product.product_name}</td>
-          <td>{product.article}</td>
-          <td>{product.count}</td>
-          <td>{product.price}</td>
-          <td>{product.price*product.count}</td>
+          <td>{0}</td>
+          <td>{product[1]}</td>
+          <td>{product[2]}</td>
+          <td>{product[6]}</td>
+          <td>{product[4]}</td>
+          <td>{product[7]}</td>
          
 
         </tr>);
-      }
-    }
+      // }
+    // }
     ////////
    return{
      content:content,
@@ -101,12 +103,12 @@ class ClientTable extends Component{
       ////////// 
       
         content.push(<tr>
-          <td>{client.name}</td>
-          <td>{client.surname}</td>
-          <td>{client.phone}</td>
-          <td>{client.email}</td>
-          <td>{client.nova_poshta_number}</td>
-          <td>{client.payment_method}</td>
+          <td>{client[0]}</td>
+          <td>{'Surname'}</td>
+          <td>{client[0]}</td>
+          <td>{'email'}</td>
+          <td>{client[8]}</td>
+          <td>{client[9]}</td>
         </tr>);
       
     }
@@ -126,7 +128,7 @@ class ClientTable extends Component{
            <th>фамілія</th>
            <th>телефон</th>
            <th>e-mail</th>
-           <th>№ відділу Нової Пошти</th>
+           <th>Спосіб доставки</th>
            <th>Спосіб оплати</th>
          </tr>
        </thead>
@@ -188,10 +190,14 @@ class MainTable extends Component {
         var order = orders[i];
         // let's calculate total cost of order
         var total_cost = 0;
-        for(var c=0;c<order.order.length;c++){
-          var product = order.order[c];
-          total_cost+= product.count * product.price;
-        }
+        // for(var c=0;c<order.order.length;c++){
+          // var product = order.order[c];
+          // total_cost+= product.count * product.price;
+        // }
+        // total cost (total column)
+        total_cost = order[7];
+        var status = '';
+        if(order[10]=='new')status=<MyDropDown mainText="нове" textItem="прийняти"/>;
         content.push(
           <tr>
 
@@ -208,9 +214,9 @@ class MainTable extends Component {
             var current_i_str = target_td.innerHTML;
             var current_i = parseInt(current_i_str, 10);
             var order =  orders[current_i];
-            var currentOrder = order.order;
+            var currentOrder = order;
             props.onClick(showCurrTable, 'orders', currentOrder);}
-          }><i class="fa fa-times"></i>&nbsp;{order.order.length}</button>
+          }><i class="fa fa-times"></i>&nbsp;{order[6]}</button>
 
           </td>
 
@@ -224,17 +230,17 @@ class MainTable extends Component {
                 var current_i_str = target_td.innerHTML;
                 var current_i = parseInt(current_i_str, 10);
                 var order =  orders[current_i];
-                var currentCustomer = order.customer;
+                var currentCustomer = order;
                 props.onClick(showCurrTable, 'client', currentCustomer);
               }
             }>
 
 
-              &nbsp;{order.customer.name}</button>
+              &nbsp;{order[0]}</button>
           </td>
 
           <td>
-          <MyDropDown mainText="нове" textItem="прийняти"/>
+          {status}
           </td>
 
           <td>
@@ -524,49 +530,47 @@ class SmApp extends Component {
   }
   readManagersCards = () => {
     // draw the manager's cards:
-    fetch("http://127.0.0.1:5000/read_categories",{
+    fetch("http://127.0.0.1:5000/orders",{
       method: 'get',
       headers: {
         'Content-Type': 'application/json'
-      },
-      data: {
-        get_param: 'value'
       }
     })
     .then(res => res.json())
-    .then((data)=>{
-      // let data = getAllCategoriesData();
-        // let's foreach every category
-        let category_names = data.category_name;
-        let names = data.name;
-        let photos = data.photo;
+    .then((orders)=>{
+      let a = 1;
+      // // let data = getAllCategoriesData();
+      //   // let's foreach every category
+      //   let category_names = data.category_name;
+      //   let names = data.name;
+      //   let photos = data.photo;
   
-        let chartData =[]
-        chartData.push([500, 1000, 500, 500, 1000]);
+      //   let chartData =[]
+      //   chartData.push([500, 1000, 500, 500, 1000]);
   
-        var categories = []
+      //   var categories = []
         
-        // for(let i=0; i<category_names.length;i++){
-          categories.push(<TotalDepartmentSales chartId="chart0" receivedData={chartData[0]} category_name={category_names[0]} name={names[0]} photo={photos[0]}/>);
-        // }
-        var orders = [];
-        var order1 ={'order':[
-          {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 30},
-          {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 30},
-          {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 30},
-                ], 'customer':
-          {'name':'Ігор', 'surname':'Столяр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
-        };
-        var order2 ={'order':[
-          {'product_name':'зошит_зелена', 'article':1225, 'count':3, 'price': 50},
-          {'product_name':'зошит_синя', 'article':1226, 'count':2, 'price': 50},
-          {'product_name':'зошит_жовта', 'article':1227, 'count':2, 'price': 50},
-                ], 'customer':
-          {'name':'Василь', 'surname':'Маляр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
-        };
-        orders.push(order1);
-        orders.push(order2);
-
+      //   // for(let i=0; i<category_names.length;i++){
+      //     categories.push(<TotalDepartmentSales chartId="chart0" receivedData={chartData[0]} category_name={category_names[0]} name={names[0]} photo={photos[0]}/>);
+      //   // }
+      //   var orders = [];
+      //   var order1 ={'order':[
+      //     {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 30},
+      //     {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 30},
+      //     {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 30},
+      //           ], 'customer':
+      //     {'name':'Ігор', 'surname':'Столяр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
+      //   };
+      //   var order2 ={'order':[
+      //     {'product_name':'зошит_зелена', 'article':1225, 'count':3, 'price': 50},
+      //     {'product_name':'зошит_синя', 'article':1226, 'count':2, 'price': 50},
+      //     {'product_name':'зошит_жовта', 'article':1227, 'count':2, 'price': 50},
+      //           ], 'customer':
+      //     {'name':'Василь', 'surname':'Маляр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
+      //   };
+      //   orders.push(order1);
+      //   orders.push(order2);
+        let categories ="categories";
         this.setState({
           managerSales: categories,
           orders: orders,

@@ -666,6 +666,15 @@ def total_sales():
         }) 
 
 
+@app.route('/orders', methods=['GET', 'POST'])
+def orders():
+    # rData = request.get_json()
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+    cursor.execute("""SELECT * FROM Orders""")
+    orders=cursor.fetchall() # total sales values of selected category
+    ordersJson = jsonify(orders)
+    return ordersJson
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':
