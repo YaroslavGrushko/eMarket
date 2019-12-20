@@ -675,6 +675,24 @@ def orders():
     orders=cursor.fetchall() # total sales values of selected category
     ordersJson = jsonify(orders)
     return ordersJson
+
+@app.route('/order', methods=['GET', 'POST'])
+def order():
+    rData = request.get_json()
+    arguments=[]
+    arguments = [(rData['mydata'],rData['statusId'])]
+
+    conn = create_connection("eMarket.db")
+    cursor = conn.cursor()
+
+    # cursor.execute("""SELECT * FROM Orders""")
+    # orders=cursor.fetchall() # total sales values of selected category
+    # ordersJson = jsonify(orders)
+
+    cursor.executemany("UPDATE Orders SET status= ? WHERE rowid= ? ", arguments)
+    conn.commit()
+
+    return jsonify({'status' : 'success GET'})
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':
