@@ -44,7 +44,7 @@ class Period extends Component {
       from_day : '1',
       from_month : '1',
       from_year : 2019,
-      to_day : '2',
+      to_day : '30',
       to_month : '1',
       to_year : 2019,
     }
@@ -277,6 +277,10 @@ initializeChart =()=> {
 
 // component Total Category Sales:
 class TotalCategorySales extends Component {
+  
+  componentDidUpdate(){
+    this.initializeChart();
+  }
   initializeChart =()=> {
       let el = document.getElementById(this.props.chartId);
       let ctx = el.getContext("2d");
@@ -367,12 +371,11 @@ class DashBoard extends Component {
       total_expenses : 0,
       labels_and_data : null,
       from_period : '2019,1,1',
-      to_period : '2019,1,2',
+      to_period : '2019,1,30',
     }
   }
   
   componentDidMount()  {
-    // this.readManagersCards();
     this.readTotalGraph();
   }
 

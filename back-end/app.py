@@ -560,13 +560,15 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
     td = table_date_to_date(to_date)
     period_duration_date = td - fd
     period_duration = period_duration_date.days # number of days
-    number_of_labels = 7
-    if period_duration>7:
-        delta = period_duration // number_of_labels # // get divisor only integer value
-        reminder = period_duration % number_of_labels # remainder of a division
+    number_of_labels = 7 
+    if period_duration>=7:
+        delta = number_of_labels 
+        #reminder = period_duration % number_of_labels # remainder of a division
+        # number of weeks:
+        number_of_labels = period_duration // number_of_labels  # // get divisor only integer value
+        test = 1
     else:
         delta = 1
-        reminder = 0
         number_of_labels = period_duration + 1
 
     full_labels = [] # array of total sales
@@ -576,12 +578,13 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
 
     # create an array of labels at the time axis
     for i in range(number_of_labels + 1):
+        if delta > 1 : 
+            fd += timedelta(days=delta)
         labels.append(str(fd.day) + '.' + str(fd.month) + '.' + str(fd.year))
         labels_in_data_format.append(fd)
-        if i<number_of_labels:
+        if delta == 1 :
              fd += timedelta(days=delta)
-        else:
-            fd += timedelta(days=reminder)  
+         
 
     for i in range(number_of_labels): 
         for j in range(delta): 
@@ -592,11 +595,11 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
                 if(table_date_to_date(val[11]) >= labels_in_data_format[i] and table_date_to_date(val[11]) < labels_in_data_format[i+1]):
                     total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
                     exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
-            full_labels.append({labels[i]:total_for_delta}) 
-            exp_full_labels.append({labels[i]:exp_total_for_delta}) 
             j = j + 1
-            fd += timedelta(days=1)
-        i = i +1
+            fd += timedelta(days=delta)
+        full_labels.append({labels[i]:total_for_delta}) 
+        exp_full_labels.append({labels[i]:exp_total_for_delta})
+        i = i + 1
     return full_labels, exp_full_labels
     
 
