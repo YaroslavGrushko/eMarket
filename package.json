@@ -17,7 +17,7 @@
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
     "react-select": "^3.0.4",
-    "react-sticky": "^6.0.3"
+    "react-table": "^7.0.0-rc.15"
   },
   "scripts": {
     "predeploy": "npm run build",

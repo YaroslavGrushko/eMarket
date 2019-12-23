@@ -1,22 +1,10 @@
-// table tr {
-//     cursor: pointer;
-// }
-.y-h-20{
-    max-height:20% !important;
-}
-.main-table{
-    table-layout: fixed;
-    height:50% !important;
-}
-.pos-fixed{
-    position: relative !important;
-}
+
+
 @media (min-width: 750px){
-    // .pos-fixed{
-    //     bottom:50px !important;
-    // }
-    .overflow-scroll{
-        height:50vh !important;
-        overflow: scroll !important;
-    }
+ 
+   .overflow-y-scroll{
+     overflow: scroll !important;  
+     height:60vh !important;              // <-- Select the height of the table
+     display: -moz-groupbox !important;    // For firefox bad effect    
+   }
 }

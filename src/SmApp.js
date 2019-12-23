@@ -5,9 +5,9 @@ import './css/main_App.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Container, Row, Col, Table, Dropdown } from "react-bootstrap";
-// for position: sticky (in react)
-import { StickyContainer, Sticky } from 'react-sticky';
 
+// Import React Table
+import ReactTable from "react-table";
 // for react width sizing
 import { MDBContainer } from 'mdbreact'
 // for calendar
@@ -311,23 +311,28 @@ class MainTable extends Component {
   }
  
 render() {
-    return(<div className='overflow-scroll'>
-           <h3>Список замовлень</h3>
-           <Table striped responsive className="text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>замовлення</th>
-                <th>замовник</th>
-                <th>статус</th>
-                <th>вартість</th>
-              </tr>
-            </thead>
-              <tbody>    
-                  {this.state.content}    
-              </tbody>
-           </Table>
-          </div>);
+    return(
+          <div>
+              <h3>Список замовлень</h3>
+              <div className='overflow-y-scroll'>
+              <Table striped className="text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>замовлення</th>
+                    <th>замовник</th>
+                    <th>статус</th>
+                    <th>вартість</th>
+                  </tr>
+                </thead>
+                  <tbody>    
+                      {this.state.content}    
+                  </tbody>
+                  
+              </Table>
+              </div>
+            </div>
+           );
 }
 }
 
