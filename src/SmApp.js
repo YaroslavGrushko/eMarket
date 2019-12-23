@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-
+import ReactDOM from "react-dom";
 import './css/main_App.css';
 // import './css/images.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Container, Row, Col, Table, Dropdown } from "react-bootstrap";
+// for position: sticky (in react)
+import { StickyContainer, Sticky } from 'react-sticky';
+
 // for react width sizing
 import { MDBContainer } from 'mdbreact'
 // for calendar
@@ -140,26 +143,28 @@ class ClientTable extends Component{
      content:content,
    };
   }
+ 
   render() {
     return(
-      <div>
-      <h3>Все про замовника</h3>
-      <Table striped responsive className="text-center">
-       <thead>
-         <tr>
-           <th>ім'я</th>
-           <th>фамілія</th>
-           <th>телефон</th>
-           <th>e-mail</th>
-           <th>Спосіб доставки</th>
-           <th>Спосіб оплати</th>
-         </tr>
-       </thead>
-       <tbody>
-         {this.state.content}     
-       </tbody>
-      </Table>
-     </div>
+      
+        <div>
+                <h3>Все про замовника</h3>
+                <Table striped responsive className="text-center">
+                  <thead>
+                    <tr>
+                      <th>ім'я</th>
+                      <th>фамілія</th>
+                      <th>телефон</th>
+                      <th>e-mail</th>
+                      <th>Спосіб доставки</th>
+                      <th>Спосіб оплати</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.content}     
+                  </tbody>
+                </Table> 
+        </div>
     )
   }
 }
@@ -202,11 +207,12 @@ class MainTable extends Component {
   statusOnClick(status, id){
     this.props.onClick(null,'satus',status, id);
   }
- componentDidMount(){
-   this.setState({
-      mounted:true,
-   })
- }
+
+  componentDidMount(){
+    this.setState({
+        mounted:true,
+    })
+  }
   static getDerivedStateFromProps(props, state){
     var content=[]
     var orders=props.orders;
@@ -305,7 +311,7 @@ class MainTable extends Component {
   }
  
 render() {
-    return(<div>
+    return(<div className='overflow-scroll'>
            <h3>Список замовлень</h3>
            <Table striped responsive className="text-center">
             <thead>
@@ -317,9 +323,9 @@ render() {
                 <th>вартість</th>
               </tr>
             </thead>
-            <tbody>
-             {this.state.content}
-            </tbody>
+              <tbody>    
+                  {this.state.content}    
+              </tbody>
            </Table>
           </div>);
 }
