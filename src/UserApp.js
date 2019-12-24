@@ -143,7 +143,7 @@ class UserApp extends Component {
       headers: {
         'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
       },
-      body:JSON.stringify({'data':'02'}),
+      body:JSON.stringify({'data':'002'}),
     })
     .then(res => res.json())
     .then((orders)=>{

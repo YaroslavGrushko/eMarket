@@ -156,6 +156,7 @@ class User(db.Model):
     public_id = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50))
     password = db.Column(db.String(80))
+    phone = db.Column(db.String(15))
     admin = db.Column(db.Boolean)
 
 class Todo(db.Model):
@@ -183,7 +184,7 @@ def token_required(f):
         except:
             return jsonify({'message' : 'Token is invalid!'}), 401
 
-        return f(username, *args, **kwargs)
+        return f(current_user, *args, **kwargs)
 
     return decorated
 
@@ -212,8 +213,9 @@ def login():
 @app.route('/signin', methods=['GET', 'POST'])
 def signin_a_user():
     auth = request.authorization
-
-    if not auth or not auth.username or not auth.password:
+    # auth2 = request.authorization_second
+    phone = request.get_json()
+    if not auth or not auth.username or not auth.password or not phone:
         return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
 
     # let's inicizlize db
@@ -227,13 +229,14 @@ def signin_a_user():
         # sales_manager (sm)
         name = auth.username
         password = auth.password
+
         user = User.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
 
         if user: # if a user is found, we want to redirect back to signup page so user can try again
             # return redirect(url_for('auth.signup'))
             return 'it is ALREADY exists '+str(name)
         # create new user with the form data. Hash the password so plaintext version isn't saved.
-        new_user = User(public_id=str(uuid.uuid4()), name=name, password=generate_password_hash(password, method='sha256'), admin=True)
+        new_user = User(public_id=str(uuid.uuid4()), name=name, password=generate_password_hash(password, method='sha256'), phone=phone, admin=True)
 
         # add the new user to the database
         db.session.add(new_user)
@@ -277,8 +280,8 @@ def read_category():
 
 @app.route('/read_category', methods=['GET', 'POST'])
 @token_required
-def read(username):
-    if username=='admin':
+def read(user):
+    if user.name=='admin':
         # rData = request.data
         rData = request.get_json()
 
@@ -302,8 +305,8 @@ def read(username):
 
 @app.route('/add_categories', methods=['GET', 'POST'])
 @token_required
-def save_category(username):
-    if username == 'admin':
+def save_category(user):
+    if user.name == 'admin':
         # rData = request.data
         rData = request.get_json()
 
@@ -334,8 +337,8 @@ def save_category(username):
 
 @app.route('/edit_categories', methods=['GET', 'POST'])
 @token_required
-def edit_categories(username):
-    if username == 'admin':
+def edit_categories(user):
+    if user.name == 'admin':
         # rData = request.data
         rData = request.get_json()
 
@@ -363,8 +366,8 @@ def edit_categories(username):
 
 @app.route('/delete_category', methods=['GET', 'POST'])
 @token_required
-def delete_category(username):
-    if (username == 'admin'):
+def delete_category(user):
+    if (user.name == 'admin'):
         rData = request.get_json()
         # data = json.loads(rData)
         conn = create_connection("eMarket.db")
@@ -399,8 +402,8 @@ def read_products():
 
 @app.route('/add_product', methods=['GET', 'POST'])
 @token_required
-def add_product(username):
-    if(username == 'admin'):
+def add_product(user):
+    if(user.name == 'admin'):
         # rData = request.data
         rData = request.get_json()
 
@@ -430,8 +433,8 @@ def add_product(username):
 
 @app.route('/update_product', methods=['GET', 'POST'])
 @token_required
-def update_product(username):
-    if(username=='admin'):
+def update_product(user):
+    if(user.name=='admin'):
         rData = request.get_json()
         conn = create_connection("eMarket.db")
         cursor = conn.cursor()
@@ -456,8 +459,8 @@ def update_product(username):
 
 @app.route('/delete_product', methods=['GET', 'POST'])
 @token_required
-def delete_product(username):
-    if(username=='admin'):
+def delete_product(user):
+    if(user.name=='admin'):
         rData = request.get_json()
         conn = create_connection("eMarket.db")
         cursor = conn.cursor()
@@ -753,8 +756,8 @@ def total_sales():
 
 @app.route('/orders', methods=['GET', 'POST'])
 @token_required
-def orders(username):
-    if(username=='sm'):
+def orders(user):
+    if(user.name=='sm'):
         # rData = request.get_json()
         conn = create_connection("eMarket.db")
         cursor = conn.cursor()
@@ -767,8 +770,8 @@ def orders(username):
 
 @app.route('/order', methods=['GET', 'POST'])
 @token_required
-def order(username):
-    if(username=='sm'):
+def order(user):
+    if(user.name=='sm'):
         rData = request.get_json()
         arguments=[]
         arguments = [(rData['mydata'],rData['statusId'])]
@@ -789,9 +792,9 @@ def order(username):
 
 @app.route('/userorders', methods=['GET', 'POST'])
 @token_required
-def userorders(username):
+def userorders(user):
         rData = request.get_json()
-        phone= rData['data']
+        phone= user.phone
         conn = create_connection("eMarket.db")
         cursor = conn.cursor()
         cursor.execute("""SELECT * FROM Orders WHERE customer_phone==?""", [(phone)])
