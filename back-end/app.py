@@ -637,31 +637,14 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
         labels.append(str(fd.day) + '.' + str(fd.month) + '.' + str(fd.year))
         if delta == 1 :
              fd += timedelta(days=delta)
-         
-    # for i in range(number_of_labels): 
-        
-    #     for j in range(delta): 
-    #         total_for_delta = 0
-    #         exp_total_for_delta=0
-    #         for val in sampling_for_the_period: # summarize for the period of one day
-    #             # val[11] is a time column
-    #             current_date = table_date_to_date(val[11])
-    #             if(current_date >= labels_in_data_format[i] and current_date < labels_in_data_format[i+1]) :
-    #                 total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
-    #                 exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
-    #         j = j + 1
-    #         fd += timedelta(days=delta)
-    #     full_labels.append({labels[i]:total_for_delta}) 
-    #     exp_full_labels.append({labels[i]:exp_total_for_delta})
-    #     i = i + 1
-
+    
     for i in range(number_of_labels): 
         total_for_delta = 0
         exp_total_for_delta=0
         for val in sampling_for_the_period: 
             # val[11] is a time column
             current_date = table_date_to_date(val[11])
-            # summarize for the period of one delta
+            # summarize for the period of one delta:
             if(current_date >= labels_in_data_format[i] and current_date < labels_in_data_format[i+1]) :
                 total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
                 exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
