@@ -521,15 +521,59 @@ def add_product_customer():
         """)
 
     today = datetime.now()
-    year = str(today.year) 
-    month = str(today.month)
-    day = str(today.day)  
-    
-    today_date = year + ',' + month + ',' + day
+    today_d = datetime(today.year, today.month, today.day)
+    today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+
+    print(today_date)
+ 
     for item in rData['customer_products']:
         new_checkout_products = []
         new_checkout_products = [(rData['customer_phone'], item['name'], item['category_id'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'], rData['customer_delivery'], rData['customer_pay'], "new", today_date)]
         cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products)
+    
+    
+    # # emulate Orders table:
+    # today_d = datetime(2019, 1, 1)
+    # today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    # for num_weeks in range(209):
+    #     new_checkout_products_1 = [("001", "Зошит 2", "Зошити", "25", "30", "images/copybooks/cb2.png", "3", "90", "Самовивіз", "На картку ПриватБанку", "new", today_date)]
+    #     today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    #     cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products_1)
+    #     today_d += timedelta(days=1)
+
+    #     new_checkout_products_2 = [("002", "Калькулятор 2", "Калькулятори", "250", "300", "images/calculators/calc2.png", "2", "600", "Доставка Новою поштою", "Накладений платіж", "new", today_date)]
+    #     today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    #     cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products_2)
+    #     today_d += timedelta(days=1)
+
+    #     new_checkout_products_3 = [("003", "Карандаші 1", "Карандаші", "25", "30", "images/pencils/penc1.png", "4", "120", "Доставка Новою поштою", "Накладений платіж", "new", today_date)]
+    #     today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    #     cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products_3)
+    #     today_d += timedelta(days=1)
+
+    #     new_checkout_products_4 = [("004", "Дрібниці 1", "Дрібниці", "20", "30", "images/nothingness/noth1.png", "2", "60", "Доставка Новою поштою", "Накладений платіж", "new", today_date)]
+    #     today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    #     cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products_4)
+    #     today_d += timedelta(days=1)
+
+    #     new_checkout_products_5 = [("005", "ДляШколи 1", "ДляШколи", "200", "300", "images/school/sch1.png", "2", "600", "Самовивіз", "На картку ПриватБанку", "new", today_date)]
+    #     today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    #     cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products_5)
+    #     today_d += timedelta(days=1)
+
+    #     new_checkout_products_6 = [("006", "Калькулятор 3", "Калькулятори", "200", "300", "images/calculators/calc3.png", "1", "300", "Доставка Новою поштою", "Накладений платіж", "new", today_date)]
+    #     today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    #     cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products_6)
+    #     today_d += timedelta(days=1)
+
+    #     new_checkout_products_7 = [("007", "ДляШколи 2", "ДляШколи", "200", "300", "images/school/sch2.png", "2", "600", "Доставка Новою поштою", "Накладений платіж", "new", today_date)]
+    #     today_date = today_d.strftime('%F') #convert datetime to YYYY-MM-DD string
+    #     cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products_7)
+    #     today_d += timedelta(days=1)
+
+    #     num_weeks += 1
+    
+    
     
     conn.commit()
 
@@ -549,8 +593,9 @@ def amount_for_the_period(sampling_for_the_period):
 
 #function for transfering table date value into date format:
 def table_date_to_date(table_date_format):
-    table_date_list = table_date_format.split(",")
-    date_format = datetime(int(table_date_list[0]), int(table_date_list[1]), int(table_date_list[2]))
+    date_format = datetime.strptime(table_date_format, '%Y-%m-%d') # convert YYYY-MM-DD string to datetime format
+    # table_date_list = table_date_format.split(",")
+    # date_format = datetime(int(table_date_list[0]), int(table_date_list[1]), int(table_date_list[2]))
     return date_format
 
 #function for calculation the labels and the total values for some period (from result of query):
@@ -560,16 +605,24 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
     td = table_date_to_date(to_date)
     period_duration_date = td - fd
     period_duration = period_duration_date.days # number of days
-    number_of_labels = 7 
-    if period_duration>=7:
-        delta = number_of_labels 
-        #reminder = period_duration % number_of_labels # remainder of a division
-        # number of weeks:
-        number_of_labels = period_duration // number_of_labels  # // get divisor only integer value
-        test = 1
-    else:
-        delta = 1
+    if period_duration < 7 :
+        delta = 1 # day
+         # number of days:
         number_of_labels = period_duration + 1
+    elif period_duration>=7 and period_duration <= 31 :
+        delta = 7 # week 
+        # number of weeks:
+        number_of_labels = period_duration // delta  # operator // get divisor only integer value
+        # test = 1
+    elif period_duration > 31 and period_duration <= 365 :
+        delta = 30 # month 
+         # number of months:
+        number_of_labels = period_duration // delta
+        # test = 1
+    else :
+        delta = 365 # year
+         # number of years:
+        number_of_labels = period_duration // delta
 
     full_labels = [] # array of total sales
     exp_full_labels = [] # array of expenses
@@ -577,29 +630,47 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
     labels_in_data_format = []
 
     # create an array of labels at the time axis
-    for i in range(number_of_labels + 1):
+    for i in range(number_of_labels+1):
+        labels_in_data_format.append(fd)
         if delta > 1 : 
             fd += timedelta(days=delta)
         labels.append(str(fd.day) + '.' + str(fd.month) + '.' + str(fd.year))
-        labels_in_data_format.append(fd)
         if delta == 1 :
              fd += timedelta(days=delta)
          
+    # for i in range(number_of_labels): 
+        
+    #     for j in range(delta): 
+    #         total_for_delta = 0
+    #         exp_total_for_delta=0
+    #         for val in sampling_for_the_period: # summarize for the period of one day
+    #             # val[11] is a time column
+    #             current_date = table_date_to_date(val[11])
+    #             if(current_date >= labels_in_data_format[i] and current_date < labels_in_data_format[i+1]) :
+    #                 total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
+    #                 exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
+    #         j = j + 1
+    #         fd += timedelta(days=delta)
+    #     full_labels.append({labels[i]:total_for_delta}) 
+    #     exp_full_labels.append({labels[i]:exp_total_for_delta})
+    #     i = i + 1
 
     for i in range(number_of_labels): 
-        for j in range(delta): 
-            total_for_delta = 0
-            exp_total_for_delta=0
-            for val in sampling_for_the_period:
-                # val[11] is a time column
-                if(table_date_to_date(val[11]) >= labels_in_data_format[i] and table_date_to_date(val[11]) < labels_in_data_format[i+1]):
-                    total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
-                    exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
-            j = j + 1
-            fd += timedelta(days=delta)
+        total_for_delta = 0
+        exp_total_for_delta=0
+        for val in sampling_for_the_period: 
+            # val[11] is a time column
+            current_date = table_date_to_date(val[11])
+            # summarize for the period of one delta
+            if(current_date >= labels_in_data_format[i] and current_date < labels_in_data_format[i+1]) :
+                total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
+                exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
+              
         full_labels.append({labels[i]:total_for_delta}) 
         exp_full_labels.append({labels[i]:exp_total_for_delta})
         i = i + 1
+        fd += timedelta(days=delta)
+    
     return full_labels, exp_full_labels
     
 
@@ -612,7 +683,10 @@ def total_sales():
     cursor = conn.cursor()
     
     # check if data exists:
-    count = cursor.execute("""SELECT COUNT(*) FROM Orders WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""").fetchone()[0]
+    
+    count = cursor.execute("""SELECT * FROM Orders WHERE Orders.date BETWEEN'"""+from_period+"""' AND '"""+to_period+"""'""")
+    #count = cursor.execute("""SELECT * FROM Orders WHERE Orders.date BETWEEN '2019-01-07' AND '2019-01-10'""")
+    count = len(count.fetchall())
     print (count)
     
     if count == 0:
@@ -623,7 +697,7 @@ def total_sales():
         # get data for total graphs:
         cursor.execute("""SELECT *
                         FROM Orders                       
-                    WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'""")
+                    WHERE Orders.date BETWEEN'"""+from_period+"""' AND '"""+to_period+"""'""")
         
         result_of_query=cursor.fetchall() # total sales values of all categories
         sales_labels, expenses_labels = labels_for_the_period(result_of_query, from_period, to_period)
@@ -634,18 +708,13 @@ def total_sales():
         
         result_of_query_category_id=cursor.fetchall() 
         
-        # cursor.execute("""SELECT category_id, SUM(total), date
-        #                 FROM Orders                       
-        #             WHERE Orders.date>='"""+from_period+"""' AND Orders.date<='"""+to_period+"""'
-        #             GROUP BY category_id""")
-        
         sales_labels_categories = [] # list of sales_labels for each category
         total_sales_categories = [] # list of total_sales for each category
         
         for val in result_of_query_category_id:
             cursor.execute("""SELECT * FROM Orders                       
-                    WHERE Orders.date>='"""+from_period+"""' 
-                    AND Orders.date<='"""+to_period+"""'
+                    WHERE Orders.date BETWEEN'"""+from_period+"""' 
+                    AND '"""+to_period+"""'
                     AND Orders.category_id ='"""+val[0]+"""' """)
             
             result_of_query=cursor.fetchall() # total sales values of selected category
