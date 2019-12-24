@@ -20,6 +20,8 @@ import './css/board_styles/css/board_main.css';
 
 import Delayed from './Delayed';//for delay rendering
 
+
+
 // component for calendar:
 class Calendar extends Component {
   onChange = (jsDate, dateString) => {
@@ -41,18 +43,18 @@ class Period extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      from_day : '1',
-      from_month : '1',
+      from_day : '01',
+      from_month : '01',
       from_year : 2019,
-      to_day : '2',
-      to_month : '1',
+      to_day : '07',
+      to_month : '01',
       to_year : 2019,
     }
   }
   
   updatePeriod = ( ) => {
-    var from_period = this.state.from_year + ','+ this.state.from_month + ',' + this.state.from_day;
-    var to_period = this.state.to_year + ','+ this.state.to_month + ',' + this.state.to_day;
+    var from_period = this.state.from_year + '-'+ this.state.from_month + '-' + this.state.from_day;
+    var to_period = this.state.to_year + '-'+ this.state.to_month + '-' + this.state.to_day;
     this.props.periodCallBack(from_period, to_period);
   };
 
@@ -175,7 +177,7 @@ class TotalIncome extends Component {
           <div className="card" style={{width:100+'%'}}>
             <h4 className="card-title text-center">Загальний прибуток</h4>
             <div className="card-body d-flex justify-content-center">
-              <div className="card text-center" style={{width:35+'%'}}>{this.props.total_income}</div>
+              <div className="card text-center" style={{width:70+'%'}}>{this.props.total_income}</div>
               <div className="ml-1">грн</div>
             </div>
               {/* <div className="card-footer">за вибраний проміжок часу</div> */}
@@ -184,7 +186,7 @@ class TotalIncome extends Component {
           <div className="card" style={{width:100+'%'}}>
             <h4 className="card-title text-center">Прогноз на місяць</h4>
             <div className="card-body d-flex justify-content-center">
-              <div className="card text-center" style={{width:35+'%'}}>1000</div>
+              <div className="card text-center" style={{width:70+'%'}}>1000</div>
               <div className="ml-1">грн</div>
             </div>
               {/* <div className="card-footer">за вибраний проміжок часу</div> */}
@@ -197,17 +199,21 @@ class TotalIncome extends Component {
   }
 }
 
-// component Total Graph for total sales and total expenses graphs:
-class TotalGraph extends Component {
+// component TotalSales for total sales graph:
+class TotalSales extends Component {
   componentDidMount() {
-    this.initializeChart(this.props.config);
-}
-  componentDidUpdate(){
-    this.initializeChart(this.props.config);
+    this.initializeChart();
   }
+  componentDidUpdate(){
+    this.initializeChart();
+  }
+
 initializeChart =()=> {
     let el = document.getElementById(this.props.chartId);
     let ctx = el.getContext("2d");
+    
+    ctx.clearRect(0, 0, ctx.width, ctx.height);
+
     let labels_and_dataArr = this.props.labels_and_data;//array of Objects
         let i = 0;
         var labelsArr = [];
@@ -219,14 +225,17 @@ initializeChart =()=> {
           labels_and_dataArr.forEach(obj => {
             let label = Object.keys(obj); //  Object's keys array
             let value = obj[label[0]]; //  Object's value
-            // alert('label= '+label+' value= '+value);
             labelsArr[i] = label;
             dataArr[i] = value;
             i++;
           });
         }
-        
-    var myChart = new Chart(ctx, {
+    // Destroy old chart. myChart variable scope globally
+    if (window.myChartS != undefined) {
+      window.myChartS.destroy();
+    }   
+    
+    window.myChartS = new Chart(ctx, {
       type: 'line',
       data: {
           labels: labelsArr,
@@ -236,6 +245,7 @@ initializeChart =()=> {
           }]
       },
       options: {
+        // events: [],
           scales: {
               yAxes: [{
                   ticks: {
@@ -250,7 +260,7 @@ initializeChart =()=> {
           }
       }
   });
-  return myChart;
+  return window.myChartS;
 }
   render(){
     return(
@@ -275,8 +285,99 @@ initializeChart =()=> {
   }
 }
 
+// component TotalExpenses for total expenses graphs:
+class TotalExpenses extends Component {
+  componentDidMount() {
+    this.initializeChart();
+  }
+  componentDidUpdate(){
+    this.initializeChart();
+  }
+
+initializeChart =()=> {
+    let el = document.getElementById(this.props.chartId);
+    let ctx = el.getContext("2d");
+    
+    ctx.clearRect(0, 0, ctx.width, ctx.height);
+
+    let labels_and_dataArr = this.props.labels_and_data;//array of Objects
+        let i = 0;
+        var labelsArr = [];
+        var dataArr = [];
+        if (labels_and_dataArr === null || labels_and_dataArr === '' || labels_and_dataArr === undefined) {
+          labelsArr = 0;
+          dataArr = 0;
+        } else{
+          labels_and_dataArr.forEach(obj => {
+            let label = Object.keys(obj); //  Object's keys array
+            let value = obj[label[0]]; //  Object's value
+            labelsArr[i] = label;
+            dataArr[i] = value;
+            i++;
+          });
+        }
+    // Destroy old chart. myChart variable scope globally
+    if (window.myChartE != undefined) {
+      window.myChartE.destroy();
+    }   
+    
+    window.myChartE = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: labelsArr,
+          datasets: [{
+              data: dataArr,
+              cubicInterpolationMode: 'monotone'
+          }]
+      },
+      options: {
+        // events: [],
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          legend:{
+              display:false
+          }
+      }
+  });
+  return window.myChartE;
+}
+  render(){
+    return(
+      <div className="d-flex justify-content-center">
+        <div className="card" style={{width:100+'%'}}>
+            <div className="card-title d-flex justify-content-center">
+                <div className="d-flex flex-row">
+                    <h4>{this.props.graph_name}</h4>
+                    <div className="card text-center font-weight-bold ml-2 p-1">{this.props.total}</div>
+                    <div className="ml-1">грн.</div>
+                </div>
+            </div>
+            <div className="card-body p-0 d-flex justify-content-center">
+                <div className="chart-container">
+                    <canvas id={this.props.chartId} ref={this.initializeChart} aria-label="Hello ARIA World" role="img"  />
+                </div>
+            </div>
+            <div className="card-footer">за вибраний проміжок часу</div>
+        </div>
+    </div>
+    );
+  }
+}
+
+
 // component Total Category Sales:
 class TotalCategorySales extends Component {
+  
+  componentDidUpdate(){
+    this.initializeChart();
+  }
   initializeChart =()=> {
       let el = document.getElementById(this.props.chartId);
       let ctx = el.getContext("2d");
@@ -291,7 +392,6 @@ class TotalCategorySales extends Component {
           labels_and_dataArr.forEach(obj => {
             let label = Object.keys(obj); //  Object's keys array
             let value = obj[label[0]]; //  Object's value
-            // alert('label= '+label+' value= '+value);
             labelsArr[i] = label;
             dataArr[i] = value;
             i++;
@@ -366,13 +466,12 @@ class DashBoard extends Component {
       total_sales : 0,
       total_expenses : 0,
       labels_and_data : null,
-      from_period : '2019,1,1',
-      to_period : '2019,1,2',
+      from_period : '2019-01-01',
+      to_period : '2019-01-07',
     }
   }
   
   componentDidMount()  {
-    // this.readManagersCards();
     this.readTotalGraph();
   }
 
@@ -421,6 +520,7 @@ class DashBoard extends Component {
         if (category_id != undefined) num_of_categories = category_id.length;
         
         var categories = []
+        var totals = []
         
         for(let i=0; i<num_of_categories; i++){
           categories.push(<Col xs={12} md={6}><TotalCategorySales chartId={"chart"+i} 
@@ -469,14 +569,14 @@ class DashBoard extends Component {
             <Col key={0} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalGraph chartId = 'ChartSales' graph_name='Загальні продажі' total={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
+                  <div><TotalSales chartId = 'ChartSales' graph_name='Загальні продажі' total={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>
             <Col key={1} md={6} sm={1}>     
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
                 <Delayed waitBeforeShow={500}>
-                  <div><TotalGraph chartId = 'ChartExpenses' graph_name='Загальні витрати' total = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
+                  <div><TotalExpenses chartId = 'ChartExpenses' graph_name='Загальні витрати' total = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
                 </Delayed>
               </div>
             </Col>
