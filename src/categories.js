@@ -7,6 +7,7 @@ import { categorymodalHtml } from './modal.js';
 import {categoryEditmodalHtml} from './modal.js';
 import {drawEditModal} from './modal.js';
 import './index.js'
+import { register } from './serviceWorker';
 
 // get categories
 getCategories(columnsToObjects);
@@ -195,7 +196,7 @@ function showCategories(categories) {
   // adding additional display:none categories row
   // this is for read categories row height from css file
   main_photo_containerHTML += '<div id="categoryRowHeight"></div>';
-  if (window.sm_state!=true){
+  if (window.limited_access_state!=true){
     $('.main_photo_container').html(main_photo_containerHTML);
     $('.main_photo_container').show();
   }else{
@@ -241,7 +242,7 @@ function showCategories(categories) {
     $('.productsCategoryTitle').html('');
 
     var images ='';
-    if (window.sm_state){
+    if (window.limited_access_state){
       images='<img id="logout" src="././images/log-out.png" alt="" title="вийти"> ';
     }else{
       images='<img id="logout" src="././images/log-out.png" alt="" title="вийти"> '+
@@ -256,14 +257,17 @@ function showCategories(categories) {
     $('.productsCategoryTitle').html('');
     // login button
     var icon =
-    '<i class="fa fa-key key-position" id="admin_mode_icon" style="font-size:48px;color:#bf0000; cursor: pointer;" data-placement="bottom" title="Вхід для менеджерів"></i>';
+    '<i class="fa fa-key key-position" id="admin_mode_icon" style="font-size:48px;color:#bf0000; cursor: pointer;" data-placement="bottom" title="Вхід в кабінет"></i>'+
+    '<i class="fa fa-sign-in" id="sign_in_icon" style="font-size:48px;color:#bf0000; cursor: pointer;" data-placement="bottom" title="Реєстрація"></i>';
 
     $('.moving-zone').find('.logo').html(icon);
   }
   $('#admin_mode_icon').click(function() {
     $('.login_container').show();
   });
-    
+  $('#sign_in_icon').click(function() {
+    $('.sign_in_container').show();
+  });
     // if logout is activated:
   $("#logout").click(function (){
     switchLoginStatus(false);
@@ -302,7 +306,7 @@ function showCategories(categories) {
       } 
       else {
         window.admin_state = false;
-        window.sm_state = false;
+        window.limited_access_state = false;
         window.switch_admin_mode = true;
         // let's load categories from Db
         getCategories(columnsToObjects);

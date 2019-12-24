@@ -559,7 +559,7 @@ if(statusId!=null){
    fetch("http://127.0.0.1:5000/order",{
     method: 'post',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
     },
     body:requestData,
   })
@@ -609,8 +609,8 @@ if(statusId!=null){
     fetch("http://127.0.0.1:5000/orders",{
       method: 'get',
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
+      },
     })
     .then(res => res.json())
     .then((orders)=>{

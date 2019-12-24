@@ -208,7 +208,37 @@ def login():
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+# sign-up user
+@app.route('/signin', methods=['GET', 'POST'])
+def signin_a_user():
+    auth = request.authorization
 
+    if not auth or not auth.username or not auth.password:
+        return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="Login required!"'})
+
+    # let's inicizlize db
+    # db.init_app(app)
+    # let's create db
+    with app.app_context():
+        # db.create_all()
+        ## admin 
+        # name = 'admin'
+        # password = 'admin'
+        # sales_manager (sm)
+        name = auth.username
+        password = auth.password
+        user = User.query.filter_by(name=name).first() # if this returns a user, then the email already exists in database
+
+        if user: # if a user is found, we want to redirect back to signup page so user can try again
+            # return redirect(url_for('auth.signup'))
+            return 'it is ALREADY exists '+str(name)
+        # create new user with the form data. Hash the password so plaintext version isn't saved.
+        new_user = User(public_id=str(uuid.uuid4()), name=name, password=generate_password_hash(password, method='sha256'), admin=True)
+
+        # add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+        return "success"
 #DB-routes>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @app.route('/read_categories', methods=['GET', 'POST'])
@@ -667,32 +697,52 @@ def total_sales():
 
 
 @app.route('/orders', methods=['GET', 'POST'])
-def orders():
-    # rData = request.get_json()
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
-    cursor.execute("""SELECT * FROM Orders""")
-    orders=cursor.fetchall() # total sales values of selected category
-    ordersJson = jsonify(orders)
-    return ordersJson
+@token_required
+def orders(username):
+    if(username=='sm'):
+        # rData = request.get_json()
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
+        cursor.execute("""SELECT * FROM Orders""")
+        orders=cursor.fetchall() # total sales values of selected category
+        ordersJson = jsonify(orders)
+        return ordersJson
+    else:
+        abort(403)
 
 @app.route('/order', methods=['GET', 'POST'])
-def order():
-    rData = request.get_json()
-    arguments=[]
-    arguments = [(rData['mydata'],rData['statusId'])]
+@token_required
+def order(username):
+    if(username=='sm'):
+        rData = request.get_json()
+        arguments=[]
+        arguments = [(rData['mydata'],rData['statusId'])]
 
-    conn = create_connection("eMarket.db")
-    cursor = conn.cursor()
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
 
-    # cursor.execute("""SELECT * FROM Orders""")
-    # orders=cursor.fetchall() # total sales values of selected category
-    # ordersJson = jsonify(orders)
+        # cursor.execute("""SELECT * FROM Orders""")
+        # orders=cursor.fetchall() # total sales values of selected category
+        # ordersJson = jsonify(orders)
 
-    cursor.executemany("UPDATE Orders SET status= ? WHERE rowid= ? ", arguments)
-    conn.commit()
+        cursor.executemany("UPDATE Orders SET status= ? WHERE rowid= ? ", arguments)
+        conn.commit()
 
-    return jsonify({'status' : 'success GET'})
+        return jsonify({'status' : 'success GET'})
+    else:
+        abort(403)
+
+@app.route('/userorders', methods=['GET', 'POST'])
+@token_required
+def userorders(username):
+        rData = request.get_json()
+        phone= rData['data']
+        conn = create_connection("eMarket.db")
+        cursor = conn.cursor()
+        cursor.execute("""SELECT * FROM Orders WHERE customer_phone==?""", [(phone)])
+        orders=cursor.fetchall() # total sales values of selected category
+        ordersJson = jsonify(orders)
+        return ordersJson   
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':

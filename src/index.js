@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './css/index.css';
 import App from './App';
 import SmApp from './SmApp';
+import UserApp from './UserApp';
 import * as serviceWorker from './serviceWorker';
 import $ from 'jquery';
 import { switchLoginStatus } from './categories.js';
@@ -45,13 +46,21 @@ serviceWorker.unregister();
 
 //function for login>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function LoginToServer() {
+function usernameToServer(adress) {
   
-  var username = $('#username').val();
-  var password = $('#password').val();
+  var username = '';
+  var password = '';
+if(adress=='signin'){
+  username = $('#username_signin').val();
+  password = $('#password_signin').val();
+}else{
+  username = $('#username').val();
+  password = $('#password').val();
+}
+
 
   $.ajax({
-    url: 'http://127.0.0.1:5000/login',
+    url: 'http://127.0.0.1:5000/'+adress,
     type: 'POST',
     
     beforeSend: function (xhr) {
@@ -59,34 +68,58 @@ function LoginToServer() {
     },
   
     success: function (data) {
-      // set new window.admin_state and window.switch_admin_mode values:
-       switchLoginStatus(true);
-       localStorage.setItem('x-access-token', data.token);
+      if(adress=='login'){
+        // set new window.admin_state and window.switch_admin_mode values:
+        switchLoginStatus(true);
+        localStorage.setItem('x-access-token', data.token);
+      }
       //  window.isAppRender = is app.js will be render
         window.isAppRender = false;
         if(username=="admin"){
           // reload main react app with new window.admin_state value
           ReactDOM.render( <App/> , document.getElementById('root'));
         }else{
-          // if username == sm
-          window.sm_state = true;
-          // reload main react app with new window.admin_state value
-          ReactDOM.render( <SmApp/> , document.getElementById('root'));
+          if (username == 'sm'){
+            window.limited_access_state = true;
+            // reload main react app with new window.admin_state value
+            ReactDOM.render( <SmApp/> , document.getElementById('root'));
+          }else{
+
+            
+
+            if(adress!='signin'){ 
+            window.limited_access_state = true;
+            localStorage.setItem('username', username);
+            // window.user_state = true;
+            // reload main react app with new window.admin_state value
+            ReactDOM.render( <UserApp/> , document.getElementById('root'));          
+            }else{
+              if(data=='success'){
+                alert('реєстрація пройшла успішно.');
+              }else{
+                alert(data);
+              }
+            }
+          }
         }
     },
-    error: function (error) {
+    error: function (message) {
       // alert("error: " + JSON.stringify(error));
-      alert("АУТЕНТИФІКАЦІЮ НЕ ПРОЙДЕНО");
+      alert(message);
     }
   });
 }
 
 // if admin mode is activated:
-$( "#login" ).click(function() {
-  LoginToServer();
+$("#login").click(function() {
+  usernameToServer('login');
   $('.login_container').hide();
 });
 
+$("#signIn").click(function() {
+  usernameToServer('signin');
+  $('.sign_in_container').hide();
+});
 // logout is in the showCategories of categories.js
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
