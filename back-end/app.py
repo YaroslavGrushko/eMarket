@@ -539,6 +539,7 @@ def add_product_customer():
     
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Orders(
+        id integer primary key autoincrement,
         customer_phone VARCHAR,
         name VARCHAR,
         category_id VARCHAR,
@@ -620,8 +621,8 @@ def amount_for_the_period(sampling_for_the_period):
     total = 0
     exp_total = 0
     for val in sampling_for_the_period:
-        total = total + int(val[7]) #val[7] is the Total column of the Orders table
-        exp_total =exp_total + int(val[3]*val[6]) #val[3] is the in_price column of the Orders table, val[6] - quantity
+        total = total + int(val[8]) #val[8] is the Total column of the Orders table
+        exp_total =exp_total + int(val[4]*val[7]) #val[4] is the in_price column of the Orders table, val[7] - quantity
     return total, exp_total
 
 #function for transfering table date value into date format:
@@ -676,11 +677,11 @@ def labels_for_the_period(sampling_for_the_period, from_date, to_date):
         exp_total_for_delta=0
         for val in sampling_for_the_period: 
             # val[11] is a time column
-            current_date = table_date_to_date(val[11])
+            current_date = table_date_to_date(val[12])
             # summarize for the period of one delta:
             if(current_date >= labels_in_data_format[i] and current_date < labels_in_data_format[i+1]) :
-                total_for_delta = total_for_delta + val[7] #val[7] is the Total column of the Orders table
-                exp_total_for_delta = exp_total_for_delta + val[3]*val[6] # val[3] is the in_price column, val[6] - quantity
+                total_for_delta = total_for_delta + val[8] #val[8] is the Total column of the Orders table
+                exp_total_for_delta = exp_total_for_delta + val[4]*val[7] # val[4] is the in_price column, val[7] - quantity
               
         full_labels.append({labels[i]:total_for_delta}) 
         exp_full_labels.append({labels[i]:exp_total_for_delta})
@@ -774,7 +775,7 @@ def order(user):
     if(user.name=='sm'):
         rData = request.get_json()
         arguments=[]
-        arguments = [(rData['mydata'],rData['statusId'])]
+        arguments = [rData['mydata'],rData['statusId']]
 
         conn = create_connection("eMarket.db")
         cursor = conn.cursor()
@@ -783,7 +784,8 @@ def order(user):
         # orders=cursor.fetchall() # total sales values of selected category
         # ordersJson = jsonify(orders)
 
-        cursor.executemany("UPDATE Orders SET status= ? WHERE rowid= ? ", arguments)
+        # cursor.execute("UPDATE Orders SET status= ? WHERE rowid= ? ", [rData['mydata'],rData['statusId']])
+        cursor.execute("UPDATE Orders SET status= ? WHERE id= ? ", arguments)
         conn.commit()
 
         return jsonify({'status' : 'success GET'})
@@ -793,14 +795,15 @@ def order(user):
 @app.route('/userorders', methods=['GET', 'POST'])
 @token_required
 def userorders(user):
-        rData = request.get_json()
+        # rData = request.get_json()
         phone= user.phone
         conn = create_connection("eMarket.db")
         cursor = conn.cursor()
         cursor.execute("""SELECT * FROM Orders WHERE customer_phone==?""", [(phone)])
         orders=cursor.fetchall() # total sales values of selected category
-        ordersJson = jsonify(orders)
-        return ordersJson   
+        # nameJson=jsonify(user.name)
+        # ordersJson = jsonify(orders)
+        return jsonify(user.name, orders)   
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':

@@ -13,6 +13,8 @@ import { DatePicker} from 'rc-datepicker';
 
 import "bootstrap/dist/css/bootstrap.css"; 
 import { Container, Row, Col } from "react-bootstrap";
+// react spinner:
+import LoadingOverlay from 'react-loading-overlay';
 
 import Chart from 'chart.js';
 import './css/my-charts.css';
@@ -457,6 +459,19 @@ class TotalCategorySales extends Component {
     }
   }
 
+// spinner
+class CustomSpinner extends Component{
+  render(){
+    return(
+        <div className='custom-spinner'>
+          <div class="fa-3x">
+              <i class="fa fa-cog fa-spin"></i>
+          </div>
+          <h3>Завантаження...</h3>
+        </div>
+      )
+    }
+  }
 // main component for DashBoard:
 class DashBoard extends Component {
   constructor(props){
@@ -468,6 +483,7 @@ class DashBoard extends Component {
       labels_and_data : null,
       from_period : '2019-01-01',
       to_period : '2019-01-07',
+      spinnerIsActive: false,
     }
   }
   
@@ -491,6 +507,8 @@ class DashBoard extends Component {
       'to_period': this.state.to_period
     };
     let period = JSON.stringify(jsonData);
+    // spinner start
+    this.setState({spinnerIsActive: true,})
      fetch("http://127.0.0.1:5000/total_graph",{
       method: 'POST',
       headers: {
@@ -502,6 +520,7 @@ class DashBoard extends Component {
       res.json())
     .then(
       (data)=>{
+        
         this.setState({
           labels_and_data: data.sales_labels,
           exp_labels_and_data: data.expenses_labels,
@@ -535,7 +554,8 @@ class DashBoard extends Component {
           categories: categories,
         })
 
-
+  // spinner stop
+  this.setState({spinnerIsActive: false,})
       },
       err => {
         console.log(err);
@@ -548,51 +568,56 @@ class DashBoard extends Component {
   render(){
     return(
       <div id = "dashboard_content">
-        <h4 className="text-center">
-          <b>ДОШКА АНАЛІТИКИ</b>
-        </h4>
-        <br></br>
-        
-        <Container>
-          <Row>
-            <Col key={0} md={3} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Calendar/></div>
-            </Col>
-            <Col key={1} md={5} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack} /></div>
-            </Col>
-            <Col key={2} md={4} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_sales-this.state.total_expenses}/></div>
-            </Col>
-          </Row>
-          <Row>
-            <Col key={0} md={6} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
-                <Delayed waitBeforeShow={500}>
-                  <div><TotalSales chartId = 'ChartSales' graph_name='Загальні продажі' total={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
-                </Delayed>
-              </div>
-            </Col>
-            <Col key={1} md={6} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
-                <Delayed waitBeforeShow={500}>
-                  <div><TotalExpenses chartId = 'ChartExpenses' graph_name='Загальні витрати' total = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
-                </Delayed>
-              </div>
-            </Col>
-          </Row>
-
+        <LoadingOverlay
+        active={this.state.spinnerIsActive}
+        spinner={<CustomSpinner/>}
+        >
+          <h4 className="text-center">
+            <b>ДОШКА АНАЛІТИКИ</b>
+          </h4>
           <br></br>
-          <br></br>
+          
+          <Container>
+            <Row>
+              <Col key={0} md={3} sm={1}>     
+                <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Calendar/></div>
+              </Col>
+              <Col key={1} md={5} sm={1}>     
+                <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack} /></div>
+              </Col>
+              <Col key={2} md={4} sm={1}>     
+                <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_sales-this.state.total_expenses}/></div>
+              </Col>
+            </Row>
+            <Row>
+              <Col key={0} md={6} sm={1}>     
+                <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
+                  <Delayed waitBeforeShow={500}>
+                    <div><TotalSales chartId = 'ChartSales' graph_name='Загальні продажі' total={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
+                  </Delayed>
+                </div>
+              </Col>
+              <Col key={1} md={6} sm={1}>     
+                <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
+                  <Delayed waitBeforeShow={500}>
+                    <div><TotalExpenses chartId = 'ChartExpenses' graph_name='Загальні витрати' total = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
+                  </Delayed>
+                </div>
+              </Col>
+            </Row>
 
-          <Row>
-            {this.state.categories}
-          </Row>
-          </Container>
+            <br></br>
+            <br></br>
 
-        <DeveloperYaroslav/>
-        
-        <DeveloperVladimir/>
+            <Row>
+              {this.state.categories}
+            </Row>
+            </Container>
+
+          <DeveloperYaroslav/>
+    
+          <DeveloperVladimir/>
+        </LoadingOverlay>
       </div>
     );
   }

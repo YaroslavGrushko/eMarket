@@ -5,6 +5,8 @@ import './css/main_App.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Container, Row, Col, Table, Dropdown } from "react-bootstrap";
+// react spinner:
+import LoadingOverlay from 'react-loading-overlay';
 
 // Import React Table
 import ReactTable from "react-table";
@@ -22,6 +24,8 @@ import './css/board_styles/css/board_main.css';
 import './css/board_styles/css/card_styles.css';
 import './css/board_styles/css/images.css';
 import './css/board_styles/css/tables.css';
+import './css/board_styles/css/spinner.css';
+
 
 class MyDropDown extends Component {
   render(){
@@ -42,7 +46,7 @@ class MyDropDown extends Component {
             var idElement = tr.firstChild;
             var idString=idElement.innerHTML;
             var id = parseInt(idString,10);
-            var dbId=++id;
+            // var dbId=++id;
             var status = '';
             switch(this.props.textItem){
               case 'прийняти':
@@ -52,7 +56,7 @@ class MyDropDown extends Component {
                 {status='sent';
                 break;}
             }
-            this.props.onClick(status, dbId);
+            this.props.onClick(status, id);
             }  
         }>{this.props.textItem}</Dropdown.Item>
       </Dropdown.Menu>
@@ -81,11 +85,11 @@ class OrdersTable extends Component{
         
         content.push(<tr>
           <td>{0}</td>
-          <td>{product[1]}</td>
           <td>{product[2]}</td>
-          <td>{product[6]}</td>
-          <td>{product[4]}</td>
+          <td>{product[3]}</td>
           <td>{product[7]}</td>
+          <td>{product[5]}</td>
+          <td>{product[8]}</td>
          
 
         </tr>);
@@ -129,12 +133,12 @@ class ClientTable extends Component{
       ////////// 
       
         content.push(<tr>
-          <td>{client[0]}</td>
+          <td>{client[1]}</td>
           <td>{'Surname'}</td>
-          <td>{client[0]}</td>
+          <td>{client[1]}</td>
           <td>{'email'}</td>
-          <td>{client[8]}</td>
           <td>{client[9]}</td>
+          <td>{client[10]}</td>
         </tr>);
       
     }
@@ -227,12 +231,12 @@ class MainTable extends Component {
           // total_cost+= product.count * product.price;
         // }
         // total cost (total column)
-        total_cost = order[7];
+        total_cost = order[8];
         var status = '';
         var myMainText=''
         var myTextItem=''
         var variant=''
-        switch(order[10]){
+        switch(order[11]){
           case 'new':
             {myMainText="нове";
              myTextItem="прийняти";
@@ -255,7 +259,7 @@ class MainTable extends Component {
         content.push(
           <tr>
 
-          <td>{i}</td>
+          <td>{order[0]}</td>
 
           <td>
          
@@ -267,10 +271,10 @@ class MainTable extends Component {
             var target_td=mytr.firstChild;
             var current_i_str = target_td.innerHTML;
             var current_i = parseInt(current_i_str, 10);
-            var order =  orders[current_i];
+            var order =  orders[current_i-1];
             var currentOrder = order;
             props.onClick(showCurrTable, 'orders', currentOrder);}
-          }><i class="fa fa-times"></i>&nbsp;{order[6]}</button>
+          }><i class="fa fa-times"></i>&nbsp;{order[7]}</button>
 
           </td>
 
@@ -283,14 +287,14 @@ class MainTable extends Component {
                 var target_td=mytr.firstChild;
                 var current_i_str = target_td.innerHTML;
                 var current_i = parseInt(current_i_str, 10);
-                var order =  orders[current_i];
+                var order =  orders[current_i-1];
                 var currentCustomer = order;
                 props.onClick(showCurrTable, 'client', currentCustomer);
               }
             }>
 
 
-              &nbsp;{order[0]}</button>
+              &nbsp;{order[1]}</button>
           </td>
 
           <td>
@@ -540,6 +544,19 @@ class TotalDepartmentSales extends Component {
       );
     }
   }
+// spinner
+class CustomSpinner extends Component{
+render(){
+  return(
+      <div className='custom-spinner'>
+        <div class="fa-3x">
+            <i class="fa fa-cog fa-spin"></i>
+        </div>
+        <h3>Завантаження...</h3>
+      </div>
+    )
+  }
+}
 //main component of whole SmApp:
 class SmApp extends Component {
     ////////////////////////////////////////////
@@ -550,6 +567,8 @@ class SmApp extends Component {
       showClientTable:false,
       isAnyAnotherTable:false,
       managerSales:[],
+      spinnerIsActive: false,
+      customSpinner: false,
     };
   }
   MainTableClickHandler(showCurrTable, tableToShow, mydata, statusId){
@@ -605,6 +624,8 @@ if(statusId!=null){
   }
   }
   readManagersCards = () => {
+    // spinner start
+    this.setState({spinnerIsActive: true,})
     // draw the manager's cards:
     fetch("http://127.0.0.1:5000/orders",{
       method: 'get',
@@ -620,7 +641,11 @@ if(statusId!=null){
           managerSales: categories,
           orders: orders,
         })
-        });
+        
+      // spinner stop
+this.setState({spinnerIsActive: false,})
+      });
+        
   }
 componentDidMount(){
   this.readManagersCards();
@@ -628,48 +653,55 @@ componentDidMount(){
   render() {
       return( 
               <div>
-                <div className='d-flex flex-row pb-4'>
-                    <img className='avatar_img mr-4' src='images/manager-flat.jpg' alt='менеджер' />
-                    <div>
-                      <h2>Ярослав Грушко</h2>
-                      <h3>менеджер-продавець</h3>
-                    </div>
-                 </div>
-                  <div className="pb-5">
-                    <Row>
-                      <Col sm={12}>
-                      <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
-                        <MainTable orders={this.state.orders} onClick={(showCurrTable, tableToShow, data, id)=>this.MainTableClickHandler(showCurrTable, tableToShow, data, id)}/>
+                <LoadingOverlay
+                  active={this.state.spinnerIsActive}
+                  spinner={<CustomSpinner/>}
+                  >
+                  <p>Some content or children or something.</p>
+                
+                  <div className='d-flex flex-row pb-4'>
+                      <img className='avatar_img mr-4' src='images/manager-flat.jpg' alt='менеджер' />
+                      <div>
+                        <h2>Ярослав Грушко</h2>
+                        <h3>менеджер-продавець</h3>
                       </div>
+                  </div>
+                    <div className="pb-5">
+                      <Row>
+                        <Col sm={12}>
+                        <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
+                          <MainTable orders={this.state.orders} onClick={(showCurrTable, tableToShow, data, id)=>this.MainTableClickHandler(showCurrTable, tableToShow, data, id)}/>
+                        </div>
 
-                      <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
-                        {this.state.showOrdersTable ? <OrdersTable data={this.state.OrdersTableData}/> : null}
-                        {this.state.showClientTable ? <ClientTable data={this.state.ClientTableData}/> : null}
-                      </div>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr/>
-                  <div className='pt-5'>
-                    <div>
-                      <h3>Статистика</h3>
+                        <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                
+                          {this.state.showOrdersTable ? <OrdersTable data={this.state.OrdersTableData}/> : null}
+                          {this.state.showClientTable ? <ClientTable data={this.state.ClientTableData}/> : null}
+                        </div>
+                        </Col>
+                      </Row>
                     </div>
-                    <Row>
-                        <Col sm={2}>
-                          <div className='pt-4 card-height-100'>
-                            <Calendar/>
-                          </div>
+                    <hr/>
+                    <div className='pt-5'>
+                      <div>
+                        <h3>Статистика</h3>
+                      </div>
+                      <Row>
+                          <Col sm={2}>
+                            <div className='pt-4 card-height-100'>
+                              <Calendar/>
+                            </div>
+                          </Col>
+                          <Col sm={4}>
+                            <div className='pt-4 card-height-100'>
+                                <Period/>
+                            </div>
+                          </Col>
+                        <Col sm={6} className='pt-4'>
+                            {this.state.managerSales}
                         </Col>
-                        <Col sm={4}>
-                          <div className='pt-4 card-height-100'>
-                              <Period/>
-                          </div>
-                        </Col>
-                      <Col sm={6} className='pt-4'>
-                          {this.state.managerSales}
-                      </Col>
-                    </Row>
-                  </div>
+                      </Row>
+                    </div>
+                  </LoadingOverlay>
                </div>
             );
   }

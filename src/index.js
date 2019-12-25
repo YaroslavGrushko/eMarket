@@ -81,7 +81,7 @@ function loginToServer() {
           }else{
             // for common user
             window.limited_access_state = true;
-            localStorage.setItem('username', username);
+            // localStorage.setItem('username', username);
             // window.user_state = true;
             // reload main react app with new window.admin_state value
             ReactDOM.render( <UserApp/> , document.getElementById('root'));          

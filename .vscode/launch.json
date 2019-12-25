@@ -23,6 +23,7 @@
                 // "FLASK_APP": "${workspaceFolder}/back-end-api-test/api.py",
                 // "FLASK_APP": "${workspaceFolder}/back-end-api-test/createDb.py",
                 // "FLASK_APP": "${workspaceFolder}/back-end/createDb.py",
+                // "FLASK_APP": "${workspaceFolder}/back-end/createOrdersId.py",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1"
             },

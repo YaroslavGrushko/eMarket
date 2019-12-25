@@ -72,6 +72,7 @@ export function editCategoryOnServer(categId, categName, categCode, managerName,
     },
     data: Data_order,
     success: function (data) {
+      getCategories(columnsToObjects);
       alert('Changes in category '+data.category_id+' is saved'); 
     },
     error: function (error) {

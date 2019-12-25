@@ -47,12 +47,12 @@ class MyOrderTable extends Component {
           // total_cost+= product.count * product.price;
         // }
         // total cost (total column)
-        total_cost = order[7];
+        total_cost = order[8];
         var status = '';
         var myMainText=''
         var myTextItem=''
         var myClass=''
-        switch(order[10]){
+        switch(order[11]){
           case 'new':
             {status='нове';
              myClass='badge badge-primary';
@@ -70,14 +70,14 @@ class MyOrderTable extends Component {
         
         content.push(
           <tr>
-          <td>{i}</td>
+          <td>{order[0]}</td>
           <td>
-              &nbsp;{order[0]}
+              &nbsp;{order[1]}
           </td>
-          <td>{order[1]}</td>
-          <td>{order[6]}</td>
-          <td>{order[11]}</td>
-          <td>{order[9]}</td>
+          <td>{order[2]}</td>
+          <td>{order[7]}</td>
+          <td>{order[12]}</td>
+          <td>{order[10]}</td>
           <td>
           <span className={myClass}>{status}</span>
           </td>
@@ -143,15 +143,17 @@ class UserApp extends Component {
       headers: {
         'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
       },
-      body:JSON.stringify({'data':'002'}),
+      // body:JSON.stringify({'data':'002'}),
     })
     .then(res => res.json())
-    .then((orders)=>{
-  
+    .then((data)=>{
+        var name=data[0]
+        var orders = data[1];
         let categories ="categories";
         this.setState({
           managerSales: categories,
           orders: orders,
+          name: name,
         })
         });
   }
@@ -164,7 +166,7 @@ componentDidMount(){
                 <div className='d-flex flex-row pb-4'>
                     <img className='avatar_img mr-4' src='images/manager-flat.jpg' alt='менеджер' />
                     <div>
-                      <h2>{localStorage.getItem('username')}</h2>
+                      <h2>{this.state.name}</h2>
                       <h3>покупець</h3>
                     </div>
                  </div>
