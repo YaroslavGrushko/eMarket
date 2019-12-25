@@ -5,14 +5,14 @@
     "tasks": [
         {
             "type": "gulp",
-            "task": "default",
+            "task": "sass",
             "problemMatcher": [
                 "$eslint-compact"
             ]
         },
         {
             "type": "gulp",
-            "task": "sass",
+            "task": "sasswatch",
             "problemMatcher": [
                 "$eslint-compact"
             ]
