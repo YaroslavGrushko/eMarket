@@ -159,12 +159,14 @@ class Cart extends Component{
       selected_pay_options: {label:window.selected_pay},
       selected_name: window.selected_name,
       selected_phone: window.selected_phone,
+      selected_email: window.selected_email,
       selected_address: window.selected_address
     };
     
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangePhone = this.handleChangePhone.bind(this);
     this.handleChangeAddress = this.handleChangeAddress.bind(this);
+    this.handleChangeEmail =  this.handleChangeEmail.bind(this);
   }
 
   clickHandlerCheckout(){
@@ -172,17 +174,20 @@ class Cart extends Component{
     window.checkout_customer = {
       customer_name : window.selected_name,
       customer_phone : window.selected_phone,
-      customer_address : window.selected_address
+      customer_address : window.selected_address,
+      customer_email : window.selected_email,
     };
     window.checkout_products = {};
     window.checkout_products = {
       customer_phone : window.selected_phone,
       customer_delivery : window.selected_delivery,
       customer_pay : window.selected_pay,
-      customer_products : window.items
+      customer_products : window.items,
+      customer_name : window.selected_name,
+      customer_email : window.selected_email,
     };
     if (window.selected_name===undefined || window.selected_phone===undefined || window.selected_address===undefined 
-      || window.selected_delivery===undefined || window.selected_pay===undefined) {Warning();} 
+      || window.selected_email===undefined || window.selected_delivery===undefined || window.selected_pay===undefined) {Warning();} 
       else{
         addСheckoutCustumerToServer(window.checkout_customer);
         addСheckoutProductsToServer(window.checkout_products);
@@ -212,7 +217,12 @@ class Cart extends Component{
     var d = new Date();
     window.selected_phone = d.getTime()-1575559000000;// current time in ms
   }
-
+  handleChangeEmail(event){
+    this.setState({selected_email: event.target.value});
+    window.selected_email = event.target.value;
+    // var d = new Date();
+    // window.selected_phone = d.getTime()-1575559000000;// current time in ms
+  }
   handleChangeAddress(event) {
     this.setState({selected_address: event.target.value});
     // console.log(`selected_address:`, event.target.value);
@@ -254,6 +264,9 @@ class Cart extends Component{
      
         <label for="fname">Ваше ім'я:</label>
         <input type="text" id="fname" name="fname" placeholder="Введіть Ваше ім'я..." value={this.state.selected_name} onChange={this.handleChangeName}/>
+        <label for="tnumber">Email:</label>
+        <input type="text" id="email" name="email" placeholder="****@****" value={this.state.selected_email} onChange={this.handleChangeEmail}/>
+    
         <label for="tnumber">Контактний телефон:</label>
         <input type="text" id="tnumber" name="tnumber" placeholder="0 ** *** ** **" value={this.state.selected_phone} onChange={this.handleChangePhone}/>
       </div>

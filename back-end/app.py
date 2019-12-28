@@ -34,7 +34,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # for cookie tracking
 from flask_login import LoginManager
 from flask_login import login_required, current_user
-
+# for mail:
+from flask_mail import Mail
+from flask_mail import Message
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -48,9 +50,33 @@ app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mytodo.db'
 # for user authentification in SQLite Db <<<<<<<<<<<<
 
+# mail settings
+# app.config['MAIL_SERVER']='smtp.gmail.com'
+# app.config['MAIL_PORT'] = 587
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
+# app.config['MAIL_PASSWORD'] = 'yjhlbxtcrbq'
+# app.config['MAIL_DEFAULT_SENDER']='grushko.kpi@gmail.com'
+# app.config['MAIL_DEBUG']=True
+# app.config['MAIL_SUPPRESS_SEND']=False
+# app.config['TESTING']=False
+
+
+mail_settings = {
+    "MAIL_SERVER": 'smtp.gmail.com',
+    "MAIL_PORT": 465,
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+    "MAIL_USERNAME": 'grushko.kpi@gmail.com',
+    "MAIL_PASSWORD": 'yjhlbxtcrbq'
+}
+
 # let's inicizlize db
 db.init_app(app)
-
+# for flask mail
+app.config.update(mail_settings)
+mail = Mail(app)
+# mail.init_app(app)
 
 def create_connection(db_file):
     try:
@@ -526,13 +552,45 @@ def add_сheckout_customer():
     if request.method == 'GET':
         return jsonify({'status' : 'success GET'})
     else:
-        return jsonify({'status' : rData['customer_name']})   
+        return jsonify({'status' : rData['customer_name']}) 
+
+def log_message(message, app):
+    app.logger.debug(message.subject)
+# function that create html-page (for recipient email)
+def email_html(phone, products):
+    myhtml=('<!DOCTYPE html>'
+    '<body>'
+    '<h3>ваш заказ прийнято!</h3>'
+    'телефон замовника:'+str(phone))
+    for item in products:
+        myhtml+=('<table border="1">'
+        '<tr>'
+        '<th>товар</th>'
+        '<th>к-ть</th>'
+        '<th>загальна вартість</th>'
+        '</tr>'
+        '<tr>'
+        '<td>'+str(item['name'])+'</td>'
+        '<td>'+str(item['quantity'])+'</td>'
+        '<td>'+str(item['total'])+'</td>'
+        '</tr>'
+    '</table>'
+    '<h3>дякуємо за покупку в магазині eMarket!</h3>'
+    '</body>')
+    return myhtml
 
 @app.route('/add_product_customer', methods=['GET', 'POST'])
 # @token_required
 def add_product_customer():
     # rData = request.data
     rData = request.get_json()
+    myhtml=email_html(rData['customer_phone'], rData['customer_products'])
+    with app.app_context():
+        msg = Message(subject='mysubject',
+        sender=app.config.get("MAIL_USERNAME"),
+        recipients=[rData['customer_email']],
+        html=myhtml)
+        mail.send(msg)
 
     conn = create_connection("eMarket.db")
     cursor = conn.cursor()
@@ -563,7 +621,7 @@ def add_product_customer():
     for item in rData['customer_products']:
         new_checkout_products = []
         new_checkout_products = [(rData['customer_phone'], item['name'], item['category_id'], item['in_price'], item['out_price'], item['src'], item['quantity'], item['total'], rData['customer_delivery'], rData['customer_pay'], "new", today_date)]
-        cursor.executemany("INSERT INTO Orders VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products)
+        cursor.executemany("INSERT INTO Orders (customer_phone, name, category_id, in_price, out_price, src, quantity, total, delivery, pay, status, date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", new_checkout_products)
     
     
     # # emulate Orders table:
