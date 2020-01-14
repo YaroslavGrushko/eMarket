@@ -186,7 +186,7 @@ class TotalIncome extends Component {
           <div className="card" style={{width:100+'%'}}>
             <h4 className="card-title text-center">Прогноз на місяць</h4>
             <div className="card-body d-flex justify-content-center">
-              <div className="card text-center" style={{width:70+'%'}}>1000</div>
+              <div className="card text-center" style={{width:70+'%'}}>{this.props.total_predict}</div>
               <div className="ml-1">грн</div>
             </div>
               {/* <div className="card-footer">за вибраний проміжок часу</div> */}
@@ -473,6 +473,7 @@ class DashBoard extends Component {
   
   componentDidMount()  {
     this.readTotalGraph();
+    this.readTotalPredict();
   }
 
   periodCallBack = (from, to) => {
@@ -544,6 +545,37 @@ class DashBoard extends Component {
 
   }
 
+  readTotalPredict = () => {
+
+    let jsonData = {
+      'from_period': this.state.from_period,
+      'to_period': this.state.to_period
+    };
+    let period = JSON.stringify(jsonData);
+     fetch("http://127.0.0.1:5000/prediction",{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: period,
+    })
+    .then(res => 
+      res.json())
+    .then(
+      (data)=>{
+        this.setState({
+          total_predict: data.total_predict,
+          
+        });
+
+      },
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
 
   render(){
     return(
@@ -562,7 +594,7 @@ class DashBoard extends Component {
               <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack} /></div>
             </Col>
             <Col key={2} md={4} sm={1}>     
-              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_sales-this.state.total_expenses}/></div>
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_sales-this.state.total_expenses} total_predict={this.state.total_predict}/></div>
             </Col>
           </Row>
           <Row>

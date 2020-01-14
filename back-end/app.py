@@ -36,6 +36,18 @@ from flask_login import LoginManager
 from flask_login import login_required, current_user
 
 
+
+
+# prediction
+import pandas as pd
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from dateutil.relativedelta import *
+import numpy as np
+
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
@@ -730,6 +742,163 @@ def orders():
     orders=cursor.fetchall() # total sales values of selected category
     ordersJson = jsonify(orders)
     return ordersJson
+
+
+@app.route('/prediction', methods=['GET', 'POST'])
+def prediction():
+    rData = request.get_json()
+    from_period = rData['from_period']
+    to_period = rData['to_period']
+
+   
+   
+    def create_connection(db_file):
+        try:
+            conn = sqlite3.connect(db_file)
+            return conn
+        except sqlite3.Error as e:
+            print(e)
+    
+        return None
+
+    #function for convertation of sqlite table YYYY-MM-DD date string to python datetime format:
+    def table_date_to_date(table_date_format):
+        date_format = datetime.strptime(table_date_format, '%Y-%m-%d') # convert YYYY-MM-DD string to datetime format
+        return date_format
+
+    test1=relativedelta(months=+1)
+    delta=table_date_to_date(to_period)-table_date_to_date(from_period)
+    if(delta.days<=31):
+       
+        return jsonify({'total_predict' : 'no correct'})
+    else:
+        
+        conn = create_connection("eMarket.db")
+
+
+        fd = table_date_to_date(to_period)
+        to_period_correct_for_month= fd+relativedelta(months=+1) #for correct evaluation of profit_every_month_df in for cicle
+        to_period_correct_for_month_string = to_period_correct_for_month.strftime('%F') #convert datetime to YYYY-MM-DD string
+
+        fd = table_date_to_date(to_period)
+        to_period_correct_for_end_index= fd+relativedelta(months=-1) #for correct evaluation of end index in training
+        to_period_correct_for_end_index_string = to_period_correct_for_end_index.strftime('%F') #convert datetime to YYYY-MM-DD string
+
+        df = pd.read_sql_query("""SELECT in_price, quantity, total, date FROM Orders WHERE Orders.date BETWEEN'"""+from_period+"""' AND '"""+to_period_correct_for_month_string+"""'""", conn)
+
+        in_total = df['in_price']*df['quantity']
+        profit_df = df['total']-in_total
+        # profit every day:
+        profit_every_day_df = pd.DataFrame(columns=['date','total_profit'])
+        prev_day=None
+        current_profit = 0
+        for index, current_day in enumerate(df['date']):
+            if prev_day==current_day:
+                current_profit=current_profit+profit_df[index]
+            else:
+                # if prev_day!=current day
+                if(prev_day!=None):
+                    profit_every_day_df=profit_every_day_df.append({'date':prev_day, 'total_profit':current_profit}, ignore_index=True)
+
+                prev_day=current_day
+                current_profit=profit_df[index]
+            
+        # profit every month:
+        profit_every_month_df = pd.DataFrame(columns=['date','total_profit'])
+        prev_month=None
+        prev_year=None
+        prev_date=None
+        current_profit = 0
+        profit_every_day_df_without_date = profit_every_day_df['total_profit']
+
+
+        for index, current_day in enumerate(profit_every_day_df['date']):
+            # work with month
+            datetime_object = datetime.strptime(current_day, '%Y-%m-%d')
+            current_month = datetime_object.month
+            current_year = datetime_object.year
+
+            if prev_month==current_month and prev_year==current_year: 
+                current_profit=current_profit+profit_every_day_df_without_date[index]
+                
+            else:  
+                if(prev_month!=None):
+                    profit_every_month_df=profit_every_month_df.append({'date':prev_date, 'total_profit':current_profit}, ignore_index=True)
+                
+                prev_month=current_month
+                prev_year = current_year
+                prev_date = current_day
+                
+                current_profit=profit_every_day_df_without_date[index]
+
+        conn.close()
+
+        # mpl.rcParams['axes.labelsize'] = 20
+        # mpl.rcParams['axes.titlesize'] = 24
+        # mpl.rcParams['figure.figsize'] = (8, 4)
+        # mpl.rcParams['xtick.labelsize'] = 14
+        # mpl.rcParams['ytick.labelsize'] = 14
+        # mpl.rcParams['legend.fontsize'] = 14
+        # ax=profit_every_month_df.plot()
+        # ax.set_ylabel('total_profit')
+
+        # # let's make only five xticks from our all xticks:
+        # all_size=len(profit_every_month_df.date)
+        # part_size = int(all_size/5)
+        # cutted_profit_every_month_df_date=pd.DataFrame(columns=['date'])
+        # for index, val in  enumerate(profit_every_month_df['date']):
+        #     if index%part_size==0:
+        #         cutted_profit_every_month_df_date=cutted_profit_every_month_df_date.append({'date':val}, ignore_index=True)
+
+        # ax.set(xticklabels=cutted_profit_every_month_df_date.date)
+
+        # plt.show()
+
+
+        # regration:
+        # https://www.ethanrosenthal.com/2018/01/28/time-series-for-scikit-learn-people-part1/
+
+        start = int(np.where(profit_every_month_df.date == from_period)[0][0])
+        end =  int(np.where(profit_every_month_df.date == to_period_correct_for_end_index_string)[0][0]) 
+
+        y_data = profit_every_month_df.total_profit.tolist()
+
+        if len(y_data) <= 4:
+            y_pred = np.average(y_data)
+            print('predicted value:', y_pred)
+        else:
+            window=(int(len(y_data)/2)) 
+            num_samples=len(y_data)-window
+
+            X_mat = []
+            y_mat = []
+            t = len(y_data) - 1 # номер последнего временного отсчета обучающей серии
+            for i in range(num_samples):
+                # Slice a window of features
+                X_mat.append(profit_every_month_df.total_profit.iloc[t- i - window : t - i].values)
+                y_mat.append(profit_every_month_df.total_profit.iloc[t - i : t - i + 1].values)
+
+            X_mat = np.vstack(X_mat)
+            y_mat = np.concatenate(y_mat)
+
+            model = LinearRegression().fit(X_mat, y_mat)
+
+            # задаем интересующие нас значения матрицы Х, соответствующие прогнозируемой точке t + 1:
+            X_mat = []
+            t = t + 1
+            for i in range(num_samples):
+                # Slice a window of features
+                X_mat.append(profit_every_month_df.total_profit.iloc[t- i - window : t - i].values)
+
+            X_mat = np.vstack(X_mat)
+            y_pred = model.predict(X_mat)
+
+            print('predicted value=', y_pred[0])
+            pred=int(y_pred[0])
+            
+            return jsonify({'total_predict' : pred})
+
+
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 if __name__ == '__main__':
