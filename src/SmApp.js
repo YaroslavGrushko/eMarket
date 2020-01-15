@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-
+import ReactDOM from "react-dom";
 import './css/main_App.css';
 // import './css/images.css';
 
 import "bootstrap/dist/css/bootstrap.css"; //подключаем только грид
 import { Container, Row, Col, Table, Dropdown } from "react-bootstrap";
+
+// Import React Table
+import ReactTable from "react-table";
 // for react width sizing
 import { MDBContainer } from 'mdbreact'
 // for calendar
@@ -18,17 +21,40 @@ import './css/my-charts.css';
 import './css/board_styles/css/board_main.css';
 import './css/board_styles/css/card_styles.css';
 import './css/board_styles/css/images.css';
+import './css/board_styles/css/tables.css';
 
 class MyDropDown extends Component {
   render(){
     return(
       <Dropdown>
-      <Dropdown.Toggle variant="success" id="dropdown-basic">
+      <Dropdown.Toggle variant={this.props.variant} id="dropdown-basic" className="col-sm-12">
          {this.props.mainText}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">{this.props.textItem}</Dropdown.Item>
+        <Dropdown.Item onClick={(e)=>
+        {
+            var status= e.currentTarget;
+            var div = status.parentElement;
+            var div=div.parentElement;
+            var td=div.parentElement;
+            var tr=td.parentElement;
+            var idElement = tr.firstChild;
+            var idString=idElement.innerHTML;
+            var id = parseInt(idString,10);
+            var dbId=++id;
+            var status = '';
+            switch(this.props.textItem){
+              case 'прийняти':
+                {status='in_the_processing';
+                break;}
+              case 'відправлено':
+                {status='sent';
+                break;}
+            }
+            this.props.onClick(status, dbId);
+            }  
+        }>{this.props.textItem}</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
     );
@@ -117,26 +143,28 @@ class ClientTable extends Component{
      content:content,
    };
   }
+ 
   render() {
     return(
-      <div>
-      <h3>Все про замовника</h3>
-      <Table striped responsive className="text-center">
-       <thead>
-         <tr>
-           <th>ім'я</th>
-           <th>фамілія</th>
-           <th>телефон</th>
-           <th>e-mail</th>
-           <th>Спосіб доставки</th>
-           <th>Спосіб оплати</th>
-         </tr>
-       </thead>
-       <tbody>
-         {this.state.content}     
-       </tbody>
-      </Table>
-     </div>
+      
+        <div>
+                <h3>Все про замовника</h3>
+                <Table striped responsive className="text-center">
+                  <thead>
+                    <tr>
+                      <th>ім'я</th>
+                      <th>фамілія</th>
+                      <th>телефон</th>
+                      <th>e-mail</th>
+                      <th>Спосіб доставки</th>
+                      <th>Спосіб оплати</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.content}     
+                  </tbody>
+                </Table> 
+        </div>
     )
   }
 }
@@ -176,11 +204,15 @@ class MainTable extends Component {
     buttonsColorSwitcher(e);
     this.props.onClick('client');
   }
- componentDidMount(){
-   this.setState({
-      mounted:true,
-   })
- }
+  statusOnClick(status, id){
+    this.props.onClick(null,'satus',status, id);
+  }
+
+  componentDidMount(){
+    this.setState({
+        mounted:true,
+    })
+  }
   static getDerivedStateFromProps(props, state){
     var content=[]
     var orders=props.orders;
@@ -197,7 +229,29 @@ class MainTable extends Component {
         // total cost (total column)
         total_cost = order[7];
         var status = '';
-        if(order[10]=='new')status=<MyDropDown mainText="нове" textItem="прийняти"/>;
+        var myMainText=''
+        var myTextItem=''
+        var variant=''
+        switch(order[10]){
+          case 'new':
+            {myMainText="нове";
+             myTextItem="прийняти";
+             variant='success';
+             break;}
+          case 'in_the_processing':
+            {myMainText="в обробці";
+            myTextItem="відправлено";
+            variant='warning';
+            break;}
+          case 'sent':
+            {myMainText="відправлено";
+            myTextItem="відправлено";
+            variant='warning';
+            break;}
+        }
+        status=<MyDropDown onClick={(status, id)=>{
+          props.onClick(null,'satus',status, id);
+        }} mainText={myMainText} textItem={myTextItem} variant={variant}/>;
         content.push(
           <tr>
 
@@ -257,23 +311,28 @@ class MainTable extends Component {
   }
  
 render() {
-    return(<div>
-           <h3>Список замовлень</h3>
-           <Table striped responsive className="text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>замовлення</th>
-                <th>замовник</th>
-                <th>статус</th>
-                <th>вартість</th>
-              </tr>
-            </thead>
-            <tbody>
-             {this.state.content}
-            </tbody>
-           </Table>
-          </div>);
+    return(
+          <div>
+              <h3>Список замовлень</h3>
+              <div className='overflow-y-scroll'>
+              <Table striped className="text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>замовлення</th>
+                    <th>замовник</th>
+                    <th>статус</th>
+                    <th>вартість</th>
+                  </tr>
+                </thead>
+                  <tbody>    
+                      {this.state.content}    
+                  </tbody>
+                  
+              </Table>
+              </div>
+            </div>
+           );
 }
 }
 
@@ -493,7 +552,23 @@ class SmApp extends Component {
       managerSales:[],
     };
   }
-  MainTableClickHandler(showCurrTable, tableToShow, data){
+  MainTableClickHandler(showCurrTable, tableToShow, mydata, statusId){
+if(statusId!=null){
+  var requestData=JSON.stringify({'mydata':mydata, 'statusId': statusId})
+   // draw the manager's cards:
+   fetch("http://127.0.0.1:5000/order",{
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
+    },
+    body:requestData,
+  })
+  .then(res => res.json())
+  .then((result)=>{
+    if(result.status=='success GET'){
+      this.readManagersCards()}
+  })
+  }else{
     switch(tableToShow){
       case 'orders':
         if(!this.state.showOrdersTable||showCurrTable){
@@ -501,7 +576,7 @@ class SmApp extends Component {
             showOrdersTable:true,
             showClientTable:false,
             isAnyAnotherTable:true,
-            OrdersTableData: data,
+            OrdersTableData: mydata,
           });}else{
             this.setState({
             isAnyAnotherTable:false,
@@ -515,7 +590,7 @@ class SmApp extends Component {
             showClientTable:true,
             showOrdersTable:false,
             isAnyAnotherTable:true,
-            ClientTableData: data,
+            ClientTableData: mydata,
           });
           }else{
             this.setState({
@@ -528,48 +603,18 @@ class SmApp extends Component {
         return null;
     }
   }
+  }
   readManagersCards = () => {
     // draw the manager's cards:
     fetch("http://127.0.0.1:5000/orders",{
       method: 'get',
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json', 'x-access-token': localStorage.getItem('x-access-token')
+      },
     })
     .then(res => res.json())
     .then((orders)=>{
-      let a = 1;
-      // // let data = getAllCategoriesData();
-      //   // let's foreach every category
-      //   let category_names = data.category_name;
-      //   let names = data.name;
-      //   let photos = data.photo;
   
-      //   let chartData =[]
-      //   chartData.push([500, 1000, 500, 500, 1000]);
-  
-      //   var categories = []
-        
-      //   // for(let i=0; i<category_names.length;i++){
-      //     categories.push(<TotalDepartmentSales chartId="chart0" receivedData={chartData[0]} category_name={category_names[0]} name={names[0]} photo={photos[0]}/>);
-      //   // }
-      //   var orders = [];
-      //   var order1 ={'order':[
-      //     {'product_name':'ручка_зелена', 'article':1235, 'count':3, 'price': 30},
-      //     {'product_name':'ручка_синя', 'article':1236, 'count':2, 'price': 30},
-      //     {'product_name':'ручка_жовта', 'article':1237, 'count':2, 'price': 30},
-      //           ], 'customer':
-      //     {'name':'Ігор', 'surname':'Столяр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
-      //   };
-      //   var order2 ={'order':[
-      //     {'product_name':'зошит_зелена', 'article':1225, 'count':3, 'price': 50},
-      //     {'product_name':'зошит_синя', 'article':1226, 'count':2, 'price': 50},
-      //     {'product_name':'зошит_жовта', 'article':1227, 'count':2, 'price': 50},
-      //           ], 'customer':
-      //     {'name':'Василь', 'surname':'Маляр', 'phone':'+380*********', 'email':'***@gmail.com', 'nova_poshta_number':135, 'payment_method':'cash_on_delivery'}
-      //   };
-      //   orders.push(order1);
-      //   orders.push(order2);
         let categories ="categories";
         this.setState({
           managerSales: categories,
@@ -594,7 +639,7 @@ componentDidMount(){
                     <Row>
                       <Col sm={12}>
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-left transition' : 'transition'}>
-                        <MainTable orders={this.state.orders} onClick={(showCurrTable, tableToShow, data)=>this.MainTableClickHandler(showCurrTable, tableToShow, data)}/>
+                        <MainTable orders={this.state.orders} onClick={(showCurrTable, tableToShow, data, id)=>this.MainTableClickHandler(showCurrTable, tableToShow, data, id)}/>
                       </div>
 
                       <div className={this.state.isAnyAnotherTable ? 'col-sm-12 col-md-6 pt-4 pull-right transition' : 'transition'}>                

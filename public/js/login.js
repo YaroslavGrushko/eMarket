@@ -1,6 +1,6 @@
 // Script to close Login menu
 
-function Login_close() {
+function container_close(container_selector) {
     // document.getElementsByClassName(".login_container")[0].style.display = "none";
-    $('.login_container').hide();
+    $(container_selector).hide();
 }
