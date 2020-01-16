@@ -188,7 +188,7 @@ class TotalIncome extends Component {
           <div className="card" style={{width:100+'%'}}>
             <h4 className="card-title text-center">Прогноз на місяць</h4>
             <div className="card-body d-flex justify-content-center">
-              <div className="card text-center" style={{width:70+'%'}}>1000</div>
+              <div className="card text-center" style={{width:70+'%'}}>{this.props.total_predict}</div>
               <div className="ml-1">грн</div>
             </div>
               {/* <div className="card-footer">за вибраний проміжок часу</div> */}
@@ -489,6 +489,7 @@ class DashBoard extends Component {
   
   componentDidMount()  {
     this.readTotalGraph();
+    this.readTotalPredict();
   }
 
   periodCallBack = (from, to) => {
@@ -564,6 +565,37 @@ class DashBoard extends Component {
 
   }
 
+  readTotalPredict = () => {
+
+    let jsonData = {
+      'from_period': this.state.from_period,
+      'to_period': this.state.to_period
+    };
+    let period = JSON.stringify(jsonData);
+     fetch("http://127.0.0.1:5000/prediction",{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: period,
+    })
+    .then(res => 
+      res.json())
+    .then(
+      (data)=>{
+        this.setState({
+          total_predict: data.total_predict,
+          
+        });
+
+      },
+      err => {
+        console.log(err);
+      }
+    )
+
+  }
+
 
   render(){
     return(
@@ -572,9 +604,42 @@ class DashBoard extends Component {
         active={this.state.spinnerIsActive}
         spinner={<CustomSpinner/>}
         >
-          <h4 className="text-center">
-            <b>ДОШКА АНАЛІТИКИ</b>
-          </h4>
+          
+        <h4 className="text-center">
+          <b>ДОШКА АНАЛІТИКИ</b>
+        </h4>
+        <br></br>
+        
+        <Container>
+          <Row>
+            <Col key={0} md={3} sm={1}>     
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Calendar/></div>
+            </Col>
+            <Col key={1} md={5} sm={1}>     
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><Period periodCallBack={this.periodCallBack} /></div>
+            </Col>
+            <Col key={2} md={4} sm={1}>     
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}><TotalIncome total_income={this.state.total_sales-this.state.total_expenses} total_predict={this.state.total_predict}/></div>
+            </Col>
+          </Row>
+          <Row>
+            <Col key={0} md={6} sm={1}>     
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
+                <Delayed waitBeforeShow={500}>
+                  <div><TotalSales chartId = 'ChartSales' graph_name='Загальні продажі' total={this.state.total_sales} labels_and_data={this.state.labels_and_data} /></div>
+                </Delayed>
+              </div>
+            </Col>
+            <Col key={1} md={6} sm={1}>     
+              <div className="d-flex justify-content-center" style={{paddingTop: '10px'}}>
+                <Delayed waitBeforeShow={500}>
+                  <div><TotalExpenses chartId = 'ChartExpenses' graph_name='Загальні витрати' total = {this.state.total_expenses} labels_and_data={this.state.exp_labels_and_data} /></div>
+                </Delayed>
+              </div>
+            </Col>
+          </Row>
+          </Container>
+          <br></br>
           <br></br>
           
           <Container>
