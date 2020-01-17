@@ -48,8 +48,8 @@ class Period extends Component {
       from_day : '01',
       from_month : '01',
       from_year : 2019,
-      to_day : '07',
-      to_month : '01',
+      to_day : '01',
+      to_month : '12',
       to_year : 2019,
     }
   }
@@ -482,7 +482,7 @@ class DashBoard extends Component {
       total_expenses : 0,
       labels_and_data : null,
       from_period : '2019-01-01',
-      to_period : '2019-01-07',
+      to_period : '2019-12-01',
       spinnerIsActive: false,
     }
   }
@@ -498,6 +498,7 @@ class DashBoard extends Component {
       to_period : to
     });
     this.readTotalGraph();
+    this.readTotalPredict();
   }
 
   readTotalGraph = () => {

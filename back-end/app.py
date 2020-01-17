@@ -958,6 +958,8 @@ def prediction():
         if len(y_data) <= 4:
             y_pred = np.average(y_data)
             print('predicted value:', y_pred)
+            pred=int(y_pred)
+            return jsonify({'total_predict' : pred})
         else:
             window=(int(len(y_data)/2)) 
             num_samples=len(y_data)-window
@@ -989,7 +991,6 @@ def prediction():
             pred=int(y_pred[0])
             
             return jsonify({'total_predict' : pred})
-
 
 @token_required
 def orders(user):
